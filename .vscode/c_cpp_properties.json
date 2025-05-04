@@ -1,0 +1,49 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/test/**",
+                "${workspaceFolder}/lib/**",
+                "/usr/include/freetype2",
+                "../xit/include",
+                "../xit.Account/include",
+                "../xit.Application/include",
+                "../xit.Input/include",
+                "../xit.IO/include",
+                "../xit.Security/include",
+                "../xit.Threading/include",
+                "../xit.Timers/include"
+            ],
+            "defines": [
+                "DEBUG"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++23",
+            "intelliSenseMode": "linux-gcc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/include/**",
+                    "${workspaceFolder}/src/**",
+                    "${workspaceFolder}/test/**",
+                    "${workspaceFolder}/lib/**",
+                    "/usr/include/freetype2",
+                    "../xit/include",
+                    "../xit.Account/include",
+                    "../xit.Application/include",
+                    "../xit.Input/include",
+                    "../xit.IO/include",
+                    "../xit.Security/include",
+                    "../xit.Threading/include",
+                    "../xit.Timers/include"
+                ],
+                "limitSymbolsToIncludedHeaders": false,
+                "databaseFilename": ""
+            }
+        }
+    ],
+    "version": 4
+}

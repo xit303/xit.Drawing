@@ -1,0 +1,290 @@
+#include <Drawing/SplitContainer.h>
+#include <Drawing/ContainerBase.h>
+#include <Input/InputHandler.h>
+
+namespace xit::Drawing
+{
+    using namespace xit::Input;
+    
+    SplitContainer::SplitContainer()
+    {
+        SetInheritForeground(true);
+
+        grid.SetChildren(&children);
+
+        panel1Index = 0;
+        panel2Index = 2;
+
+        orientation = Orientation::Vertical;
+
+        UpdateOrientation();
+    }
+
+    //******************************************************************************
+
+    //******************************************************************************
+
+    void SplitContainer::UpdateOrientation()
+    {
+        std::string columnsOrRows;
+
+        switch (orientationDirection)
+        {
+        default:
+        case OrientationDirection::Normal:
+            columnsOrRows = "Auto,*";
+
+            panel1Index = 0;
+            panel2Index = 1;
+            break;
+
+        case OrientationDirection::Inverted:
+            columnsOrRows = "*,Auto";
+
+            panel1Index = 1;
+            panel2Index = 0;
+            break;
+        }
+
+        switch (orientation)
+        {
+        case Orientation::Horizontal:
+            grid.SetColumns(columnsOrRows);
+            grid.SetRows("*");
+
+            if (panel1)
+                panel1->SetGrid(panel1Index, 0);
+            if (panel2)
+                panel2->SetGrid(panel2Index, 0);
+            break;
+
+        case Orientation::Vertical:
+            grid.SetColumns("*");
+            grid.SetRows(columnsOrRows);
+
+            if (panel1)
+                panel1->SetGrid(0, panel1Index);
+            if (panel2)
+                panel2->SetGrid(0, panel2Index);
+
+            break;
+        }
+
+        OnOrientationChanged();
+    }
+
+    //******************************************************************************
+    // Protected override
+    //******************************************************************************
+
+    void SplitContainer::OnVisibilityChanged(EventArgs& e)
+    {
+        InputContent::OnVisibilityChanged(e);
+
+        if (panel1 != nullptr)
+        {
+            panel1->SetVisibility(GetVisibility());
+        }
+
+        if (panel2 != nullptr)
+        {
+            panel2->SetVisibility(GetVisibility());
+        }
+    }
+
+    int SplitContainer::OnMeasureWidth(int available)
+    {
+        return grid.GetWidth(available);
+    }
+    int SplitContainer::OnMeasureHeight(int available)
+    {
+        return grid.GetHeight(available);
+    }
+
+    void SplitContainer::OnUpdate(const Rectangle& bounds)
+    {
+        bool updateSize = needWidthRecalculation || needHeightRecalculation;
+        bool updateLocations = needLeftRecalculation || needTopRecalculation;
+
+        InputContent::OnUpdate(bounds);
+
+        Thickness borderThickness = GetBorderThickness();
+        Thickness padding = GetPadding();
+
+        int left = GetLeft() + padding.GetLeft() + borderThickness.GetLeft();
+        int top = GetTop() + padding.GetTop() + borderThickness.GetTop();
+        int width = GetActualWidth() - padding.GetWidth() - borderThickness.GetWidth();
+        int height = GetActualHeight() - padding.GetHeight() - borderThickness.GetHeight();
+
+        Rectangle stored(left, top, width, height);
+
+        // add margin to get the real bounds (1 - (-1) = 2)
+        if (GetMargin().GetTop() < 0)
+            top -= GetMargin().GetTop();
+        //if (Margin.Left < 0)
+        //    left += Margin.Left;
+
+        // TODO this order is different to ScrollViewer
+        // TODO create Method GetClientBounds(Visual& v); see Window, SplitContainer, ScrollViewer, ContainerBase
+
+        clientBounds.Set(left, top, width, height);
+
+        grid.SetBounds(stored);
+
+        if (updateSize || updateLocations)
+        {
+            if (orientation == Drawing::Orientation::Horizontal)
+            {
+                // for all same
+                top += grid.GetRowPositions()[0];
+                height = grid.GetRowHeights()[0];
+
+                Rectangle r(left + grid.GetColumnPositions()[panel1Index], top, grid.GetColumnWidths()[panel1Index], height);
+
+                if (panel1)
+                    panel1->Update(r);
+
+                if (panel2)
+                {
+                    r.SetLeft(left + grid.GetColumnPositions()[panel2Index]);
+                    r.SetWidth(grid.GetColumnWidths()[panel2Index]);
+                    panel2->Update(r);
+                }
+            }
+            else
+            {
+                // for all same
+                left += grid.GetColumnPositions()[0];
+                width = grid.GetColumnWidths()[0];
+
+                Rectangle r(left, top + grid.GetRowPositions()[panel1Index], width, grid.GetRowHeights()[panel1Index]);
+
+                if (panel1)
+                    panel1->Update(r);
+
+                if (panel2)
+                {
+                    r.SetTop(top + grid.GetRowPositions()[panel2Index]);
+                    r.SetHeight(grid.GetRowHeights()[panel2Index]);
+                    panel2->Update(r);
+                }
+            }
+        }
+    }
+    void SplitContainer::OnRender()
+    {
+        InputContent::OnRender();
+
+        if (panel1)
+            panel1->Render();
+        if (panel2)
+            panel2->Render();
+    }
+
+    //******************************************************************************
+    // Protected
+    //******************************************************************************
+
+    void SplitContainer::OnOrientationChanged()
+    {
+        EventArgs e;
+        OrientationChanged(e);
+    }
+
+    //******************************************************************************
+
+    //******************************************************************************
+
+    void SplitContainer::SetDPIScale(float scaleX, float scaleY)
+    {
+        InputContent::SetDPIScale(scaleX, scaleY);
+        if (panel1)
+            panel1->SetDPIScale(scaleX, scaleY);
+        if (panel2)
+            panel2->SetDPIScale(scaleX, scaleY);
+    }
+    
+    Size SplitContainer::Measure(const Size& availableSize)
+    {
+        return InputContent::Measure(availableSize);
+    }
+
+    //void SplitContainer::ExecuteInputEnter(EventArgs& e)
+    //{
+    //    if (ContainerBase::CheckInputEnter(panel1, e))
+    //        return;
+
+    //    if (ContainerBase::CheckInputEnter(panel2, e))
+    //        return;
+
+    //    InputContent::ExecuteInputEnter(e);
+    //}
+    void SplitContainer::ExecuteInputLeave(EventArgs& e)
+    {
+        if (InputHandler::CheckInputLeave(panel1, e))
+            return;
+        if (InputHandler::CheckInputLeave(panel2, e))
+            return;
+        InputContent::ExecuteInputLeave(e);
+    }
+
+    void SplitContainer::ExecuteInputPressed(MouseEventArgs& e)
+    {
+        if (InputHandler::CheckInputPressed(panel1, e))
+            return;
+
+        if (InputHandler::CheckInputPressed(panel2, e))
+            return;
+        
+        InputContent::ExecuteInputPressed(e);
+    }
+    void SplitContainer::ExecuteInputReleased(MouseEventArgs& e)
+    {
+        if (InputHandler::CheckInputReleased(panel1, e))
+            return;
+        if (InputHandler::CheckInputReleased(panel2, e))
+            return;
+        InputContent::ExecuteInputReleased(e);
+    }
+
+    void SplitContainer::ExecuteInputMove(MouseEventArgs& e)
+    {
+        if (InputHandler::CheckInputMove(panel1, e))
+            return;
+        if (InputHandler::CheckInputMove(panel2, e))
+            return;
+
+        InputContent::ExecuteInputMove(e);
+    }
+
+    void SplitContainer::ExecuteInputScroll(MouseEventArgs& e)
+    {
+        if (InputHandler::CheckInputScroll(panel1, e))
+            return;
+        if (InputHandler::CheckInputScroll(panel2, e))
+            return;
+
+        InputContent::ExecuteInputScroll(e);
+    }
+
+    void SplitContainer::ExecuteKeyDown(KeyEventArgs& e)
+    {
+        if (InputHandler::CheckKeyDown(panel1, e))
+            return;
+        if (InputHandler::CheckKeyDown(panel2, e))
+            return;
+
+        if (!e.Handled)
+            InputContent::ExecuteKeyDown(e);
+    }
+
+    void SplitContainer::ExecuteKeyUp(KeyEventArgs& e)
+    {
+        if (InputHandler::CheckKeyUp(panel1, e))
+            return;
+        if (InputHandler::CheckKeyUp(panel2, e))
+            return;
+        if (!e.Handled)
+            InputContent::ExecuteKeyUp(e);
+    }
+}

@@ -1,0 +1,5 @@
+.svn
+.bin
+test/.bin
+Debug
+settings.json

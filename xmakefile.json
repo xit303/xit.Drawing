@@ -1,0 +1,128 @@
+{
+    "name": "xmakefile",
+    "version": "1.0.0",
+    "description": "A simple xmakefile for building a C++ project",
+    "author": "xit",
+    "license": "MIT",
+    "configurations": [
+        {
+            "name": "Debug",
+            "build_types": "Options are: Executable, StaticLibrary, SharedLibrary",
+            "build_type": "SharedLibrary",
+            "build_dir": ".bin",
+            "output_filename": "libxit.Drawing.so",
+            "compiler_path": "",
+            "compiler": "g++",
+            "linker": "g++",
+            "archiver": "ar",
+            "archiver_flags": "rcs",
+            "c_flags": "-std=c++23 -Wall -Wextra -pedantic -fPIC",
+            "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -MMD -fPIC -O0",
+            "linker_flags": "-lm -lstdc++",
+            "defines": [
+                "DEBUG"
+            ],
+            "include_paths": [
+                "include",
+                "lib/ArduinoJson/src",
+                "lib/glad/include/",
+                "lib/glm/glm/",
+                "../xit/include",
+                "../xit.Input/include",
+                "../xit.IO/include",
+                "../xit.Timers/include",
+                "../xit.Threading/include",
+                "../xit.Application/include",
+                "../xit.Account/include",
+                "../xit.Security/include",
+                "/usr/include/GLFW/",
+                "/usr/include/freetype2/"
+            ],
+            "source_paths": [
+                "src/"
+            ],
+            "exclude_paths": [],
+            "exclude_files": [],
+            "library_paths": [],
+            "libraries": [],
+            "pre_build_commands": [],
+            "post_build_commands": [],
+            "pre_run_commands": [
+                "echo 'Running...'"
+            ],
+            "post_run_commands": [
+                "echo 'Run completed!'"
+            ],
+            "install_commands": [
+                "mkdir -p /usr/local/bin",
+                "cp ${output_file} /usr/lib/xit/",
+                "mkdir -p /usr/include/xit",
+                "cp -r include/* /usr/include/xit/"
+            ],
+            "uninstall_commands": [
+                "rm -f /usr/lib/xit/${output_filename}"
+            ],
+            "clean_commands": [
+                "rm -rf ${build_dir}"
+            ]
+        },
+        {
+            "name": "Release",
+            "build_types": "Options are: Executable, StaticLibrary, SharedLibrary",
+            "build_type": "SharedLibrary",
+            "build_dir": ".bin",
+            "output_filename": "libxit.Drawing.so",
+            "compiler_path": "",
+            "compiler": "g++",
+            "linker": "g++",
+            "archiver": "ar",
+            "archiver_flags": "rcs",
+            "c_flags": "-std=c++23 -Wall -Wextra -pedantic -fPIC",
+            "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -MMD -fPIC -O0",
+            "linker_flags": "-lm -lstdc++",
+            "defines": [],
+            "include_paths": [
+                "include",
+                "lib/ArduinoJson/src",
+                "lib/glad/include/",
+                "lib/glm/glm/",
+                "../xit/include",
+                "../xit.IO/include",
+                "../xit.Timers/include",
+                "../xit.Threading/include",
+                "../xit.Application/include",
+                "../xit.Account/include",
+                "../xit.Security/include",
+                "/usr/include/GLFW/",
+                "/usr/include/freetype2/"
+            ],
+            "source_paths": [
+                "src/"
+            ],
+            "exclude_paths": [],
+            "exclude_files": [],
+            "library_paths": [],
+            "libraries": [],
+            "pre_build_commands": [],
+            "post_build_commands": [],
+            "pre_run_commands": [
+                "echo 'Running...'"
+            ],
+            "post_run_commands": [
+                "echo 'Run completed!'"
+            ],
+            "install_commands": [
+                "mkdir -p /usr/local/bin",
+                "cp ${output_file} /usr/lib/xit/",
+                "mkdir -p /usr/include/xit",
+                "cp -r include/* /usr/include/xit/"
+            ],
+            "uninstall_commands": [
+                "rm -f /usr/lib/xit/${output_filename}"
+            ],
+            "clean_commands": [
+                "rm -rf ${build_dir}"
+            ]
+        }
+    ]
+}

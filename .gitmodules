@@ -1,0 +1,6 @@
+[submodule "lib/ArduinoJson"]
+	path = lib/ArduinoJson
+	url = https://github.com/bblanchon/ArduinoJson.git
+[submodule "lib/glm"]
+	path = lib/glm
+	url = https://github.com/icaven/glm.git
