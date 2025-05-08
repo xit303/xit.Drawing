@@ -2,6 +2,7 @@
 
 #include <Drawing/Visual.h>
 #include <Drawing/Properties/FocusProperty.h>
+#include <Input/IInputContent.h>
 #include <Input/KeyEventArgs.h>
 #include <Input/MouseEventArgs.h>
 
@@ -13,7 +14,7 @@ namespace xit::Drawing
     using MouseEventArgs = xit::Input::MouseEventArgs;
     using KeyEventArgs = xit::Input::KeyEventArgs;
 
-    class InputContent : public Visual, public FocusProperty
+    class InputContent : public Visual, public FocusProperty, public Input::IInputContent
     {
     private:
         bool handleMouse;
@@ -33,7 +34,7 @@ namespace xit::Drawing
         bool HandleMouse();
         void SetHandleMouse(bool value);
         const bool &IsInputPressed = isInputPressed;
-        const bool &IsMouseOver = isMouseOver;
+        virtual bool GetIsMouseOver() const override { return isMouseOver; }
 
         const bool &IsMouseCaptured = isMouseCaptured;
         void SetIsMouseCaptured(bool value);

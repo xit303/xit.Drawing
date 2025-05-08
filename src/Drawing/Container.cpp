@@ -105,7 +105,7 @@ namespace xit::Drawing
         if (GetIsHighlighted())
             return "Highlight";
     
-        if (IsMouseOver)
+        if (GetIsMouseOver())
         {
             if (GetIsActive())
                 return "ActiveHovered";

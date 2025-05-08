@@ -515,7 +515,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckInputLeave(content, e))
+            if (InputHandler::CheckInputLeave(dynamic_cast<IFocus*>(content), e))
                 return;
         }
         if (!e.Handled)
@@ -526,7 +526,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckInputPressed(content, e))
+            if (InputHandler::CheckInputPressed(dynamic_cast<IFocus*>(content), e))
             {
                 return;
             }
@@ -538,7 +538,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckInputReleased(content, e))
+            if (InputHandler::CheckInputReleased(dynamic_cast<IFocus*>(content), e))
             {
                 return;
             }
@@ -551,7 +551,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            InputHandler::CheckInputMove(content, e);
+            InputHandler::CheckInputMove(dynamic_cast<IFocus*>(content), e);
         }
         if (!e.Handled)
             InputContent::ExecuteInputMove(e);
@@ -560,7 +560,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckInputScroll(content, e))
+            if (InputHandler::CheckInputScroll(dynamic_cast<IFocus*>(content), e))
             {
                 return;
             }
@@ -573,7 +573,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckKeyDown(content, e))
+            if (InputHandler::CheckKeyDown(dynamic_cast<IFocus*>(content), e))
             {
                 return;
             }
@@ -586,7 +586,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckKeyUp(content, e))
+            if (InputHandler::CheckKeyUp(dynamic_cast<IFocus*>(content), e))
             {
                 return;
             }

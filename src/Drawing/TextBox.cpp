@@ -1,9 +1,8 @@
 #include <Drawing/TextBox.h>
-// #include <Drawing/Brushes/Brushes.h>
-#include <Input/InputHandler.h>
-#include <IO/Clipboard.h>
-#include <cstring>
 #include <Drawing/TextInsertCommand.h>
+#include <Input/InputHandler.h>
+#include <OpenGL/Clipboard.h>
+#include <cstring>
 
 namespace xit::Drawing
 {

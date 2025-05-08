@@ -5,7 +5,7 @@
 namespace xit::Drawing
 {
     using namespace xit::Input;
-    
+
     SplitContainer::SplitContainer()
     {
         SetInheritForeground(true);
@@ -77,7 +77,7 @@ namespace xit::Drawing
     // Protected override
     //******************************************************************************
 
-    void SplitContainer::OnVisibilityChanged(EventArgs& e)
+    void SplitContainer::OnVisibilityChanged(EventArgs &e)
     {
         InputContent::OnVisibilityChanged(e);
 
@@ -101,7 +101,7 @@ namespace xit::Drawing
         return grid.GetHeight(available);
     }
 
-    void SplitContainer::OnUpdate(const Rectangle& bounds)
+    void SplitContainer::OnUpdate(const Rectangle &bounds)
     {
         bool updateSize = needWidthRecalculation || needHeightRecalculation;
         bool updateLocations = needLeftRecalculation || needTopRecalculation;
@@ -121,8 +121,8 @@ namespace xit::Drawing
         // add margin to get the real bounds (1 - (-1) = 2)
         if (GetMargin().GetTop() < 0)
             top -= GetMargin().GetTop();
-        //if (Margin.Left < 0)
-        //    left += Margin.Left;
+        // if (Margin.Left < 0)
+        //     left += Margin.Left;
 
         // TODO this order is different to ScrollViewer
         // TODO create Method GetClientBounds(Visual& v); see Window, SplitContainer, ScrollViewer, ContainerBase
@@ -203,87 +203,88 @@ namespace xit::Drawing
         if (panel2)
             panel2->SetDPIScale(scaleX, scaleY);
     }
-    
-    Size SplitContainer::Measure(const Size& availableSize)
+
+    Size SplitContainer::Measure(const Size &availableSize)
     {
         return InputContent::Measure(availableSize);
     }
 
-    //void SplitContainer::ExecuteInputEnter(EventArgs& e)
+    // void SplitContainer::ExecuteInputEnter(EventArgs& e)
     //{
-    //    if (ContainerBase::CheckInputEnter(panel1, e))
-    //        return;
+    //     if (ContainerBase::CheckInputEnter(panel1, e))
+    //         return;
 
     //    if (ContainerBase::CheckInputEnter(panel2, e))
     //        return;
 
     //    InputContent::ExecuteInputEnter(e);
     //}
-    void SplitContainer::ExecuteInputLeave(EventArgs& e)
+    void SplitContainer::ExecuteInputLeave(EventArgs &e)
     {
-        if (InputHandler::CheckInputLeave(panel1, e))
+        if (InputHandler::CheckInputLeave(dynamic_cast<IFocus *>(panel1), e))
             return;
-        if (InputHandler::CheckInputLeave(panel2, e))
+        if (InputHandler::CheckInputLeave(dynamic_cast<IFocus *>(panel2), e))
             return;
         InputContent::ExecuteInputLeave(e);
     }
 
-    void SplitContainer::ExecuteInputPressed(MouseEventArgs& e)
+    void SplitContainer::ExecuteInputPressed(MouseEventArgs &e)
     {
-        if (InputHandler::CheckInputPressed(panel1, e))
+        if (InputHandler::CheckInputPressed(dynamic_cast<IFocus *>(panel1), e))
             return;
 
-        if (InputHandler::CheckInputPressed(panel2, e))
+        if (InputHandler::CheckInputPressed(dynamic_cast<IFocus *>(panel2), e))
             return;
-        
+
         InputContent::ExecuteInputPressed(e);
     }
-    void SplitContainer::ExecuteInputReleased(MouseEventArgs& e)
+    void SplitContainer::ExecuteInputReleased(MouseEventArgs &e)
     {
-        if (InputHandler::CheckInputReleased(panel1, e))
+        if (InputHandler::CheckInputReleased(dynamic_cast<IFocus *>(panel1), e))
             return;
-        if (InputHandler::CheckInputReleased(panel2, e))
+        if (InputHandler::CheckInputReleased(dynamic_cast<IFocus *>(panel2), e))
             return;
         InputContent::ExecuteInputReleased(e);
     }
 
-    void SplitContainer::ExecuteInputMove(MouseEventArgs& e)
+    void SplitContainer::ExecuteInputMove(MouseEventArgs &e)
     {
-        if (InputHandler::CheckInputMove(panel1, e))
+        if (InputHandler::CheckInputMove(dynamic_cast<IFocus *>(panel1), e))
             return;
-        if (InputHandler::CheckInputMove(panel2, e))
+        if (InputHandler::CheckInputMove(dynamic_cast<IFocus *>(panel2), e))
             return;
 
         InputContent::ExecuteInputMove(e);
     }
 
-    void SplitContainer::ExecuteInputScroll(MouseEventArgs& e)
+    void SplitContainer::ExecuteInputScroll(MouseEventArgs &e)
     {
-        if (InputHandler::CheckInputScroll(panel1, e))
+        if (InputHandler::CheckInputScroll(dynamic_cast<IFocus *>(panel1), e))
             return;
-        if (InputHandler::CheckInputScroll(panel2, e))
+        if (InputHandler::CheckInputScroll(dynamic_cast<IFocus *>(panel2), e))
             return;
 
         InputContent::ExecuteInputScroll(e);
     }
 
-    void SplitContainer::ExecuteKeyDown(KeyEventArgs& e)
+    void SplitContainer::ExecuteKeyDown(KeyEventArgs &e)
     {
-        if (InputHandler::CheckKeyDown(panel1, e))
+        if (InputHandler::CheckKeyDown(dynamic_cast<IFocus *>(panel1), e))
             return;
-        if (InputHandler::CheckKeyDown(panel2, e))
+        if (InputHandler::CheckKeyDown(dynamic_cast<IFocus *>(panel2), e))
             return;
 
         if (!e.Handled)
             InputContent::ExecuteKeyDown(e);
     }
 
-    void SplitContainer::ExecuteKeyUp(KeyEventArgs& e)
+    void SplitContainer::ExecuteKeyUp(KeyEventArgs &e)
     {
-        if (InputHandler::CheckKeyUp(panel1, e))
+        if (InputHandler::CheckKeyUp(dynamic_cast<IFocus *>(panel1), e))
             return;
-        if (InputHandler::CheckKeyUp(panel2, e))
+        if (InputHandler::CheckKeyUp(dynamic_cast<IFocus *>(panel2), e))
             return;
+
         if (!e.Handled)
             InputContent::ExecuteKeyUp(e);
     }

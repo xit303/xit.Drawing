@@ -2,7 +2,7 @@
 #include <Exceptions.h>
 #include <Application/App.h>
 
-#include <IO/Clipboard.h>
+#include <OpenGL/Clipboard.h>
 #include <OpenGL/OpenGLExtensions.h>
 #include <Input/InputHandler.h>
 
@@ -470,7 +470,7 @@ namespace xit::Drawing
 
     void Window::ExecuteInputPressed(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputPressed(e) && content && InputHandler::IsHit(*content, e.Position))
+        if (!InputHandler::CheckInputPressed(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus*>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -483,7 +483,7 @@ namespace xit::Drawing
     }
     void Window::ExecuteInputReleased(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputReleased(e) && content && InputHandler::IsHit(*content, e.Position))
+        if (!InputHandler::CheckInputReleased(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus*>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -501,7 +501,7 @@ namespace xit::Drawing
 
     void Window::ExecuteInputScroll(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputScroll(e) && content && InputHandler::IsHit(*content, e.Position))
+        if (!InputHandler::CheckInputScroll(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus*>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -514,7 +514,7 @@ namespace xit::Drawing
     }
     void Window::ExecuteInputMove(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputMove(e) && content && InputHandler::IsHit(*content, e.Position))
+        if (!InputHandler::CheckInputMove(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus*>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)

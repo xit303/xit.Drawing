@@ -84,18 +84,18 @@ namespace xit::Drawing
         // popup looses focus, closes and calls this method/event.
         // if we now mouse up on the button we immediately
         // reactivate the button and it does not close.
-        // if comboBoxButton.IsMouseOver we know that we actually press the button.
+        // if comboBoxButton.GetIsMouseOver() we know that we actually press the button.
 
         if (isEditable)
         {
-            if (!expandButton.IsMouseOver)
+            if (!expandButton.GetIsMouseOver())
             {
                 expandButton.SetIsActive(false);
             }
         }
         else
         {
-            if (!ComboBoxButton.IsMouseOver)
+            if (!ComboBoxButton.GetIsMouseOver())
             {
                 ComboBoxButton.SetIsActive(false);
             }
@@ -171,7 +171,7 @@ namespace xit::Drawing
 
     void ComboBox::HandleScroll(MouseEventArgs& e)
     {
-        //if (ComboBoxButton.IsMouseOver)
+        //if (ComboBoxButton.GetIsMouseOver())
         {
             int selectedIndex = listView.GetSelectedIndex();
             if (selectedIndex == -1)

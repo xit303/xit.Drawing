@@ -1,6 +1,6 @@
 #pragma once
 
-#include "InputContent.h"
+#include <Drawing/InputContent.h>
 
 namespace xit::Drawing
 {

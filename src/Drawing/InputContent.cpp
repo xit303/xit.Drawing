@@ -241,7 +241,7 @@ namespace xit::Drawing
     bool InputContent::Focus()
     {
         if (!(GetEnabled() && GetIsVisible()))
-            return;
+            return false;
 
         if (GetCanFocus() && !GetIsFocused())
         {

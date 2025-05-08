@@ -59,13 +59,13 @@ namespace xit
          * @brief Gets the can focus property.
          * @return True if the element can be focused, false otherwise.
          */
-        __always_inline bool GetCanFocus() const { return canFocus; }
+        virtual bool GetCanFocus() const override { return canFocus; }
 
         /**
          * @brief Sets the can focus property.
          * @param value True to allow focusing, false otherwise.
          */
-        void SetCanFocus(bool value)
+        virtual void SetCanFocus(bool value) override
         {
             if (canFocus != value)
             {
@@ -78,13 +78,13 @@ namespace xit
          * @brief Gets the is focused property.
          * @return True if the element is focused, false otherwise.
          */
-        __always_inline bool GetIsFocused() const { return isFocused; }
+        virtual bool GetIsFocused() const override { return isFocused; }
 
         /**
          * @brief Sets the is focused property.
          * @param value True to set the element as focused, false otherwise.
          */
-        void SetIsFocused(bool value)
+        virtual void SetIsFocused(bool value) override
         {
             if (isFocused != value)
             {
