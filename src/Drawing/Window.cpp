@@ -2,7 +2,7 @@
 #include <Exceptions.h>
 #include <Application/App.h>
 
-#include <OpenGL/Clipboard.h>
+#include <Clipboard.h>
 #include <OpenGL/OpenGLExtensions.h>
 #include <Input/InputHandler.h>
 
@@ -81,7 +81,7 @@ static void KeyboardCallback(GLFWwindow *window, int key, int scancode, int acti
     }
     else
     {
-        Clipboard::SetWindow(window);
+        xit::Clipboard::Clipboard::SetWindow(window);
 
         char keyChar = key;
         CKey c = (CKey)key;

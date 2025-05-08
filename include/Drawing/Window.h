@@ -1,8 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "Drawing/WindowSettings.h"
 #include "Drawing/Properties/WindowStyleProperty.h"
 #include "Drawing/Properties/WindowStateProperty.h"

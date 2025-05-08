@@ -1,11 +1,13 @@
 #include <Drawing/TextBox.h>
 #include <Drawing/TextInsertCommand.h>
 #include <Input/InputHandler.h>
-#include <OpenGL/Clipboard.h>
+#include <Clipboard.h>
 #include <cstring>
 
 namespace xit::Drawing
 {
+    using Clipboard = xit::Clipboard::Clipboard;
+
     void SecureClear(void *ptr, size_t size)
     {
         volatile unsigned char *p = reinterpret_cast<volatile unsigned char *>(ptr);
