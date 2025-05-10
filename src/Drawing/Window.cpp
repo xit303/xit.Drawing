@@ -12,7 +12,6 @@
 #include <Threading/Dispatcher.h>
 
 using namespace xit;
-using namespace xit::Input;
 
 #define ERROR(x)            \
     {                       \
@@ -765,6 +764,7 @@ namespace xit::Drawing
         if (Update(scene.SceneRect))
         {
             OpenGLExtensions::ClearScene2D();
+            static_assert(static_cast<int>(WindowState::Normal) == 0, "WindowState::Normal must be 0");
 
             Render();
 

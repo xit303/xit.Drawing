@@ -36,7 +36,7 @@ namespace xit::Drawing
             X = x;
             Y = y;
         }
-        void SetLocation(Input::Point &value)
+        void SetLocation(Point &value)
         {
             X = value.X;
             Y = value.Y;
