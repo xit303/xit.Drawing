@@ -4,8 +4,6 @@
 
 namespace xit::Drawing
 {
-    using InputHandler = xit::Input::InputHandler;
-
     bool InputContent::HandleMouse() { return handleMouse; }
     void InputContent::SetHandleMouse(bool value)
     {

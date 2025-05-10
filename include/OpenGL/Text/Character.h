@@ -8,7 +8,6 @@
 namespace xit::OpenGL
 {
     using namespace xit::Drawing;
-    using Point = xit::Input::Point;
 
     struct Character
     {

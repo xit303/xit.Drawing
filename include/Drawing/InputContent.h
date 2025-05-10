@@ -10,11 +10,7 @@
 
 namespace xit::Drawing
 {
-    using CKey = xit::Input::CKey;
-    using MouseEventArgs = xit::Input::MouseEventArgs;
-    using KeyEventArgs = xit::Input::KeyEventArgs;
-
-    class InputContent : public Visual, public FocusProperty, public Input::IInputContent
+    class InputContent : public Visual, public FocusProperty, public IInputContent
     {
     private:
         bool handleMouse;

@@ -9,7 +9,7 @@ namespace xit
      * @class FocusProperty
      * @brief Manages the focus property.
      */
-    class FocusProperty : public xit::Input::IFocus
+    class FocusProperty : public IFocus
     {
     private:
         bool canFocus;

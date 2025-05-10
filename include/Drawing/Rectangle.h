@@ -7,8 +7,6 @@
 
 namespace xit::Drawing
 {
-    using Point = xit::Input::Point;
-
     /// <summary>Stores a set of four integers that represent the location and size of a rectangle</summary>
     /// <filterpriority>1</filterpriority>
     struct Rectangle

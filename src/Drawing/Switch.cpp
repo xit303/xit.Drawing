@@ -100,7 +100,7 @@ namespace xit::Drawing
     // Public
     //******************************************************************************
 
-    // void Switch::SetCommand(xit::Input::Command* command)
+    // void Switch::SetCommand(Command* command)
     // {
 
     // }

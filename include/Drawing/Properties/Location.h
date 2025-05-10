@@ -8,7 +8,7 @@ namespace xit::Drawing
     /**
      * @brief Represents a property that defines the location.
      */
-    class Location : public xit::Input::ILocation
+    class Location : public ILocation
     {
     private:
         int x;

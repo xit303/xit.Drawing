@@ -2,8 +2,6 @@
 
 namespace xit::Drawing
 {
-    using CKey = xit::Input::CKey;
-
     void Container::OnOrientationChanged(EventArgs &e)
     {
         UpdateOrientation();

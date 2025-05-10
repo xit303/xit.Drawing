@@ -5,12 +5,10 @@
 
 namespace xit::Drawing
 {
-    using Visibility = xit::Input::Visibility;
-
     /**
      * @brief Represents a property that defines the visibility.
      */
-    class VisibilityProperty : public xit::Input::IVisibility
+    class VisibilityProperty : public IVisibility
     {
     private:
         Visibility visibility;
