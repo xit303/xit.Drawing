@@ -1,8 +1,6 @@
 ﻿#pragma once
 
 #include <IO/IO.h>
-
-#include <glad/glad.h>
 #include <glm.hpp>
 
 #include <OpenGL/Shaders/ShaderProgram.h>

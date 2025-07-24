@@ -1,11 +1,15 @@
 #pragma once
 
 #include <map>
-#include <glad/glad.h>
 
 #include <IO/IO.h>
 #include <Application/App.h>
 #include <OpenGL/Asset.h>
+
+#ifndef GLAD_INCLUDED
+#include <glad/glad.h>
+#define GLAD_INCLUDED
+#endif
 
 namespace xit::OpenGL
 {

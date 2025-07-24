@@ -1,7 +1,10 @@
 ﻿#pragma once
 
 #include <IO/IO.h>
+#ifndef GLAD_INCLUDED
 #include <glad/glad.h>
+#define GLAD_INCLUDED
+#endif
 
 namespace xit::OpenGL
 {

@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <any>
-#include <glad/glad.h>
 
 #include <Input/Point.h>
 #include <Drawing/Properties/ParentProperty.h>

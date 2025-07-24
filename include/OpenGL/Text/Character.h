@@ -3,7 +3,10 @@
 #include <Drawing/Size.h>
 #include <Input/Point.h>
 
+#ifndef GLAD_INCLUDED
 #include <glad/glad.h>
+#define GLAD_INCLUDED
+#endif
 
 namespace xit::OpenGL
 {

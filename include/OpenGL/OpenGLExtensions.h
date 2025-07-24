@@ -3,7 +3,6 @@
 #include <Drawing/Brushes/SolidColorBrush.h>
 #include <OpenGL/Scene2D.h>
 
-#include <glad/glad.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 
