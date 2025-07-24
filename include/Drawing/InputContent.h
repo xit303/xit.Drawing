@@ -77,7 +77,7 @@ namespace xit::Drawing
         virtual void OnEnabledChanged(EventArgs &e) override;
 
         virtual void OnInputEnter(EventArgs &e) {}
-        virtual void OnInputLeave(EventArgs &e) {}
+        virtual void OnInputLeave(MouseEventArgs &e) {}
 
         virtual void OnInputPressed(MouseEventArgs &e) {}
         virtual void OnInputReleased(MouseEventArgs &e) {}
@@ -103,7 +103,7 @@ namespace xit::Drawing
         void ClearFocus(bool invalidateNow = true);
 
         virtual void ExecuteInputEnter(EventArgs &e);
-        virtual void ExecuteInputLeave(EventArgs &e);
+        virtual void ExecuteInputLeave(MouseEventArgs &e);
         virtual void ExecuteInputPressed(MouseEventArgs &e);
         virtual void ExecuteInputReleased(MouseEventArgs &e);
         virtual void ExecuteInputScroll(MouseEventArgs &e);

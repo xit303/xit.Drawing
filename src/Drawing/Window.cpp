@@ -208,14 +208,15 @@ static void CursorEnterCallback(GLFWwindow *window, int entered)
     }
     else
     {
-        EventArgs e;
         if (entered)
         {
+            EventArgs e;
             activeInstance->ExecuteInputEnter(e);
         }
         else
         {
-            activeInstance->ExecuteInputLeave(e);
+            MouseEventArgs me(mousePosition);
+            activeInstance->ExecuteInputLeave(me);
         }
     }
 }
@@ -453,7 +454,7 @@ namespace xit::Drawing
             InputContent::ExecuteInputEnter(e);
         }
     }
-    void Window::ExecuteInputLeave(EventArgs &e)
+    void Window::ExecuteInputLeave(MouseEventArgs &e)
     {
         if (content)
         {

@@ -129,7 +129,7 @@ namespace xit::Drawing
         virtual void SetDPIScale(float scaleX, float scaleY) override;
 
         // virtual void ExecuteInputEnter(EventArgs& e) override;
-        virtual void ExecuteInputLeave(EventArgs &e) override;
+        virtual void ExecuteInputLeave(MouseEventArgs &e) override;
 
         virtual void ExecuteInputPressed(MouseEventArgs &e) override;
         virtual void ExecuteInputReleased(MouseEventArgs &e) override;

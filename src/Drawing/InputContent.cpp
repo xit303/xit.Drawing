@@ -99,7 +99,9 @@ namespace xit::Drawing
         isMouseOver = false;
         isInputPressed = false;
         InputLeave(*this, e);
-        OnInputLeave(e);
+
+        MouseEventArgs me(InputHandler::GetLastMousePosition());
+        OnInputLeave(me);
         UpdateState();
     }
 
@@ -282,7 +284,7 @@ namespace xit::Drawing
         Invalidate();
         e.Handled = true;
     }
-    void InputContent::ExecuteInputLeave(EventArgs &e)
+    void InputContent::ExecuteInputLeave(MouseEventArgs &e)
     {
         if (!(GetEnabled() && GetIsVisible()))
             return;

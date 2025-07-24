@@ -112,7 +112,7 @@ namespace xit::Drawing
         virtual Size Measure(const Size& availableSize) override;
 
         //virtual void ExecuteInputEnter(EventArgs& e) override;
-        virtual void ExecuteInputLeave(EventArgs& e) override;
+        virtual void ExecuteInputLeave(MouseEventArgs& e) override;
 
         virtual void ExecuteInputPressed(MouseEventArgs& e) override;
         virtual void ExecuteInputReleased(MouseEventArgs& e) override;

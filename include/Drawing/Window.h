@@ -80,7 +80,7 @@ namespace xit::Drawing
 
     public:
         void ExecuteInputEnter(EventArgs &e);
-        void ExecuteInputLeave(EventArgs &e) override;
+        void ExecuteInputLeave(MouseEventArgs &e) override;
 
         void ExecuteInputPressed(MouseEventArgs &e) override;
         void ExecuteInputReleased(MouseEventArgs &e) override;

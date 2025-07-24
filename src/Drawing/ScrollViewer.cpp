@@ -4,8 +4,6 @@
 
 namespace xit::Drawing
 {
-    using namespace xit::Input;
-
     //******************************************************************************
     // Properties
     //******************************************************************************
@@ -221,7 +219,7 @@ namespace xit::Drawing
         ContentContainer::OnInputEnter(e);
         ShowScrollBars();
     }
-    void ScrollViewer::OnInputLeave(EventArgs &e)
+    void ScrollViewer::OnInputLeave(MouseEventArgs &e)
     {
         ContentContainer::OnInputLeave(e);
         HideScrollBars();

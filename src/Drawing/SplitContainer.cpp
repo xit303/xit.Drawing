@@ -4,8 +4,6 @@
 
 namespace xit::Drawing
 {
-    using namespace xit::Input;
-
     SplitContainer::SplitContainer()
     {
         SetInheritForeground(true);
@@ -219,7 +217,7 @@ namespace xit::Drawing
 
     //    InputContent::ExecuteInputEnter(e);
     //}
-    void SplitContainer::ExecuteInputLeave(EventArgs &e)
+    void SplitContainer::ExecuteInputLeave(MouseEventArgs &e)
     {
         if (InputHandler::CheckInputLeave(dynamic_cast<IFocus *>(panel1), e))
             return;

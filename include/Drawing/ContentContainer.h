@@ -110,7 +110,7 @@ namespace xit::Drawing
             InputContent::OnInputEnter(e);
             contentContainer.ExecuteInputEnter(e);
         }
-        void OnInputLeave(EventArgs &e) override
+        void OnInputLeave(MouseEventArgs &e) override
         {
             InputContent::OnInputLeave(e);
             contentContainer.ExecuteInputLeave(e);

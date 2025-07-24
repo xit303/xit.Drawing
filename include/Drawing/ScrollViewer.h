@@ -29,7 +29,7 @@ namespace xit::Drawing
 
     protected:
         virtual void OnInputEnter(EventArgs &e) override;
-        virtual void OnInputLeave(EventArgs &e) override;
+        virtual void OnInputLeave(MouseEventArgs &e) override;
 
         virtual void OnInputMove(MouseEventArgs &e) override;
         virtual void OnInputScroll(MouseEventArgs &e) override;

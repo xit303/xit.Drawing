@@ -511,7 +511,7 @@ namespace xit::Drawing
         }
     }
 
-    void ContainerBase::ExecuteInputLeave(EventArgs &e)
+    void ContainerBase::ExecuteInputLeave(MouseEventArgs &e)
     {
         for (Visual *content : children)
         {
