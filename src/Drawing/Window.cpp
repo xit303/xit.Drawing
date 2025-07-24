@@ -3,7 +3,6 @@
 #include <Application/App.h>
 
 #include <Clipboard.h>
-#include <OpenGL/OpenGLExtensions.h>
 #include <Input/InputHandler.h>
 
 #include <Drawing/ToolTip.h>
