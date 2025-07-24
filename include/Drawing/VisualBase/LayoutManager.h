@@ -4,6 +4,7 @@
 
 #include <Event.h>
 #include <Properties/NameProperty.h>
+#include <Input/ISizeable.h>
 #include <Drawing/Size.h>
 #include <Drawing/BoxModel.h>
 #include <Drawing/Rectangle.h>
@@ -22,6 +23,7 @@ namespace xit::Drawing::VisualBase
     class LayoutManager : public Properties::NameProperty,
                           public CornerRadiusProperty,
                           public Sizeable,
+                          public ISizeable,
                           public BoxModel,
                           public HorizontalAlignmentProperty,
                           public VerticalAlignmentProperty,
@@ -99,8 +101,8 @@ namespace xit::Drawing::VisualBase
 
         bool Update(const Rectangle &newBounds);
 
-        inline int GetActualWidth() const { return actualWidth; }
-        inline int GetActualHeight() const { return actualHeight; }
+        virtual inline int GetActualWidth() const override { return actualWidth; }
+        virtual inline int GetActualHeight() const override { return actualHeight; }
         inline const Size &GetDesiredSize() const { return desiredSize; }
 
         __always_inline float GetScaleX() const { return scaleX; }
