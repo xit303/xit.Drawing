@@ -291,6 +291,8 @@ namespace xit::Drawing
             Scale(scaleX, scaleY);
         }
 
+        ~Sizeable() = default;
+
         void SetSize(int width, int height)
         {
             bool set = SetWidthPrivate(width);
