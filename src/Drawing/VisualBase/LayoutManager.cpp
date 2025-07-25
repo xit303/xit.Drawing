@@ -29,16 +29,26 @@ namespace xit::Drawing::VisualBase
     {
         if (GetVisibility() != Visibility::Collapsed)
         {
-            needWidthRecalculation = true;
-            needHeightRecalculation = true;
-            needTopRecalculation = true;
-            needLeftRecalculation = true;
             invalidated = true;
 
             EventArgs e;
             OnInvalidated(e);
+            NotifyParentOfInvalidation();
             Scene2D::CurrentScene().Invalidate(this);
         }
+    }
+
+    void LayoutManager::NotifyParentOfInvalidation()
+    {
+        // This method will be overridden by Visual class to access the parent properly
+        // Base LayoutManager doesn't have access to parent, so this is a no-op
+    }
+
+    void LayoutManager::OnChildInvalidated(LayoutManager* childLayout)
+    {
+        // Default implementation: propagate up the hierarchy
+        // Window class will override this to handle background buffer dirty regions
+        NotifyParentOfInvalidation();
     }
 
     Size LayoutManager::Measure(const Size &availableSize)
@@ -51,52 +61,12 @@ namespace xit::Drawing::VisualBase
     bool LayoutManager::Update(const Rectangle &newBounds)
     {
         bool needRedraw = false;
+        bool wasInvalidated = invalidated; // Capture invalidated state before OnUpdate resets it
 
         if (GetVisibility() != Visibility::Collapsed)
         {
-            // if (this->bounds != newBounds || this->bounds.IsEmpty())
-            {
-                needWidthRecalculation = true;
-                needHeightRecalculation = true;
-                needTopRecalculation = true;
-                needLeftRecalculation = true;
-            }
-            // else
-            // {
-            // if (bounds.GetLeft() != this->bounds.GetLeft())
-            // {
-            //     needLeftRecalculation = true;
-            // }
-            // if (bounds.GetTop() != this->bounds.GetTop())
-            // {
-            //     needTopRecalculation = true;
-            // }
-            // if ((newBounds.GetWidth() != this->bounds.GetWidth()) ||
-            //     ((GetWidth() != -1) && (GetWidth() != actualWidth)))
-            // {
-            //     needWidthRecalculation = true;
-
-            //     // in some cases we have to update the position as well
-            //     if (GetHorizontalAlignment() != HorizontalAlignment::Stretch)
-            //     {
-            //         needTopRecalculation = true;
-            //     }
-            // }
-            // if ((newBounds.GetHeight() != this->bounds.GetHeight()) ||
-            //     ((GetHeight() != -1) && (GetHeight() != actualHeight)))
-            // {
-            //     needHeightRecalculation = true;
-
-            //     // if height changes we always have to update top because
-            //     // OpenGL 0,0 is on bottom left
-            //     // if (VerticalAlignment != CVerticalAlignment::Stretch)
-            //     {
-            //         needTopRecalculation = true;
-            //     }
-            // }
-            // }
-
-            needRedraw = needLeftRecalculation || needTopRecalculation || needWidthRecalculation || needHeightRecalculation;
+            
+            needRedraw = needLeftRecalculation || needTopRecalculation || needWidthRecalculation || needHeightRecalculation || invalidated;
 
             if (needRedraw)
             {
@@ -109,7 +79,7 @@ namespace xit::Drawing::VisualBase
             needRedraw = false;
         }
 
-        return needRedraw || invalidated;
+        return needRedraw || wasInvalidated;
     }
 
     void LayoutManager::SetDPIScale(float scaleX, float scaleY)
@@ -173,28 +143,72 @@ namespace xit::Drawing::VisualBase
 
     void LayoutManager::OnVisualStateChanged(EventArgs &e)
     {
+        needWidthRecalculation = true;
+        needHeightRecalculation = true;
+        needLeftRecalculation = true;
+        needTopRecalculation = true;
         Invalidate();
     }
 
     void LayoutManager::OnHorizontalAlignmentChanged(EventArgs &e)
     {
         needWidthRecalculation = true;
+        needLeftRecalculation = true; // Position depends on alignment
         Invalidate();
     }
 
     void LayoutManager::OnVerticalAlignmentChanged(EventArgs &e)
     {
         needHeightRecalculation = true;
+        needTopRecalculation = true; // Position depends on alignment
         Invalidate();
     }
 
     void LayoutManager::OnWidthChanged(EventArgs &e)
     {
-        needWidthRecalculation = true; // TODO check if this is needed. They are overridden by OnSizeChanged
+        needWidthRecalculation = true;
+        // Width change can affect horizontal position for non-stretch alignments
+        needLeftRecalculation = true;
+        Invalidate();
     }
     void LayoutManager::OnHeightChanged(EventArgs &e)
     {
-        needHeightRecalculation = true; // TODO check if this is needed. They are overridden by OnSizeChanged
+        needHeightRecalculation = true;
+        // Height change always affects vertical position in OpenGL coordinate system
+        needTopRecalculation = true;
+        Invalidate();
+    }
+
+    void LayoutManager::OnMinWidthChanged(EventArgs &e)
+    {
+        needWidthRecalculation = true;
+        // Width constraint changes can affect horizontal position for center/right alignments
+        needLeftRecalculation = true;
+        Invalidate();
+    }
+
+    void LayoutManager::OnMaxWidthChanged(EventArgs &e)
+    {
+        needWidthRecalculation = true;
+        // Width constraint changes can affect horizontal position for center/right alignments
+        needLeftRecalculation = true;
+        Invalidate();
+    }
+
+    void LayoutManager::OnMinHeightChanged(EventArgs &e)
+    {
+        needHeightRecalculation = true;
+        // Height constraint changes can affect vertical position for center/bottom alignments
+        needTopRecalculation = true;
+        Invalidate();
+    }
+
+    void LayoutManager::OnMaxHeightChanged(EventArgs &e)
+    {
+        needHeightRecalculation = true;
+        // Height constraint changes can affect vertical position for center/bottom alignments
+        needTopRecalculation = true;
+        Invalidate();
     }
 
     void LayoutManager::OnMarginChanged(EventArgs &e)
@@ -206,6 +220,15 @@ namespace xit::Drawing::VisualBase
         Invalidate();
     }
     void LayoutManager::OnPaddingChanged(EventArgs &e)
+    {
+        needLeftRecalculation = true;
+        needTopRecalculation = true;
+        needWidthRecalculation = true;
+        needHeightRecalculation = true;
+        Invalidate();
+    }
+    
+    void LayoutManager::OnBorderThicknessChanged(EventArgs &e)
     {
         needLeftRecalculation = true;
         needTopRecalculation = true;
@@ -225,6 +248,9 @@ namespace xit::Drawing::VisualBase
     {
         needWidthRecalculation = true;
         needHeightRecalculation = true;
+        // Size changes can affect position for non-stretch alignments
+        needLeftRecalculation = true;
+        needTopRecalculation = true;
         Invalidate();
     }
 
@@ -239,8 +265,13 @@ namespace xit::Drawing::VisualBase
 
     void LayoutManager::OnLayoutGroupChanged(EventArgs &e)
     {
+        needWidthRecalculation = true;
+        needHeightRecalculation = true;
+        needLeftRecalculation = true;
+        needTopRecalculation = true;
         isLayoutGroupChanging = true;
         UpdateLayoutVisualState();
+        Invalidate();
     }
 
     int LayoutManager::OnMeasureWidth(int availableSize)
@@ -342,10 +373,10 @@ namespace xit::Drawing::VisualBase
                 newSize = OnMeasureWidth(std::max(0, contentSpace));
 
                 // Adjust size if HorizontalAlignment is Stretch
-                // TODO i do not understand why && newSize < availableSize is needed.
-                if (GetHorizontalAlignment() == HorizontalAlignment::Stretch && newSize < availableSize)
+                if (GetHorizontalAlignment() == HorizontalAlignment::Stretch)
                 {
-                    contentSpace = newSize = availableSize - GetMargin().GetWidth();
+                    // For stretch, use all available space minus margin
+                    newSize = availableSize - GetMargin().GetWidth();
                 }
                 else
                 {
@@ -364,6 +395,7 @@ namespace xit::Drawing::VisualBase
             }
 
             desiredSize.SetWidth(newSize);
+            // Don't set actualWidth here - it should be set in OnUpdate after bounds are finalized
             needWidthRecalculation = false;
         }
         // else
@@ -413,10 +445,10 @@ namespace xit::Drawing::VisualBase
                 newSize = OnMeasureHeight(std::max(0, contentSpace));
 
                 // Adjust size if VerticalAlignment is Stretch
-                // TODO i do not understand why && newSize < availableSize is needed.
-                if (GetVerticalAlignment() == VerticalAlignment::Stretch && newSize < availableSize)
+                if (GetVerticalAlignment() == VerticalAlignment::Stretch)
                 {
-                    contentSpace = newSize = availableSize - GetMargin().GetHeight();
+                    // For stretch, use all available space minus margin
+                    newSize = availableSize - GetMargin().GetHeight();
                 }
                 else
                 {
@@ -435,8 +467,7 @@ namespace xit::Drawing::VisualBase
             }
 
             desiredSize.SetHeight(newSize);
-            // TODO this is not correct. We should not set the actual height here because it is not the final value yet. But it works for now.
-            actualHeight = newSize;
+            // Remove premature actualHeight assignment - it should be set in OnUpdate
             needHeightRecalculation = false;
         }
         // else
@@ -478,6 +509,22 @@ namespace xit::Drawing::VisualBase
 
     void LayoutManager::OnUpdate(const Rectangle &bounds)
     {
+        // Perform the core layout calculations
+        PerformLayout(bounds);
+
+        // Allow derived classes to do additional work while flags are still available
+        OnLayoutCompleted(bounds);
+
+        // Reset flags after everything is done
+        ResetRecalculationFlags();
+        
+        // Reset invalidated flag after successful update - this must be done here
+        // so the Update() function can use it in its return value
+        invalidated = false;
+    }
+
+    void LayoutManager::PerformLayout(const Rectangle &bounds)
+    {
         static bool isUpdating = false;
         if (isUpdating)
             return; // Prevent recursive updates
@@ -490,28 +537,30 @@ namespace xit::Drawing::VisualBase
         // store for later update of buffers
         bool updateLocation = needLeftRecalculation || needTopRecalculation || GetIsAbsolutePosition();
 
-        if (needWidthRecalculation || needHeightRecalculation)
+        if (needWidthRecalculation || needHeightRecalculation || invalidated)
         {
             const Size &s = bounds.GetSize();
             desiredSize = Measure(s);
 
-            if (desiredSize.GetWidth() == GetWidth())
-                actualWidth = GetWidth();
+            // Calculate actualWidth
+            if (GetWidth() > -1)
+                actualWidth = GetWidth(); // Use explicitly set width
+            else if (desiredSize.GetWidth() <= bounds.GetWidth())
+                actualWidth = desiredSize.GetWidth(); // Use desired size if it fits
+            else if (GetMinWidth() > 0 && GetMinWidth() <= bounds.GetWidth())
+                actualWidth = GetMinWidth(); // Use minimum width if it fits
             else
-                actualWidth = desiredSize.GetWidth() <= bounds.GetWidth()
-                                  ? desiredSize.GetWidth()
-                              : GetMinWidth() > bounds.GetWidth()
-                                  ? GetMinWidth()
-                                  : bounds.GetWidth();
+                actualWidth = std::max(0, bounds.GetWidth()); // Use available width as fallback
 
-            if (desiredSize.GetHeight() == GetHeight())
-                actualHeight = GetHeight();
+            // Calculate actualHeight
+            if (GetHeight() > -1)
+                actualHeight = GetHeight(); // Use explicitly set height
+            else if (desiredSize.GetHeight() <= bounds.GetHeight())
+                actualHeight = desiredSize.GetHeight(); // Use desired size if it fits
+            else if (GetMinHeight() > 0 && GetMinHeight() <= bounds.GetHeight())
+                actualHeight = GetMinHeight(); // Use minimum height if it fits
             else
-                actualHeight = desiredSize.GetHeight() <= bounds.GetHeight()
-                                   ? desiredSize.GetHeight()
-                               : GetMinHeight() > bounds.GetHeight()
-                                   ? GetMinHeight()
-                                   : bounds.GetHeight();
+                actualHeight = std::max(0, bounds.GetHeight()); // Use available height as fallback
         }
 
         if (!GetIsAbsolutePosition() && needLeftRecalculation)
@@ -522,34 +571,14 @@ namespace xit::Drawing::VisualBase
             }
             else if (GetHorizontalAlignment() == HorizontalAlignment::Center)
             {
-                // ensure bounds with is always greater than actual width + margin width
-
-                // int actualWidthPlusMargin = actualWidth + GetMargin().GetWidth();
-                // int clientWidth;
-
-                // if (bounds.GetWidth() < actualWidthPlusMargin)
-                // {
-                //     clientWidth = bounds.GetWidth() - GetMargin().GetWidth();
-                // }
-                // else
-                // {
-                //     clientWidth = bounds.GetWidth() - actualWidthPlusMargin;
-                // }
-
-                // if (clientWidth < 0)
-                //     clientWidth = 0;
-
-                // SetLeft(bounds.GetLeft() + GetMargin().GetLeft() + (clientWidth >> 1));
-
                 SetLeft(bounds.GetLeft() + GetMargin().GetLeft() + ((bounds.GetWidth() - actualWidth - GetMargin().GetWidth()) >> 1));
             }
             else if (GetHorizontalAlignment() == HorizontalAlignment::Right)
             {
                 SetLeft(bounds.GetRight() - actualWidth - GetMargin().GetRight());
             }
-
-            needLeftRecalculation = false;
         }
+
         if (!GetIsAbsolutePosition() && needTopRecalculation)
         {
             if (GetVerticalAlignment() == VerticalAlignment::Top || GetVerticalAlignment() == VerticalAlignment::Stretch)
@@ -558,40 +587,13 @@ namespace xit::Drawing::VisualBase
             }
             else if (GetVerticalAlignment() == VerticalAlignment::Center)
             {
-                // ensure bounds with is always greater than actual height + margin height
-
-                // int actualHeightPlusMargin = actualHeight + GetMargin().GetHeight();
-                // int clientHeight;
-
-                // if (bounds.GetHeight() < actualHeightPlusMargin)
-                // {
-                //     clientHeight = bounds.GetHeight() - GetMargin().GetHeight();
-                // }
-                // else
-                // {
-                //     clientHeight = bounds.GetHeight() - actualHeightPlusMargin;
-                // }
-
-                // if (clientHeight < 0)
-                //     clientHeight = 0;
-
-                // SetTop(bounds.GetTop() + GetMargin().GetTop() + (clientHeight >> 1));
-
                 SetTop(bounds.GetTop() + GetMargin().GetTop() + ((bounds.GetHeight() - actualHeight - GetMargin().GetHeight()) >> 1));
             }
             else if (GetVerticalAlignment() == VerticalAlignment::Bottom)
             {
                 SetTop(bounds.GetBottom() - actualHeight - GetMargin().GetBottom());
             }
-
-            needTopRecalculation = false;
         }
-
-        // if (updateLocation)
-        //{
-        //     modelMatrix = mat4.identity();
-        //     modelMatrix = glm.translate(modelMatrix, new vec3(GetLeft(), GetTop(), 0));
-        // }
 
         if (updateLocation)
         {
@@ -606,6 +608,22 @@ namespace xit::Drawing::VisualBase
             if (GetMargin().GetLeft() < 0)
                 renderLeft += GetMargin().GetLeft();
         }
+
         isUpdating = false;
+    }
+
+    void LayoutManager::OnLayoutCompleted(const Rectangle &bounds)
+    {
+        // Base implementation does nothing
+        // Derived classes can override this to perform additional calculations
+        // while recalculation flags are still available
+    }
+
+    void LayoutManager::ResetRecalculationFlags()
+    {
+        needWidthRecalculation = false;
+        needHeightRecalculation = false;
+        needLeftRecalculation = false;
+        needTopRecalculation = false;
     }
 }

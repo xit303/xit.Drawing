@@ -101,8 +101,8 @@ namespace xit::Drawing
 
     void SplitContainer::OnUpdate(const Rectangle &bounds)
     {
-        bool updateSize = needWidthRecalculation || needHeightRecalculation;
-        bool updateLocations = needLeftRecalculation || needTopRecalculation;
+        bool updateSize = GetNeedWidthRecalculation() || GetNeedHeightRecalculation();
+        bool updateLocations = GetNeedLeftRecalculation() || GetNeedTopRecalculation();
 
         InputContent::OnUpdate(bounds);
 

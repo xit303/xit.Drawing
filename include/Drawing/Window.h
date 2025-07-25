@@ -39,11 +39,21 @@ namespace xit::Drawing
 
         std::binary_semaphore mainLoopSemaphore{0};
 
+        // Background buffer for partial redraws
+        GLuint backgroundFramebuffer;
+        GLuint backgroundTexture;
+        GLuint backgroundDepthBuffer;
+        std::vector<Rectangle> dirtyRegions;
+        bool useBackgroundBuffer;
+        bool backgroundBufferInitialized;
+
         void OnSceneInvalidated(EventArgs &e);
         void App_Closing(EventArgs &e);
 
     protected:
         bool isClosing;
+
+        virtual void OnInvalidated(EventArgs &e) override;
 
     public:
         inline bool GetTopmost() { return topmost; }
@@ -77,6 +87,8 @@ namespace xit::Drawing
         virtual void OnInitializeComponent() = 0;
 
         virtual void OnContentChanged(Visual *oldContent, Visual *newContent) {}
+        virtual void OnContentInvalidated(Visual* childVisual);
+        virtual void OnChildInvalidated(LayoutManager* childLayout) override;
 
     public:
         void ExecuteInputEnter(EventArgs &e);
@@ -105,5 +117,21 @@ namespace xit::Drawing
         void SetWindowPos(int left, int top);
         void SetWindowSize(int width, int height);
         void DoRender();
+
+        // Background buffer methods
+        void InitializeBackgroundBuffer();
+        void ResizeBackgroundBuffer(int width, int height);
+        void DestroyBackgroundBuffer();
+        void AddDirtyRegion(const Rectangle& region);
+        void OptimizeDirtyRegions();
+        void ClearDirtyRegions();
+        void CopyFromBackgroundBuffer(const Rectangle& region);
+        void CopyToBackgroundBuffer(const Rectangle& region);
+        bool HasDirtyRegions() const;
+        
+        // Public methods for background buffer control
+        void SetBackgroundBufferEnabled(bool enabled);
+        bool IsBackgroundBufferEnabled() const;
+        void InvalidateRegion(const Rectangle& region);
     };
 }

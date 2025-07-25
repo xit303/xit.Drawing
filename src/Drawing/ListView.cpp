@@ -288,8 +288,6 @@ namespace xit::Drawing
         }
 
         ApplyFilter();
-        needHeightRecalculation = true;
-
         Invalidate();
         // });
     }

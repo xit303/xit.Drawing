@@ -62,11 +62,11 @@ namespace xit::Drawing
         return textSize.GetHeight();
     }
 
-    void Label::OnUpdate(const Rectangle &bounds)
+    void Label::OnLayoutCompleted(const Rectangle &bounds)
     {
-        Visual::OnUpdate(bounds);
+        Visual::OnLayoutCompleted(bounds);
 
-        if (needLeftRecalculation || needTopRecalculation)
+        if (GetNeedLeftRecalculation() || GetNeedTopRecalculation())
         {
             textTop = Scene2D::CurrentScene().GetHeight() - GetTop() - textSize.GetHeight();
         }

@@ -336,8 +336,8 @@ namespace xit::Drawing
     void ContainerBase::OnUpdate(const Rectangle &bounds)
     {
         // TODO if bounds did not change, do we have to update? Only in case if items have been added or removed? Check the requirements!
-        bool updateSize = needWidthRecalculation || needHeightRecalculation;
-        bool updateLocations = needLeftRecalculation || needTopRecalculation;
+        bool updateSize = GetNeedWidthRecalculation() || GetNeedHeightRecalculation();
+        bool updateLocations = GetNeedLeftRecalculation() || GetNeedTopRecalculation();
 
         InputContent::OnUpdate(bounds);
 

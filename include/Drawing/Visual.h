@@ -23,6 +23,7 @@ namespace xit::Drawing
 
     protected:
         virtual void OnNameChanged(EventArgs &e) override;
+        virtual void NotifyParentOfInvalidation() override;
 
     public:
         __always_inline std::any &GetTag() { return tag; }

@@ -349,6 +349,13 @@ namespace xit::Drawing
         contentScaleX = App::Settings().GetAppScaleX();
         contentScaleY = App::Settings().GetAppScaleY();
 
+        // Initialize background buffer variables
+        backgroundFramebuffer = 0;
+        backgroundTexture = 0;
+        backgroundDepthBuffer = 0;
+        useBackgroundBuffer = true;
+        backgroundBufferInitialized = false;
+
         SetBrushGroup("Window");
 
         if (!glfwInit())
@@ -393,7 +400,7 @@ namespace xit::Drawing
 
     void Window::OnUpdate(const Rectangle &bounds)
     {
-        bool needClientUpdate = needLeftRecalculation || needTopRecalculation || needWidthRecalculation || needHeightRecalculation;
+        bool needClientUpdate = GetNeedLeftRecalculation() || GetNeedTopRecalculation() || GetNeedWidthRecalculation() || GetNeedHeightRecalculation();
 
         InputContent::OnUpdate(bounds);
 
@@ -413,7 +420,27 @@ namespace xit::Drawing
                 content->Update(clientBounds);
                 ToolTip::DoUpdate(clientBounds);
             }
+
+            // Mark the entire window as dirty on client update
+            if (useBackgroundBuffer)
+            {
+                Rectangle windowBounds(0, 0, scene.GetWidth(), scene.GetHeight());
+                AddDirtyRegion(windowBounds);
+            }
         }
+    }
+
+    void Window::OnInvalidated(EventArgs &e)
+    {
+        if (useBackgroundBuffer && backgroundBufferInitialized)
+        {
+            // Add the visual's bounds as a dirty region
+            Rectangle dirtyRegion(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
+            AddDirtyRegion(dirtyRegion);
+        }
+        
+        // Call base implementation
+        InputContent::OnInvalidated(e);
     }
     void Window::OnRender()
     {
@@ -643,6 +670,9 @@ namespace xit::Drawing
         // SetDPIScale override for Window calls Invalidate() to take the semaphore
         SetDPIScale(scaleX, scaleY);
 
+        // Initialize background buffer after OpenGL context is ready
+        InitializeBackgroundBuffer();
+
         OnInitializeComponent();
 
         return true;
@@ -695,6 +725,7 @@ namespace xit::Drawing
         else if (!isDestroyed)
         {
             isDestroyed = true;
+            DestroyBackgroundBuffer();
             glfwDestroyWindow(window);
         }
     }
@@ -713,6 +744,12 @@ namespace xit::Drawing
     {
         windowSettings.SetSize(width, height);
         scene.Resize(width, height);
+        
+        // Resize background buffer when window size changes
+        if (backgroundBufferInitialized)
+        {
+            ResizeBackgroundBuffer(width, height);
+        }
     }
     void Window::SetDPIScale(float scaleX, float scaleY)
     {
@@ -754,6 +791,41 @@ namespace xit::Drawing
         }
     }
 
+    void Window::OnContentInvalidated(Visual* childVisual)
+    {
+        if (useBackgroundBuffer && backgroundBufferInitialized && childVisual)
+        {
+            // Calculate the child's absolute bounds within the window
+            Rectangle childBounds(
+                childVisual->GetLeft(), 
+                childVisual->GetTop(), 
+                childVisual->GetActualWidth(), 
+                childVisual->GetActualHeight()
+            );
+            
+            AddDirtyRegion(childBounds);
+        }
+    }
+
+    void Window::OnChildInvalidated(LayoutManager* childLayout)
+    {
+        if (useBackgroundBuffer && backgroundBufferInitialized && childLayout)
+        {
+            // Calculate the child's absolute bounds within the window
+            Rectangle childBounds(
+                childLayout->GetLeft(), 
+                childLayout->GetTop(), 
+                childLayout->GetActualWidth(), 
+                childLayout->GetActualHeight()
+            );
+            
+            AddDirtyRegion(childBounds);
+            Invalidate();
+        }
+        
+        // Don't call parent since Window is the top-level container
+    }
+
     void Window::DoRender()
     {
         Scene2D::MakeCurrent(&scene);
@@ -763,14 +835,285 @@ namespace xit::Drawing
 
         if (Update(scene.SceneRect))
         {
-            OpenGLExtensions::ClearScene2D();
-            static_assert(static_cast<int>(WindowState::Normal) == 0, "WindowState::Normal must be 0");
+            if (useBackgroundBuffer && backgroundBufferInitialized && !dirtyRegions.empty())
+            {
+                // Partial redraw: only render dirty regions
+                for (const auto& dirtyRegion : dirtyRegions)
+                {
+                    // Set scissor test to limit rendering to dirty region
+                    glEnable(GL_SCISSOR_TEST);
+                    glScissor(dirtyRegion.GetLeft(), 
+                             scene.GetHeight() - dirtyRegion.GetBottom(),
+                             dirtyRegion.GetWidth(), 
+                             dirtyRegion.GetHeight());
 
-            Render();
+                    // Copy unchanged parts from background buffer
+                    CopyFromBackgroundBuffer(dirtyRegion);
+
+                    // Render only the dirty region
+                    Render();
+
+                    // Copy the newly rendered region to background buffer
+                    CopyToBackgroundBuffer(dirtyRegion);
+
+                    glDisable(GL_SCISSOR_TEST);
+                }
+                ClearDirtyRegions();
+            }
+            else
+            {
+                // Full redraw
+                OpenGLExtensions::ClearScene2D();
+                static_assert(static_cast<int>(WindowState::Normal) == 0, "WindowState::Normal must be 0");
+
+                Render();
+
+                // Copy entire frame to background buffer
+                if (useBackgroundBuffer && backgroundBufferInitialized)
+                {
+                    Rectangle fullRect(0, 0, scene.GetWidth(), scene.GetHeight());
+                    CopyToBackgroundBuffer(fullRect);
+                }
+            }
 
             scene.SetInvalidationDone();
 
             glfwSwapBuffers(window);
         }
+    }
+
+    //******************************************************************************
+    // Background Buffer Implementation
+    //******************************************************************************
+
+    void Window::InitializeBackgroundBuffer()
+    {
+        if (!useBackgroundBuffer || backgroundBufferInitialized)
+            return;
+
+        int width = scene.GetWidth();
+        int height = scene.GetHeight();
+
+        if (width <= 0 || height <= 0)
+            return;
+
+        // Generate framebuffer
+        glGenFramebuffers(1, &backgroundFramebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, backgroundFramebuffer);
+
+        // Generate texture for color attachment
+        glGenTextures(1, &backgroundTexture);
+        glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, backgroundTexture, 0);
+
+        // Generate depth buffer
+        glGenRenderbuffers(1, &backgroundDepthBuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, backgroundDepthBuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, backgroundDepthBuffer);
+
+        // Check framebuffer completeness
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            ERROR("Background framebuffer not complete!");
+            DestroyBackgroundBuffer();
+            return;
+        }
+
+        // Bind default framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        backgroundBufferInitialized = true;
+    }
+
+    void Window::ResizeBackgroundBuffer(int width, int height)
+    {
+        if (!backgroundBufferInitialized || width <= 0 || height <= 0)
+            return;
+
+        // Resize texture
+        glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+        // Resize depth buffer
+        glBindRenderbuffer(GL_RENDERBUFFER, backgroundDepthBuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+
+        // Clear dirty regions and force full redraw
+        ClearDirtyRegions();
+    }
+
+    void Window::DestroyBackgroundBuffer()
+    {
+        if (!backgroundBufferInitialized)
+            return;
+
+        if (backgroundFramebuffer != 0)
+        {
+            glDeleteFramebuffers(1, &backgroundFramebuffer);
+            backgroundFramebuffer = 0;
+        }
+
+        if (backgroundTexture != 0)
+        {
+            glDeleteTextures(1, &backgroundTexture);
+            backgroundTexture = 0;
+        }
+
+        if (backgroundDepthBuffer != 0)
+        {
+            glDeleteRenderbuffers(1, &backgroundDepthBuffer);
+            backgroundDepthBuffer = 0;
+        }
+
+        backgroundBufferInitialized = false;
+        ClearDirtyRegions();
+    }
+
+    void Window::AddDirtyRegion(const Rectangle& region)
+    {
+        if (!useBackgroundBuffer)
+            return;
+
+        // Check if region intersects with window bounds
+        Rectangle windowBounds(0, 0, scene.GetWidth(), scene.GetHeight());
+        Rectangle regionCopy = region; // Create a non-const copy
+        if (!regionCopy.IntersectsWith(windowBounds))
+            return;
+
+        // Clip the region to window bounds
+        Rectangle clippedRegion = *Rectangle::Intersect(regionCopy, windowBounds);
+
+        // Merge overlapping regions to optimize rendering
+        bool merged = false;
+        for (auto it = dirtyRegions.begin(); it != dirtyRegions.end(); ++it)
+        {
+            if (it->IntersectsWith(clippedRegion))
+            {
+                // Merge the regions by creating a union
+                int left = std::min(it->GetLeft(), clippedRegion.GetLeft());
+                int top = std::min(it->GetTop(), clippedRegion.GetTop());
+                int right = std::max(it->GetRight(), clippedRegion.GetRight());
+                int bottom = std::max(it->GetBottom(), clippedRegion.GetBottom());
+                
+                it->Set(left, top, right - left, bottom - top);
+                merged = true;
+                break;
+            }
+        }
+
+        if (!merged)
+        {
+            dirtyRegions.push_back(clippedRegion);
+        }
+
+        // Optimization: if dirty regions cover too much of the screen, 
+        // fall back to full redraw
+        OptimizeDirtyRegions();
+    }
+
+    void Window::OptimizeDirtyRegions()
+    {
+        if (dirtyRegions.empty())
+            return;
+
+        int totalDirtyArea = 0;
+        int windowArea = scene.GetWidth() * scene.GetHeight();
+
+        for (const auto& region : dirtyRegions)
+        {
+            totalDirtyArea += region.GetWidth() * region.GetHeight();
+        }
+
+        // If more than 75% of the window is dirty, just do a full redraw
+        if (totalDirtyArea > windowArea * 0.75f)
+        {
+            ClearDirtyRegions();
+            Rectangle fullWindow(0, 0, scene.GetWidth(), scene.GetHeight());
+            dirtyRegions.push_back(fullWindow);
+        }
+    }
+
+    void Window::ClearDirtyRegions()
+    {
+        dirtyRegions.clear();
+    }
+
+    void Window::CopyFromBackgroundBuffer(const Rectangle& region)
+    {
+        if (!backgroundBufferInitialized)
+            return;
+
+        // Bind the background framebuffer as read buffer
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, backgroundFramebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+        // Copy the region from background buffer to default framebuffer
+        glBlitFramebuffer(
+            region.GetLeft(), scene.GetHeight() - region.GetBottom(),
+            region.GetRight(), scene.GetHeight() - region.GetTop(),
+            region.GetLeft(), scene.GetHeight() - region.GetBottom(),
+            region.GetRight(), scene.GetHeight() - region.GetTop(),
+            GL_COLOR_BUFFER_BIT, GL_NEAREST
+        );
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void Window::CopyToBackgroundBuffer(const Rectangle& region)
+    {
+        if (!backgroundBufferInitialized)
+            return;
+
+        // Bind the default framebuffer as read buffer and background as draw buffer
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, backgroundFramebuffer);
+
+        // Copy the region from default framebuffer to background buffer
+        glBlitFramebuffer(
+            region.GetLeft(), scene.GetHeight() - region.GetBottom(),
+            region.GetRight(), scene.GetHeight() - region.GetTop(),
+            region.GetLeft(), scene.GetHeight() - region.GetBottom(),
+            region.GetRight(), scene.GetHeight() - region.GetTop(),
+            GL_COLOR_BUFFER_BIT, GL_NEAREST
+        );
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    bool Window::HasDirtyRegions() const
+    {
+        return !dirtyRegions.empty();
+    }
+
+    void Window::SetBackgroundBufferEnabled(bool enabled)
+    {
+        if (useBackgroundBuffer != enabled)
+        {
+            useBackgroundBuffer = enabled;
+            
+            if (enabled && !backgroundBufferInitialized)
+            {
+                InitializeBackgroundBuffer();
+            }
+            else if (!enabled && backgroundBufferInitialized)
+            {
+                DestroyBackgroundBuffer();
+            }
+        }
+    }
+
+    bool Window::IsBackgroundBufferEnabled() const
+    {
+        return useBackgroundBuffer;
+    }
+
+    void Window::InvalidateRegion(const Rectangle& region)
+    {
+        AddDirtyRegion(region);
+        Invalidate(); // Trigger a render
     }
 }

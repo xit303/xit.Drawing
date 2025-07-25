@@ -34,17 +34,18 @@ namespace xit::Drawing
         virtual void OnTextWrappingChanged() override;
         virtual void OnFontSizeChanged() override;
 
-        void OnForegroundChanged(EventArgs &e) override;
+        virtual void OnForegroundChanged(EventArgs &e) override;
 
-        int OnMeasureWidth(int available) override;
-        int OnMeasureHeight(int available) override;
+        virtual int OnMeasureWidth(int available) override;
+        virtual int OnMeasureHeight(int available) override;
 
-        void OnUpdate(const Rectangle &bounds) override;
-        void OnRender() override;
+        // void OnUpdate(const Rectangle &bounds) override;
+        virtual void OnLayoutCompleted(const Rectangle &bounds) override;
+        virtual void OnRender() override;
 
     public:
-        void SetDPIScale(float scaleX, float scaleY) override;
-        Size Measure(const Size &availableSize) override;
+        virtual void SetDPIScale(float scaleX, float scaleY) override;
+        virtual Size Measure(const Size &availableSize) override;
         Size &MeasureText();
 
         static const void MeasureText(const std::string &fontName, int fontSize, const std::string &text, Size &target);

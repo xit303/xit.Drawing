@@ -35,10 +35,10 @@ namespace xit::Drawing
                     //         isExpandedSetting->SetValue(value);
                     // }
 
-                    needLeftRecalculation = true;
-                    needTopRecalculation = true;
-                    needWidthRecalculation = true;
-                    needHeightRecalculation = true;
+                    // needLeftRecalculation = true;
+                    // needTopRecalculation = true;
+                    // needWidthRecalculation = true;
+                    // needHeightRecalculation = true;
 
                     SetContentContainerVisibility(isExpanded ? Visibility::Visible : Visibility::Collapsed);
 
