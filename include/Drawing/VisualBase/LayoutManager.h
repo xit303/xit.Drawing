@@ -110,6 +110,9 @@ namespace xit::Drawing::VisualBase
         LayoutManager();
 
         virtual void Invalidate();
+        
+        // Force invalidation - bypasses visibility checks and forces all flags
+        void ForceInvalidate();
 
         virtual int MeasureWidth(int availableSize);
         virtual int MeasureHeight(int availableSize);

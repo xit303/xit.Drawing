@@ -31,11 +31,41 @@ namespace xit::Drawing::VisualBase
         {
             invalidated = true;
 
+#ifdef DEBUG
+            // Add debugging info to track invalidation chains
+            std::cout << "Invalidating: " << GetName() << " (Type: " << typeid(*this).name() << ")" << std::endl;
+#endif
+
             EventArgs e;
             OnInvalidated(e);
             NotifyParentOfInvalidation();
             Scene2D::CurrentScene().Invalidate(this);
         }
+#ifdef DEBUG
+        else
+        {
+            std::cout << "Skipping invalidation for collapsed visual: " << GetName() << std::endl;
+        }
+#endif
+    }
+
+    void LayoutManager::ForceInvalidate()
+    {
+        // Force all recalculation flags regardless of visibility
+        invalidated = true;
+        needWidthRecalculation = true;
+        needHeightRecalculation = true;
+        needLeftRecalculation = true;
+        needTopRecalculation = true;
+
+#ifdef DEBUG
+        std::cout << "Force invalidating: " << GetName() << " (Type: " << typeid(*this).name() << ")" << std::endl;
+#endif
+
+        EventArgs e;
+        OnInvalidated(e);
+        NotifyParentOfInvalidation();
+        Scene2D::CurrentScene().Invalidate(this);
     }
 
     void LayoutManager::NotifyParentOfInvalidation()
@@ -46,9 +76,30 @@ namespace xit::Drawing::VisualBase
 
     void LayoutManager::OnChildInvalidated(LayoutManager* childLayout)
     {
-        // Default implementation: propagate up the hierarchy
-        // Window class will override this to handle background buffer dirty regions
-        NotifyParentOfInvalidation();
+        // When a child is invalidated, the parent must also be invalidated
+        // to ensure the update chain propagates correctly
+        
+        // CRITICAL FIX: Only invalidate parent if it's not already invalidated
+        // This prevents infinite recursion loops
+        if (!invalidated)
+        {
+#ifdef DEBUG
+            std::cout << "Child invalidated: " << (childLayout ? childLayout->GetName() : "null") 
+                      << " -> invalidating parent: " << GetName() << std::endl;
+#endif
+            
+            // Invalidate this parent when child invalidates
+            Invalidate();
+        }
+#ifdef DEBUG
+        else
+        {
+            std::cout << "Child invalidated: " << (childLayout ? childLayout->GetName() : "null") 
+                      << " -> parent " << GetName() << " already invalidated, skipping" << std::endl;
+        }
+#endif
+        
+        // Note: Don't call NotifyParentOfInvalidation() here as Invalidate() already does that
     }
 
     Size LayoutManager::Measure(const Size &availableSize)
@@ -70,14 +121,42 @@ namespace xit::Drawing::VisualBase
 
             if (needRedraw)
             {
+#ifdef DEBUG
+                std::cout << "Updating layout for: " << GetName() 
+                          << " invalidated=" << invalidated
+                          << " needLeft=" << needLeftRecalculation
+                          << " needTop=" << needTopRecalculation 
+                          << " needWidth=" << needWidthRecalculation
+                          << " needHeight=" << needHeightRecalculation << std::endl;
+#endif
                 this->bounds = newBounds;
                 OnUpdate(bounds);
             }
+#ifdef DEBUG
+            else
+            {
+                std::cout << "NOT updating layout for: " << GetName() 
+                          << " (needRedraw=false) invalidated=" << invalidated
+                          << " needLeft=" << needLeftRecalculation
+                          << " needTop=" << needTopRecalculation 
+                          << " needWidth=" << needWidthRecalculation
+                          << " needHeight=" << needHeightRecalculation << std::endl;
+            }
+#endif
         }
         else
         {
             needRedraw = false;
+#ifdef DEBUG
+            std::cout << "NOT updating layout for: " << GetName() << " (collapsed)" << std::endl;
+#endif
         }
+
+#ifdef DEBUG
+        std::cout << "Update returning: " << (needRedraw || wasInvalidated) 
+                  << " for " << GetName() 
+                  << " (needRedraw=" << needRedraw << " wasInvalidated=" << wasInvalidated << ")" << std::endl;
+#endif
 
         return needRedraw || wasInvalidated;
     }
@@ -525,11 +604,21 @@ namespace xit::Drawing::VisualBase
 
     void LayoutManager::PerformLayout(const Rectangle &bounds)
     {
-        static bool isUpdating = false;
+        static thread_local bool isUpdating = false; // Make thread-local to avoid conflicts
         if (isUpdating)
+        {
+#ifdef DEBUG
+            std::cout << "WARNING: Recursive update prevented for: " << GetName() << std::endl;
+#endif
             return; // Prevent recursive updates
+        }
 
         isUpdating = true;
+
+        // Use RAII to ensure isUpdating is always reset
+        struct UpdateGuard {
+            ~UpdateGuard() { isUpdating = false; }
+        } guard;
 
         /*if (cancelInvalidate)
             return;*/
@@ -609,7 +698,7 @@ namespace xit::Drawing::VisualBase
                 renderLeft += GetMargin().GetLeft();
         }
 
-        isUpdating = false;
+        // isUpdating = false; // Removed - now handled by RAII guard
     }
 
     void LayoutManager::OnLayoutCompleted(const Rectangle &bounds)
