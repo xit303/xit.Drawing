@@ -10,27 +10,27 @@ namespace xit::Drawing::Debug
 {
     // Static debug flags
     uint32_t LayoutDiagnostics::debugFlags = 0;
-    
+
     void LayoutDiagnostics::SetDebugFlags(DebugFlags flags)
     {
         debugFlags = static_cast<uint32_t>(flags);
     }
-    
+
     void LayoutDiagnostics::EnableDebugFlag(DebugFlags flag)
     {
         debugFlags |= static_cast<uint32_t>(flag);
     }
-    
+
     void LayoutDiagnostics::DisableDebugFlag(DebugFlags flag)
     {
         debugFlags &= ~static_cast<uint32_t>(flag);
     }
-    
+
     bool LayoutDiagnostics::IsDebugEnabled(DebugFlags flag)
     {
         return (debugFlags & static_cast<uint32_t>(flag)) != 0;
     }
-    
+
     void LayoutDiagnostics::SetDebugEnabled(bool enabled)
     {
         if (enabled)
@@ -47,60 +47,76 @@ namespace xit::Drawing::Debug
     {
         debugFlags = static_cast<uint32_t>(DebugFlags::TextBox);
     }
-    
+
     void LayoutDiagnostics::DisableAllDebugging()
     {
         debugFlags = static_cast<uint32_t>(DebugFlags::None);
     }
-    
-    void LayoutDiagnostics::PrintVisualTree(const xit::Drawing::Visual* root, int depth)
+
+    void LayoutDiagnostics::PrintVisualTree(const xit::Drawing::Visual *root, int depth)
     {
-        if (!IsDebugEnabled(DebugFlags::Visual)) return;
-        if (!root) return;
-        
+        // if (!IsDebugEnabled(DebugFlags::Visual)) return;
+        if (!root)
+        {
+            std::cout << "Root visual is null!" << std::endl;
+            return;
+        }
+
         std::string indent(depth * 2, ' ');
-        std::cout << indent << "Visual: " << root->GetName() 
+        std::cout << indent << "Visual: " << root->GetName()
                   << " Type: " << typeid(*root).name()
                   << " Visible: " << (root->GetIsVisible() ? "true" : "false")
                   << " Size: " << root->GetActualWidth() << "x" << root->GetActualHeight()
                   << " Pos: (" << root->GetLeft() << "," << root->GetTop() << ")"
                   << std::endl;
-        
+
         // Try to get children if this is a container
-        const xit::Drawing::ContainerBase* container = dynamic_cast<const xit::Drawing::ContainerBase*>(root);
+        const xit::Drawing::ContainerBase *container = dynamic_cast<const xit::Drawing::ContainerBase *>(root);
         if (container)
         {
-            for (const xit::Drawing::Visual* child : container->GetChildren())
+            for (const xit::Drawing::Visual *child : container->GetChildren())
             {
                 PrintVisualTree(child, depth + 1);
             }
         }
     }
-    
-    void LayoutDiagnostics::PrintLayoutInfo(const xit::Drawing::VisualBase::LayoutManager* layout)
+
+    void LayoutDiagnostics::PrintLayoutInfo(const xit::Drawing::VisualBase::LayoutManager *layout)
     {
-        if (!IsDebugEnabled(DebugFlags::LayoutManager)) return;
-        if (!layout) return;
-        
+        if (!IsDebugEnabled(DebugFlags::LayoutManager))
+            return;
+
+        if (!layout)
+        {
+            std::cout << "LayoutManager is null!" << std::endl;
+            return;
+        }
+
         std::cout << "=== Layout Info for: " << layout->GetName() << " ===" << std::endl;
         std::cout << "  Actual Size: " << layout->GetActualWidth() << "x" << layout->GetActualHeight() << std::endl;
         std::cout << "  Desired Size: " << layout->GetDesiredSize().GetWidth() << "x" << layout->GetDesiredSize().GetHeight() << std::endl;
         std::cout << "  Position: (" << layout->GetLeft() << "," << layout->GetTop() << ")" << std::endl;
-        std::cout << "  Bounds: (" << layout->GetBounds().GetLeft() << "," << layout->GetBounds().GetTop() 
+        std::cout << "  Bounds: (" << layout->GetBounds().GetLeft() << "," << layout->GetBounds().GetTop()
                   << "," << layout->GetBounds().GetWidth() << "," << layout->GetBounds().GetHeight() << ")" << std::endl;
         std::cout << "  Visibility: " << (int)layout->GetVisibility() << std::endl;
-        std::cout << "  Margin: (" << layout->GetMargin().GetLeft() << "," << layout->GetMargin().GetTop() 
+        std::cout << "  Margin: (" << layout->GetMargin().GetLeft() << "," << layout->GetMargin().GetTop()
                   << "," << layout->GetMargin().GetRight() << "," << layout->GetMargin().GetBottom() << ")" << std::endl;
-        std::cout << "  Padding: (" << layout->GetPadding().GetLeft() << "," << layout->GetPadding().GetTop() 
+        std::cout << "  Padding: (" << layout->GetPadding().GetLeft() << "," << layout->GetPadding().GetTop()
                   << "," << layout->GetPadding().GetRight() << "," << layout->GetPadding().GetBottom() << ")" << std::endl;
         std::cout << "================================" << std::endl;
     }
-    
-    void LayoutDiagnostics::PrintInvalidationStatus(const xit::Drawing::VisualBase::LayoutManager* layout)
+
+    void LayoutDiagnostics::PrintInvalidationStatus(const xit::Drawing::VisualBase::LayoutManager *layout)
     {
-        if (!IsDebugEnabled(DebugFlags::LayoutManager)) return;
-        if (!layout) return;
-        
+        if (!IsDebugEnabled(DebugFlags::LayoutManager))
+            return;
+
+        if (!layout)
+        {
+            std::cout << "LayoutManager is null!" << std::endl;
+            return;
+        }
+
         std::cout << "=== Invalidation Status for: " << layout->GetName() << " ===" << std::endl;
         std::cout << "  Invalidated: " << (layout->GetInvalidated() ? "true" : "false") << std::endl;
         std::cout << "  Need Width Recalc: " << (layout->GetNeedWidthRecalculation() ? "true" : "false") << std::endl;
@@ -109,47 +125,28 @@ namespace xit::Drawing::Debug
         std::cout << "  Need Top Recalc: " << (layout->GetNeedTopRecalculation() ? "true" : "false") << std::endl;
         std::cout << "================================" << std::endl;
     }
-    
-    void LayoutDiagnostics::ForceInvalidateTree(xit::Drawing::Visual* root)
-    {
-        if (!IsDebugEnabled(DebugFlags::Visual)) return;
-        if (!root) return;
-        
-        std::cout << "Force invalidating: " << root->GetName() << std::endl;
-        root->ForceInvalidate();
-        
-        // Try to invalidate children if this is a container
-        xit::Drawing::ContainerBase* container = dynamic_cast<xit::Drawing::ContainerBase*>(root);
-        if (container)
-        {
-            for (xit::Drawing::Visual* child : container->GetChildren())
-            {
-                ForceInvalidateTree(child);
-            }
-        }
-    }
-    
-    void LayoutDiagnostics::DiagnoseWindowUpdateChain(xit::Drawing::Window* window)
-    {
-        if (!IsDebugEnabled(DebugFlags::Window)) return;
 
-        if (!window) 
+    void LayoutDiagnostics::DiagnoseWindowUpdateChain(xit::Drawing::Window *window)
+    {
+        // if (!IsDebugEnabled(DebugFlags::Window)) return;
+
+        if (!window)
         {
             std::cout << "Window is null!" << std::endl;
             return;
         }
-        
+
         std::cout << "=== Window Update Chain Diagnosis ===" << std::endl;
         std::cout << "Window Name: " << window->GetName() << std::endl;
         std::cout << "Window Size: " << window->GetActualWidth() << "x" << window->GetActualHeight() << std::endl;
         std::cout << "Window Invalidated: " << (window->GetInvalidated() ? "true" : "false") << std::endl;
-        std::cout << "Window Needs Recalc: W=" << (window->GetNeedWidthRecalculation() ? "true" : "false") 
+        std::cout << "Window Needs Recalc: W=" << (window->GetNeedWidthRecalculation() ? "true" : "false")
                   << " H=" << (window->GetNeedHeightRecalculation() ? "true" : "false")
                   << " L=" << (window->GetNeedLeftRecalculation() ? "true" : "false")
                   << " T=" << (window->GetNeedTopRecalculation() ? "true" : "false") << std::endl;
-        
+
         // Check content
-        xit::Drawing::Visual* content = window->GetContent();
+        xit::Drawing::Visual *content = window->GetContent();
         if (content)
         {
             std::cout << "Content found: " << content->GetName() << std::endl;
@@ -163,98 +160,50 @@ namespace xit::Drawing::Debug
         }
         std::cout << "================================" << std::endl;
     }
-    
-    void LayoutDiagnostics::ForceWindowUpdate(xit::Drawing::Window* window)
-    {
-        if (!IsDebugEnabled(DebugFlags::Window)) return;
-        if (!window) return;
-        
-        std::cout << "Force updating window: " << window->GetName() << std::endl;
-        
-        // Force invalidate the window itself
-        window->ForceInvalidate();
-        
-        // Force invalidate the content if it exists
-        xit::Drawing::Visual* content = window->GetContent();
-        if (content)
-        {
-            std::cout << "Force updating window content: " << content->GetName() << std::endl;
-            ForceInvalidateTree(content);
-        }
-        
-        // Also manually trigger the render
-        std::cout << "Triggering window render" << std::endl;
-        // Note: DoRender is likely private, so we trigger through invalidation
-    }
-    
-    std::vector<std::string> LayoutDiagnostics::CheckCommonIssues(const xit::Drawing::Visual* visual)
+
+    std::vector<std::string> LayoutDiagnostics::CheckCommonIssues(const xit::Drawing::Visual *visual)
     {
         std::vector<std::string> issues;
 
-        if (!IsDebugEnabled(DebugFlags::Visual)) 
+        if (!IsDebugEnabled(DebugFlags::Visual))
         {
             return issues; // No issues to check if debugging is disabled
         }
-        
-        if (!visual) 
+
+        if (!visual)
         {
             issues.push_back("Visual is null");
             return issues;
         }
-        
+
         // Check visibility
         if (!visual->GetIsVisible())
         {
             issues.push_back("Visual is not visible");
         }
-        
+
         // Check size
         if (visual->GetActualWidth() <= 0 || visual->GetActualHeight() <= 0)
         {
             issues.push_back("Visual has zero or negative size");
         }
-        
+
         // Check for infinite size requests
         if (visual->GetWidth() < -1 || visual->GetHeight() < -1)
         {
             issues.push_back("Visual has invalid width/height values");
         }
-        
+
         return issues;
     }
-    
-    void LayoutDiagnostics::TestWindowUpdates(Window* window)
-    {
-        if (!window) return;
 
-        if (!IsDebugEnabled(DebugFlags::Window))
-        {
-            return;
-        }
-        
-        std::cout << "\n=== WINDOW UPDATE TEST ===" << std::endl;
-        
-        // Step 1: Check current state
-        std::cout << "Step 1: Current window state" << std::endl;
-        LayoutDiagnostics::DiagnoseWindowUpdateChain(window);
-        
-        // Step 2: Force invalidation
-        std::cout << "\nStep 2: Forcing window invalidation" << std::endl;
-        LayoutDiagnostics::ForceWindowUpdate(window);
-        
-        // Step 3: Check if update propagated
-        std::cout << "\nStep 3: Post-invalidation state" << std::endl;
-        LayoutDiagnostics::DiagnoseWindowUpdateChain(window);
-        
-        std::cout << "=== WINDOW TEST COMPLETE ===\n" << std::endl;
-    }
-    
     void LayoutDiagnostics::TestPasswordTextBox()
     {
-        if (!IsDebugEnabled(DebugFlags::TextBox)) return;
-        
+        if (!IsDebugEnabled(DebugFlags::TextBox))
+            return;
+
         std::cout << "=== PASSWORD TEXTBOX TEST ===" << std::endl;
-        
+
         // Note: This test requires actual TextBox instance to work properly
         std::cout << "Password TextBox functionality test:" << std::endl;
         std::cout << "1. SetIsPassword(true) should:" << std::endl;
@@ -268,59 +217,13 @@ namespace xit::Drawing::Debug
         std::cout << "3. ShowPasswordButton toggle should:" << std::endl;
         std::cout << "   - Call UpdateVisibleText() which calls Invalidate()" << std::endl;
         std::cout << "   - Switch between actual text and asterisks" << std::endl;
-        
+
         std::cout << "\nFixed invalidation issues in:" << std::endl;
         std::cout << "- SetIsPassword(): Now calls UpdateVisibleText() + Invalidate()" << std::endl;
         std::cout << "- UpdateVisibleText(): Now calls Invalidate() after SetText()" << std::endl;
         std::cout << "- ShowPasswordButton_ActiveChanged(): Calls UpdateVisibleText() (which invalidates)" << std::endl;
-        
-        std::cout << "=== PASSWORD TEST INFO COMPLETE ===\n" << std::endl;
-    }
-    
-    void LayoutDiagnostics::TestPasswordTextBoxInstance(xit::Drawing::TextBox* textBox)
-    {
-        if (!IsDebugEnabled(DebugFlags::TextBox)) return;
-        
-        if (!textBox) 
-        {
-            std::cout << "ERROR: TextBox instance is null!" << std::endl;
-            return;
-        }
-        
-        std::cout << "\n=== REAL PASSWORD TEXTBOX TEST ===" << std::endl;
-        
-        // Test initial state
-        std::cout << "1. Initial TextBox state:" << std::endl;
-        std::cout << "   - IsPassword: " << (textBox->GetIsPassword() ? "true" : "false") << std::endl;
-        std::cout << "   - Text length: " << textBox->GetText().length() << std::endl;
-        std::cout << "   - Visible: " << (textBox->GetIsVisible() ? "true" : "false") << std::endl;
-        std::cout << "   - Invalidated: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
-        
-        // Test setting some text first
-        std::cout << "\n2. Setting text to 'test123':" << std::endl;
-        textBox->SetText("test123");
-        std::cout << "   - Text: '" << textBox->GetText() << "'" << std::endl;
-        std::cout << "   - Invalidated: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
-        
-        // Test enabling password mode
-        std::cout << "\n3. Enabling password mode:" << std::endl;
-        textBox->SetIsPassword(true);
-        std::cout << "   - IsPassword: " << (textBox->GetIsPassword() ? "true" : "false") << std::endl;
-        std::cout << "   - Text: '" << textBox->GetText() << "'" << std::endl;
-        std::cout << "   - Invalidated: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
-        
-        // Force invalidation to test update chain
-        std::cout << "\n4. Force invalidating TextBox:" << std::endl;
-        textBox->ForceInvalidate();
-        std::cout << "   - Invalidated after force: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
-        
-        // Test disabling password mode
-        std::cout << "\n5. Disabling password mode:" << std::endl;
-        textBox->SetIsPassword(false);
-        std::cout << "   - IsPassword: " << (textBox->GetIsPassword() ? "true" : "false") << std::endl;
-        std::cout << "   - Text: '" << textBox->GetText() << "'" << std::endl;
-        std::cout << "   - Invalidated: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
-        
-        std::cout << "\n=== REAL PASSWORD TEST COMPLETE ===\n" << std::endl;
+
+        std::cout << "=== PASSWORD TEST INFO COMPLETE ===\n"
+                  << std::endl;
     }
 }
