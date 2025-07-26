@@ -40,7 +40,6 @@ namespace xit::Drawing::VisualBase
             EventArgs e;
             OnInvalidated(e);
             NotifyParentOfInvalidation();
-            Scene2D::CurrentScene().Invalidate(this);
         }
         else
         {
@@ -50,24 +49,6 @@ namespace xit::Drawing::VisualBase
         }
     }
 
-    void LayoutManager::ForceInvalidate()
-    {
-        // Force all recalculation flags regardless of visibility
-        invalidated = true;
-        needWidthRecalculation = true;
-        needHeightRecalculation = true;
-        needLeftRecalculation = true;
-        needTopRecalculation = true;
-
-#ifdef DEBUG_LAYOUT_MANAGER
-        std::cout << "Force invalidating: " << GetName() << " (Type: " << typeid(*this).name() << ")" << std::endl;
-#endif
-
-        EventArgs e;
-        OnInvalidated(e);
-        NotifyParentOfInvalidation();
-        Scene2D::CurrentScene().Invalidate(this);
-    }
 
     void LayoutManager::NotifyParentOfInvalidation()
     {
@@ -242,6 +223,7 @@ namespace xit::Drawing::VisualBase
         needLeftRecalculation = true;
         Invalidate();
     }
+
     void LayoutManager::OnHeightChanged(EventArgs &e)
     {
         needHeightRecalculation = true;
