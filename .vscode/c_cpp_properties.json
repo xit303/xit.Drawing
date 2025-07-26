@@ -10,6 +10,8 @@
                 "/usr/include/freetype2",
                 "../xit/include",
                 "../xit.Account/include",
+                "../xit.Clipboard/include",
+                "../xit.Clipboard/lib/glad/include",
                 "../xit.Application/include",
                 "../xit.Input/include",
                 "../xit.IO/include",

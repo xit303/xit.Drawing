@@ -26,28 +26,13 @@
             "problemMatcher": "$gcc",
         },
         {
-            "label": "make test",
+            "label": "xmake test",
             "type": "shell",
-            "command": "make",
-            "args": ["test", "-s", "-j"],
+            "command": "xmake",
+            "args": ["test/xmakefile.json"],
             "group": "build",
-            "problemMatcher": "$gcc"
-        },
-        {
-            "label": "make testApp",
-            "type": "shell",
-            "command": "make",
-            "args": ["testApp", "-s", "-j"],
-            "group": "build",
-            "problemMatcher": "$gcc"
-        },
-        {
-            "label": "Run testApp",
-            "type": "shell",
-            "command": "cd ${workspaceFolder}/testApp/.bin/ && ./testApp",
-            "args": [],
-            "group": "build",
-            "dependsOn": "make testApp"
+            "problemMatcher": "$gcc",
+            "dependsOn": "xmake silent",
         }
     ]
 }
