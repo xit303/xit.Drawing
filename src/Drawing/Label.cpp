@@ -1,5 +1,10 @@
 #include "Drawing/Label.h"
 
+#ifdef DEBUG_LABEL
+#include <iostream>
+#include <chrono>
+#endif
+
 namespace xit::Drawing
 {
     Label::Label(int column, int row, int columnSpan, int rowSpan)
@@ -20,9 +25,18 @@ namespace xit::Drawing
 
     void Label::OnTextChanged()
     {
+#ifdef DEBUG_LABEL
+        std::cout << "[DEBUG] Label::OnTextChanged() called, text='" << GetText() << "' at timestamp " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() << std::endl;
+#endif
         TextProperty::SetNeedMeasureText(true);
         FontProperty::SetNeedMeasureFont(true);
+#ifdef DEBUG_LABEL
+        std::cout << "[DEBUG] About to call Label::Invalidate()" << std::endl;
+#endif
         Invalidate();
+#ifdef DEBUG_LABEL
+        std::cout << "[DEBUG] Label::Invalidate() returned" << std::endl;
+#endif
     }
 
     void Label::OnTextWrappingChanged()
@@ -68,7 +82,19 @@ namespace xit::Drawing
 
         if (GetNeedLeftRecalculation() || GetNeedTopRecalculation())
         {
+#ifdef DEBUG_LABEL
+            int oldTextTop = textTop;
+#endif
+            // Update textTop based on the current layout and scene height
+            // This ensures the text is positioned correctly within the label
             textTop = Scene2D::CurrentScene().GetHeight() - GetTop() - textSize.GetHeight();
+
+#ifdef DEBUG_LABEL
+            std::cout << "[DEBUG] Label::OnLayoutCompleted '" << GetName() << "': bounds=" << bounds.GetLeft() << "," << bounds.GetTop() << "," << bounds.GetWidth() << "x" << bounds.GetHeight()
+                      << ", GetTop()=" << GetTop() << ", textSize.height=" << textSize.GetHeight()
+                      << ", Scene height=" << Scene2D::CurrentScene().GetHeight()
+                      << ", textTop changed from " << oldTextTop << " to " << textTop << std::endl;
+#endif
         }
     }
 
@@ -76,9 +102,26 @@ namespace xit::Drawing
     {
         std::string text = GetText();
 
+#ifdef DEBUG_LABEL
+        std::cout << "[DEBUG] Label::OnRender() called with text='" << text << "' name='" << GetName() << "' at timestamp " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() << std::endl;
+        std::cout << "[DEBUG] GetLeft()=" << GetLeft() << ", textTop=" << textTop << ", GetZIndex()=" << GetZIndex() << std::endl;
+#endif
+
         if (!text.empty())
         {
+#ifdef DEBUG_LABEL
+            std::cout << "[DEBUG] Calling TextRenderer::RenderText()" << std::endl;
+#endif
             TextRenderer::RenderText(GetFontName(), GetFontSize(), text, GetLeft(), textTop, GetZIndex(), color);
+#ifdef DEBUG_LABEL
+            std::cout << "[DEBUG] TextRenderer::RenderText() returned" << std::endl;
+#endif
+        }
+        else
+        {
+#ifdef DEBUG_LABEL
+            std::cout << "[DEBUG] Text is empty, not rendering" << std::endl;
+#endif
         }
     }
 
@@ -120,7 +163,9 @@ namespace xit::Drawing
             }
             else
             {
+#ifdef DEBUG_LABEL
                 std::cout << "Label::MeasureText: textSize is empty" << std::endl;
+#endif
             }
         }
         return textSize;
