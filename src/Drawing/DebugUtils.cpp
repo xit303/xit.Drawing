@@ -4,23 +4,58 @@
 #include <Drawing/ContainerBase.h>
 #include <Drawing/Properties/ParentProperty.h>
 #include <Drawing/Window.h>
+#include <Drawing/TextBox.h>
 
 namespace xit::Drawing::Debug
 {
-    bool LayoutDiagnostics::debugEnabled = false;
+    // Static debug flags
+    uint32_t LayoutDiagnostics::debugFlags = 0;
+    
+    void LayoutDiagnostics::SetDebugFlags(DebugFlags flags)
+    {
+        debugFlags = static_cast<uint32_t>(flags);
+    }
+    
+    void LayoutDiagnostics::EnableDebugFlag(DebugFlags flag)
+    {
+        debugFlags |= static_cast<uint32_t>(flag);
+    }
+    
+    void LayoutDiagnostics::DisableDebugFlag(DebugFlags flag)
+    {
+        debugFlags &= ~static_cast<uint32_t>(flag);
+    }
+    
+    bool LayoutDiagnostics::IsDebugEnabled(DebugFlags flag)
+    {
+        return (debugFlags & static_cast<uint32_t>(flag)) != 0;
+    }
     
     void LayoutDiagnostics::SetDebugEnabled(bool enabled)
     {
-        debugEnabled = enabled;
+        if (enabled)
+        {
+            debugFlags = static_cast<uint32_t>(DebugFlags::All);
+        }
+        else
+        {
+            debugFlags = static_cast<uint32_t>(DebugFlags::None);
+        }
+    }
+
+    void LayoutDiagnostics::EnableTextBoxDebuggingOnly()
+    {
+        debugFlags = static_cast<uint32_t>(DebugFlags::TextBox);
     }
     
-    bool LayoutDiagnostics::IsDebugEnabled()
+    void LayoutDiagnostics::DisableAllDebugging()
     {
-        return debugEnabled;
+        debugFlags = static_cast<uint32_t>(DebugFlags::None);
     }
     
     void LayoutDiagnostics::PrintVisualTree(const xit::Drawing::Visual* root, int depth)
     {
+        if (!IsDebugEnabled(DebugFlags::Visual)) return;
         if (!root) return;
         
         std::string indent(depth * 2, ' ');
@@ -44,6 +79,7 @@ namespace xit::Drawing::Debug
     
     void LayoutDiagnostics::PrintLayoutInfo(const xit::Drawing::VisualBase::LayoutManager* layout)
     {
+        if (!IsDebugEnabled(DebugFlags::LayoutManager)) return;
         if (!layout) return;
         
         std::cout << "=== Layout Info for: " << layout->GetName() << " ===" << std::endl;
@@ -62,6 +98,7 @@ namespace xit::Drawing::Debug
     
     void LayoutDiagnostics::PrintInvalidationStatus(const xit::Drawing::VisualBase::LayoutManager* layout)
     {
+        if (!IsDebugEnabled(DebugFlags::LayoutManager)) return;
         if (!layout) return;
         
         std::cout << "=== Invalidation Status for: " << layout->GetName() << " ===" << std::endl;
@@ -75,6 +112,7 @@ namespace xit::Drawing::Debug
     
     void LayoutDiagnostics::ForceInvalidateTree(xit::Drawing::Visual* root)
     {
+        if (!IsDebugEnabled(DebugFlags::Visual)) return;
         if (!root) return;
         
         std::cout << "Force invalidating: " << root->GetName() << std::endl;
@@ -93,6 +131,8 @@ namespace xit::Drawing::Debug
     
     void LayoutDiagnostics::DiagnoseWindowUpdateChain(xit::Drawing::Window* window)
     {
+        if (!IsDebugEnabled(DebugFlags::Window)) return;
+
         if (!window) 
         {
             std::cout << "Window is null!" << std::endl;
@@ -126,6 +166,7 @@ namespace xit::Drawing::Debug
     
     void LayoutDiagnostics::ForceWindowUpdate(xit::Drawing::Window* window)
     {
+        if (!IsDebugEnabled(DebugFlags::Window)) return;
         if (!window) return;
         
         std::cout << "Force updating window: " << window->GetName() << std::endl;
@@ -149,6 +190,11 @@ namespace xit::Drawing::Debug
     std::vector<std::string> LayoutDiagnostics::CheckCommonIssues(const xit::Drawing::Visual* visual)
     {
         std::vector<std::string> issues;
+
+        if (!IsDebugEnabled(DebugFlags::Visual)) 
+        {
+            return issues; // No issues to check if debugging is disabled
+        }
         
         if (!visual) 
         {
@@ -180,6 +226,11 @@ namespace xit::Drawing::Debug
     void LayoutDiagnostics::TestWindowUpdates(Window* window)
     {
         if (!window) return;
+
+        if (!IsDebugEnabled(DebugFlags::Window))
+        {
+            return;
+        }
         
         std::cout << "\n=== WINDOW UPDATE TEST ===" << std::endl;
         
@@ -196,5 +247,80 @@ namespace xit::Drawing::Debug
         LayoutDiagnostics::DiagnoseWindowUpdateChain(window);
         
         std::cout << "=== WINDOW TEST COMPLETE ===\n" << std::endl;
+    }
+    
+    void LayoutDiagnostics::TestPasswordTextBox()
+    {
+        if (!IsDebugEnabled(DebugFlags::TextBox)) return;
+        
+        std::cout << "=== PASSWORD TEXTBOX TEST ===" << std::endl;
+        
+        // Note: This test requires actual TextBox instance to work properly
+        std::cout << "Password TextBox functionality test:" << std::endl;
+        std::cout << "1. SetIsPassword(true) should:" << std::endl;
+        std::cout << "   - Call UpdateVisibleText()" << std::endl;
+        std::cout << "   - Call Invalidate() to trigger redraw" << std::endl;
+        std::cout << "   - Show '*' characters instead of actual text" << std::endl;
+        std::cout << "2. SetText() should:" << std::endl;
+        std::cout << "   - Update internal text normally" << std::endl;
+        std::cout << "   - Call UpdateVisibleText() which calls Invalidate()" << std::endl;
+        std::cout << "   - Display asterisks in password mode" << std::endl;
+        std::cout << "3. ShowPasswordButton toggle should:" << std::endl;
+        std::cout << "   - Call UpdateVisibleText() which calls Invalidate()" << std::endl;
+        std::cout << "   - Switch between actual text and asterisks" << std::endl;
+        
+        std::cout << "\nFixed invalidation issues in:" << std::endl;
+        std::cout << "- SetIsPassword(): Now calls UpdateVisibleText() + Invalidate()" << std::endl;
+        std::cout << "- UpdateVisibleText(): Now calls Invalidate() after SetText()" << std::endl;
+        std::cout << "- ShowPasswordButton_ActiveChanged(): Calls UpdateVisibleText() (which invalidates)" << std::endl;
+        
+        std::cout << "=== PASSWORD TEST INFO COMPLETE ===\n" << std::endl;
+    }
+    
+    void LayoutDiagnostics::TestPasswordTextBoxInstance(xit::Drawing::TextBox* textBox)
+    {
+        if (!IsDebugEnabled(DebugFlags::TextBox)) return;
+        
+        if (!textBox) 
+        {
+            std::cout << "ERROR: TextBox instance is null!" << std::endl;
+            return;
+        }
+        
+        std::cout << "\n=== REAL PASSWORD TEXTBOX TEST ===" << std::endl;
+        
+        // Test initial state
+        std::cout << "1. Initial TextBox state:" << std::endl;
+        std::cout << "   - IsPassword: " << (textBox->GetIsPassword() ? "true" : "false") << std::endl;
+        std::cout << "   - Text length: " << textBox->GetText().length() << std::endl;
+        std::cout << "   - Visible: " << (textBox->GetIsVisible() ? "true" : "false") << std::endl;
+        std::cout << "   - Invalidated: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
+        
+        // Test setting some text first
+        std::cout << "\n2. Setting text to 'test123':" << std::endl;
+        textBox->SetText("test123");
+        std::cout << "   - Text: '" << textBox->GetText() << "'" << std::endl;
+        std::cout << "   - Invalidated: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
+        
+        // Test enabling password mode
+        std::cout << "\n3. Enabling password mode:" << std::endl;
+        textBox->SetIsPassword(true);
+        std::cout << "   - IsPassword: " << (textBox->GetIsPassword() ? "true" : "false") << std::endl;
+        std::cout << "   - Text: '" << textBox->GetText() << "'" << std::endl;
+        std::cout << "   - Invalidated: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
+        
+        // Force invalidation to test update chain
+        std::cout << "\n4. Force invalidating TextBox:" << std::endl;
+        textBox->ForceInvalidate();
+        std::cout << "   - Invalidated after force: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
+        
+        // Test disabling password mode
+        std::cout << "\n5. Disabling password mode:" << std::endl;
+        textBox->SetIsPassword(false);
+        std::cout << "   - IsPassword: " << (textBox->GetIsPassword() ? "true" : "false") << std::endl;
+        std::cout << "   - Text: '" << textBox->GetText() << "'" << std::endl;
+        std::cout << "   - Invalidated: " << (textBox->GetInvalidated() ? "true" : "false") << std::endl;
+        
+        std::cout << "\n=== REAL PASSWORD TEST COMPLETE ===\n" << std::endl;
     }
 }

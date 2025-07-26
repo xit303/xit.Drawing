@@ -3,6 +3,7 @@
 #include <Input/InputHandler.h>
 #include <Clipboard.h>
 #include <cstring>
+#include <Drawing/DebugUtils.h>
 
 namespace xit::Drawing
 {

@@ -55,7 +55,7 @@ namespace xit::Drawing
         __always_inline bool GetIsPassword() { return isPassword; }
         void SetIsPassword(bool value);
 
-        const char PasswordCharacter = '*';
+        static constexpr char PasswordCharacter = '*';
 
         __always_inline const std::string &GetText() const { return viewText; }
         void SetText(const std::string &value);

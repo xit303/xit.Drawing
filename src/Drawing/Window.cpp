@@ -7,6 +7,7 @@
 
 #include <Drawing/ToolTip.h>
 #include <Drawing/Window.h>
+#include <Drawing/DebugUtils.h>
 // #include <Drawing/Container.h>
 #include <Threading/Dispatcher.h>
 
@@ -401,26 +402,28 @@ namespace xit::Drawing
     void Window::OnUpdate(const Rectangle &bounds)
     {
         bool needClientUpdate = GetNeedLeftRecalculation() || GetNeedTopRecalculation() || GetNeedWidthRecalculation() || GetNeedHeightRecalculation();
-        
+
         // CRITICAL FIX: Also update content when window is invalidated (even if window size/position unchanged)
         // This handles cases where content invalidates and window needs to update its content layout
         bool needContentUpdate = needClientUpdate || GetInvalidated();
 
-#ifdef DEBUG
-        std::cout << "Window::OnUpdate called. needClientUpdate=" << needClientUpdate 
-                  << " needContentUpdate=" << needContentUpdate
-                  << " invalidated=" << GetInvalidated()
-                  << " bounds=(" << bounds.GetLeft() << "," << bounds.GetTop() 
-                  << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
-#endif
+        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+        {
+            std::cout << "Window::OnUpdate called. needClientUpdate=" << needClientUpdate
+                      << " needContentUpdate=" << needContentUpdate
+                      << " invalidated=" << GetInvalidated()
+                      << " bounds=(" << bounds.GetLeft() << "," << bounds.GetTop()
+                      << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
+        }
 
         InputContent::OnUpdate(bounds);
 
         if (needContentUpdate)
         {
-#ifdef DEBUG
-            std::cout << "Window::OnUpdate - Updating client bounds and content" << std::endl;
-#endif
+            if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+            {
+                std::cout << "Window::OnUpdate - Updating client bounds and content" << std::endl;
+            }
             // TODO create Method GetClientBounds(Visual& v); see Window, SplitContainer, ScrollViewer, ContainerBase
 
             const Thickness &padding = GetPadding();
@@ -432,20 +435,19 @@ namespace xit::Drawing
 
             if (content)
             {
-#ifdef DEBUG
-                std::cout << "Window::OnUpdate - Updating content with clientBounds=(" 
-                          << clientBounds.GetLeft() << "," << clientBounds.GetTop() 
-                          << "," << clientBounds.GetWidth() << "," << clientBounds.GetHeight() << ")" << std::endl;
-#endif
+                if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+                {
+                    std::cout << "Window::OnUpdate - Updating content with clientBounds=("
+                              << clientBounds.GetLeft() << "," << clientBounds.GetTop()
+                              << "," << clientBounds.GetWidth() << "," << clientBounds.GetHeight() << ")" << std::endl;
+                }
                 content->Update(clientBounds);
                 ToolTip::DoUpdate(clientBounds);
             }
-#ifdef DEBUG
             else
             {
                 std::cout << "Window::OnUpdate - WARNING: No content to update!" << std::endl;
             }
-#endif
 
             // Mark the entire window as dirty on client update
             if (useBackgroundBuffer)
@@ -454,12 +456,10 @@ namespace xit::Drawing
                 AddDirtyRegion(windowBounds);
             }
         }
-#ifdef DEBUG
-        else
+        else if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
         {
             std::cout << "Window::OnUpdate - No client update needed" << std::endl;
         }
-#endif
     }
 
     void Window::OnInvalidated(EventArgs &e)
@@ -470,7 +470,7 @@ namespace xit::Drawing
             Rectangle dirtyRegion(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
             AddDirtyRegion(dirtyRegion);
         }
-        
+
         // Call base implementation
         InputContent::OnInvalidated(e);
     }
@@ -528,7 +528,7 @@ namespace xit::Drawing
 
     void Window::ExecuteInputPressed(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputPressed(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus*>(content), e.Position))
+        if (!InputHandler::CheckInputPressed(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -541,7 +541,7 @@ namespace xit::Drawing
     }
     void Window::ExecuteInputReleased(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputReleased(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus*>(content), e.Position))
+        if (!InputHandler::CheckInputReleased(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -559,7 +559,7 @@ namespace xit::Drawing
 
     void Window::ExecuteInputScroll(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputScroll(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus*>(content), e.Position))
+        if (!InputHandler::CheckInputScroll(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -572,7 +572,7 @@ namespace xit::Drawing
     }
     void Window::ExecuteInputMove(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputMove(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus*>(content), e.Position))
+        if (!InputHandler::CheckInputMove(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -776,7 +776,7 @@ namespace xit::Drawing
     {
         windowSettings.SetSize(width, height);
         scene.Resize(width, height);
-        
+
         // Resize background buffer when window size changes
         if (backgroundBufferInitialized)
         {
@@ -820,59 +820,60 @@ namespace xit::Drawing
             }
 
             OnContentChanged(oldContent, content);
-            
+
             // CRITICAL FIX: Invalidate the window when content changes
             Invalidate();
-            
-#ifdef DEBUG
-            std::cout << "Window::SetContent - Content changed, window invalidated" << std::endl;
-#endif
+
+            if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+            {
+                std::cout << "Window::SetContent - Content changed, window invalidated" << std::endl;
+            }
         }
     }
 
-    void Window::OnContentInvalidated(Visual* childVisual)
+    void Window::OnContentInvalidated(Visual *childVisual)
     {
         if (useBackgroundBuffer && backgroundBufferInitialized && childVisual)
         {
             // Calculate the child's absolute bounds within the window
             Rectangle childBounds(
-                childVisual->GetLeft(), 
-                childVisual->GetTop(), 
-                childVisual->GetActualWidth(), 
-                childVisual->GetActualHeight()
-            );
-            
+                childVisual->GetLeft(),
+                childVisual->GetTop(),
+                childVisual->GetActualWidth(),
+                childVisual->GetActualHeight());
+
             AddDirtyRegion(childBounds);
         }
     }
 
-    void Window::OnChildInvalidated(LayoutManager* childLayout)
+    void Window::OnChildInvalidated(LayoutManager *childLayout)
     {
-#ifdef DEBUG
-        std::cout << "Window::OnChildInvalidated called for child: " 
-                  << (childLayout ? childLayout->GetName() : "null") << std::endl;
-#endif
+        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+        {
+            std::cout << "Window::OnChildInvalidated called for child: "
+                      << (childLayout ? childLayout->GetName() : "null") << std::endl;
+        }
 
         if (useBackgroundBuffer && backgroundBufferInitialized && childLayout)
         {
             // Calculate the child's absolute bounds within the window
             Rectangle childBounds(
-                childLayout->GetLeft(), 
-                childLayout->GetTop(), 
-                childLayout->GetActualWidth(), 
-                childLayout->GetActualHeight()
-            );
-            
+                childLayout->GetLeft(),
+                childLayout->GetTop(),
+                childLayout->GetActualWidth(),
+                childLayout->GetActualHeight());
+
             AddDirtyRegion(childBounds);
         }
-        
+
         // CRITICAL FIX: When child content is invalidated, the window must also invalidate
         // so it knows to update and render the changes
-#ifdef DEBUG
-        std::cout << "Window invalidating self due to child invalidation" << std::endl;
-#endif
+        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+        {
+            std::cout << "Window invalidating self due to child invalidation" << std::endl;
+        }
         Invalidate();
-        
+
         // Don't call parent since Window is the top-level container
     }
 
@@ -883,32 +884,35 @@ namespace xit::Drawing
 
         // int invalidationCount = scene.InvalidationCount;
 
-#ifdef DEBUG
-        if (GetInvalidated() || GetNeedWidthRecalculation() || GetNeedHeightRecalculation() || 
-            GetNeedLeftRecalculation() || GetNeedTopRecalculation())
+        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
         {
-            std::cout << "Window::DoRender - About to update. Window invalidated=" << GetInvalidated() 
-                      << " needWidth=" << GetNeedWidthRecalculation() 
-                      << " needHeight=" << GetNeedHeightRecalculation() << std::endl;
+            if (GetInvalidated() || GetNeedWidthRecalculation() || GetNeedHeightRecalculation() ||
+                GetNeedLeftRecalculation() || GetNeedTopRecalculation())
+            {
+                std::cout << "Window::DoRender - About to update. Window invalidated=" << GetInvalidated()
+                          << " needWidth=" << GetNeedWidthRecalculation()
+                          << " needHeight=" << GetNeedHeightRecalculation() << std::endl;
+            }
         }
-#endif
 
         if (Update(scene.SceneRect))
         {
-#ifdef DEBUG
-            std::cout << "Window::DoRender - Update returned true, proceeding with render" << std::endl;
-#endif
+            if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+            {
+                std::cout << "Window::DoRender - Update returned true, proceeding with render" << std::endl;
+            }
+
             if (useBackgroundBuffer && backgroundBufferInitialized && !dirtyRegions.empty())
             {
                 // Partial redraw: only render dirty regions
-                for (const auto& dirtyRegion : dirtyRegions)
+                for (const auto &dirtyRegion : dirtyRegions)
                 {
                     // Set scissor test to limit rendering to dirty region
                     glEnable(GL_SCISSOR_TEST);
-                    glScissor(dirtyRegion.GetLeft(), 
-                             scene.GetHeight() - dirtyRegion.GetBottom(),
-                             dirtyRegion.GetWidth(), 
-                             dirtyRegion.GetHeight());
+                    glScissor(dirtyRegion.GetLeft(),
+                              scene.GetHeight() - dirtyRegion.GetBottom(),
+                              dirtyRegion.GetWidth(),
+                              dirtyRegion.GetHeight());
 
                     // Copy unchanged parts from background buffer
                     CopyFromBackgroundBuffer(dirtyRegion);
@@ -943,12 +947,10 @@ namespace xit::Drawing
 
             glfwSwapBuffers(window);
         }
-#ifdef DEBUG
-        else
+        else if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
         {
             std::cout << "Window::DoRender - Update returned false, skipping render" << std::endl;
         }
-#endif
     }
 
     //******************************************************************************
@@ -994,7 +996,7 @@ namespace xit::Drawing
 
         // Bind default framebuffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        
+
         backgroundBufferInitialized = true;
     }
 
@@ -1042,7 +1044,7 @@ namespace xit::Drawing
         ClearDirtyRegions();
     }
 
-    void Window::AddDirtyRegion(const Rectangle& region)
+    void Window::AddDirtyRegion(const Rectangle &region)
     {
         if (!useBackgroundBuffer)
             return;
@@ -1067,7 +1069,7 @@ namespace xit::Drawing
                 int top = std::min(it->GetTop(), clippedRegion.GetTop());
                 int right = std::max(it->GetRight(), clippedRegion.GetRight());
                 int bottom = std::max(it->GetBottom(), clippedRegion.GetBottom());
-                
+
                 it->Set(left, top, right - left, bottom - top);
                 merged = true;
                 break;
@@ -1079,7 +1081,7 @@ namespace xit::Drawing
             dirtyRegions.push_back(clippedRegion);
         }
 
-        // Optimization: if dirty regions cover too much of the screen, 
+        // Optimization: if dirty regions cover too much of the screen,
         // fall back to full redraw
         OptimizeDirtyRegions();
     }
@@ -1092,7 +1094,7 @@ namespace xit::Drawing
         int totalDirtyArea = 0;
         int windowArea = scene.GetWidth() * scene.GetHeight();
 
-        for (const auto& region : dirtyRegions)
+        for (const auto &region : dirtyRegions)
         {
             totalDirtyArea += region.GetWidth() * region.GetHeight();
         }
@@ -1111,7 +1113,7 @@ namespace xit::Drawing
         dirtyRegions.clear();
     }
 
-    void Window::CopyFromBackgroundBuffer(const Rectangle& region)
+    void Window::CopyFromBackgroundBuffer(const Rectangle &region)
     {
         if (!backgroundBufferInitialized)
             return;
@@ -1126,13 +1128,12 @@ namespace xit::Drawing
             region.GetRight(), scene.GetHeight() - region.GetTop(),
             region.GetLeft(), scene.GetHeight() - region.GetBottom(),
             region.GetRight(), scene.GetHeight() - region.GetTop(),
-            GL_COLOR_BUFFER_BIT, GL_NEAREST
-        );
+            GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void Window::CopyToBackgroundBuffer(const Rectangle& region)
+    void Window::CopyToBackgroundBuffer(const Rectangle &region)
     {
         if (!backgroundBufferInitialized)
             return;
@@ -1147,8 +1148,7 @@ namespace xit::Drawing
             region.GetRight(), scene.GetHeight() - region.GetTop(),
             region.GetLeft(), scene.GetHeight() - region.GetBottom(),
             region.GetRight(), scene.GetHeight() - region.GetTop(),
-            GL_COLOR_BUFFER_BIT, GL_NEAREST
-        );
+            GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -1163,7 +1163,7 @@ namespace xit::Drawing
         if (useBackgroundBuffer != enabled)
         {
             useBackgroundBuffer = enabled;
-            
+
             if (enabled && !backgroundBufferInitialized)
             {
                 InitializeBackgroundBuffer();
@@ -1180,7 +1180,7 @@ namespace xit::Drawing
         return useBackgroundBuffer;
     }
 
-    void Window::InvalidateRegion(const Rectangle& region)
+    void Window::InvalidateRegion(const Rectangle &region)
     {
         AddDirtyRegion(region);
         Invalidate(); // Trigger a render

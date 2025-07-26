@@ -2,6 +2,7 @@
 // #include <Drawing/Visual.h>
 #include <Drawing/Brushes/ImageBrush.h>
 #include <Drawing/VisualBase/LayoutManager.h>
+#include <Drawing/DebugUtils.h>
 
 #include <OpenGL/Graphics.h>
 #include <OpenGL/Scene2D.h>
@@ -41,44 +42,51 @@ namespace xit::Drawing
     void Visual::NotifyParentOfInvalidation()
     {
         // Notify the parent about this child's invalidation for background buffer
-        const ParentProperty* parentProp = GetParent();
-        
-#ifdef DEBUG
-        std::cout << "NotifyParentOfInvalidation: " << GetName() 
-                  << " parent=" << (parentProp ? "exists" : "null") << std::endl;
-#endif
-        
+        const ParentProperty *parentProp = GetParent();
+
+        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Visual))
+        {
+            std::cout << "NotifyParentOfInvalidation: " << GetName()
+                      << " parent=" << (parentProp ? "exists" : "null") << std::endl;
+        }
+
         if (parentProp)
         {
             // Try to cast parent to LayoutManager to call OnChildInvalidated
-            LayoutManager* parentLayout = dynamic_cast<LayoutManager*>(const_cast<ParentProperty*>(parentProp));
+            LayoutManager *parentLayout = dynamic_cast<LayoutManager *>(const_cast<ParentProperty *>(parentProp));
             if (parentLayout)
             {
-#ifdef DEBUG
-                std::cout << "  -> Calling OnChildInvalidated on parent: " << parentLayout->GetName() << std::endl;
-#endif
+                if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Visual))
+                {
+                    std::cout << "  -> Notifying parent LayoutManager: " << parentLayout->GetName() << std::endl;
+                    std::cout << "  -> Calling OnChildInvalidated on parent: " << parentLayout->GetName() << std::endl;
+                }
+
                 parentLayout->OnChildInvalidated(this);
             }
             else
             {
                 // Fallback: try to invalidate parent directly if it's also a Visual
-                Visual* parentVisual = dynamic_cast<Visual*>(const_cast<ParentProperty*>(parentProp));
+                Visual *parentVisual = dynamic_cast<Visual *>(const_cast<ParentProperty *>(parentProp));
                 if (parentVisual)
                 {
-#ifdef DEBUG
-                    std::cout << "  -> Fallback invalidating parent Visual: " << parentVisual->GetName() << std::endl;
-#endif
+                    if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Visual))
+                    {
+                        std::cout << "  -> Fallback invalidating parent Visual: " << parentVisual->GetName() << std::endl;
+                    }
                     parentVisual->Invalidate();
                 }
-#ifdef DEBUG
+                if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Visual))
+                {
+                    std::cout << "  -> Parent exists but can't cast to LayoutManager or Visual" << std::endl;
+                }
                 else
                 {
                     std::cout << "  -> Parent exists but can't cast to LayoutManager or Visual" << std::endl;
                 }
-#endif
             }
         }
-        
+
         // Always ensure scene knows about the invalidation
         Scene2D::CurrentScene().Invalidate(this);
     }
