@@ -407,23 +407,21 @@ namespace xit::Drawing
         // This handles cases where content invalidates and window needs to update its content layout
         bool needContentUpdate = needClientUpdate || GetInvalidated();
 
-        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
-        {
-            std::cout << "Window::OnUpdate called. needClientUpdate=" << needClientUpdate
-                      << " needContentUpdate=" << needContentUpdate
-                      << " invalidated=" << GetInvalidated()
-                      << " bounds=(" << bounds.GetLeft() << "," << bounds.GetTop()
-                      << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
-        }
+#ifdef DEBUG_WINDOW
+        std::cout << "Window::OnUpdate called. needClientUpdate=" << needClientUpdate
+                  << " needContentUpdate=" << needContentUpdate
+                  << " invalidated=" << GetInvalidated()
+                  << " bounds=(" << bounds.GetLeft() << "," << bounds.GetTop()
+                  << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
+#endif
 
         InputContent::OnUpdate(bounds);
 
         if (needContentUpdate)
         {
-            if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
-            {
-                std::cout << "Window::OnUpdate - Updating client bounds and content" << std::endl;
-            }
+#ifdef DEBUG_WINDOW
+            std::cout << "Window::OnUpdate - Updating client bounds and content" << std::endl;
+#endif
             // TODO create Method GetClientBounds(Visual& v); see Window, SplitContainer, ScrollViewer, ContainerBase
 
             const Thickness &padding = GetPadding();
@@ -435,18 +433,19 @@ namespace xit::Drawing
 
             if (content)
             {
-                if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
-                {
-                    std::cout << "Window::OnUpdate - Updating content with clientBounds=("
-                              << clientBounds.GetLeft() << "," << clientBounds.GetTop()
-                              << "," << clientBounds.GetWidth() << "," << clientBounds.GetHeight() << ")" << std::endl;
-                }
+#ifdef DEBUG_WINDOW
+                std::cout << "Window::OnUpdate - Updating content with clientBounds=("
+                          << clientBounds.GetLeft() << "," << clientBounds.GetTop()
+                          << "," << clientBounds.GetWidth() << "," << clientBounds.GetHeight() << ")" << std::endl;
+#endif
                 content->Update(clientBounds);
                 ToolTip::DoUpdate(clientBounds);
             }
             else
             {
+#ifdef DEBUG_WINDOW
                 std::cout << "Window::OnUpdate - WARNING: No content to update!" << std::endl;
+#endif
             }
 
             // Mark the entire window as dirty on client update
@@ -456,9 +455,11 @@ namespace xit::Drawing
                 AddDirtyRegion(windowBounds);
             }
         }
-        else if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+        else
         {
+#ifdef DEBUG_WINDOW
             std::cout << "Window::OnUpdate - No client update needed" << std::endl;
+#endif
         }
     }
 
@@ -824,10 +825,9 @@ namespace xit::Drawing
             // CRITICAL FIX: Invalidate the window when content changes
             Invalidate();
 
-            if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
-            {
-                std::cout << "Window::SetContent - Content changed, window invalidated" << std::endl;
-            }
+#ifdef DEBUG_WINDOW
+            std::cout << "Window::SetContent - Content changed, window invalidated" << std::endl;
+#endif
         }
     }
 
@@ -848,11 +848,10 @@ namespace xit::Drawing
 
     void Window::OnChildInvalidated(LayoutManager *childLayout)
     {
-        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
-        {
-            std::cout << "Window::OnChildInvalidated called for child: "
-                      << (childLayout ? childLayout->GetName() : "null") << std::endl;
-        }
+#ifdef DEBUG_WINDOW
+        std::cout << "Window::OnChildInvalidated called for child: "
+                  << (childLayout ? childLayout->GetName() : "null") << std::endl;
+#endif
 
         if (useBackgroundBuffer && backgroundBufferInitialized && childLayout)
         {
@@ -866,12 +865,12 @@ namespace xit::Drawing
             AddDirtyRegion(childBounds);
         }
 
+#ifdef DEBUG_WINDOW
+        std::cout << "Window invalidating self due to child invalidation" << std::endl;
+#endif
+
         // CRITICAL FIX: When child content is invalidated, the window must also invalidate
         // so it knows to update and render the changes
-        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
-        {
-            std::cout << "Window invalidating self due to child invalidation" << std::endl;
-        }
         Invalidate();
 
         // Don't call parent since Window is the top-level container
@@ -884,23 +883,21 @@ namespace xit::Drawing
 
         // int invalidationCount = scene.InvalidationCount;
 
-        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+#ifdef DEBUG_WINDOW
+        if (GetInvalidated() || GetNeedWidthRecalculation() || GetNeedHeightRecalculation() ||
+            GetNeedLeftRecalculation() || GetNeedTopRecalculation())
         {
-            if (GetInvalidated() || GetNeedWidthRecalculation() || GetNeedHeightRecalculation() ||
-                GetNeedLeftRecalculation() || GetNeedTopRecalculation())
-            {
-                std::cout << "Window::DoRender - About to update. Window invalidated=" << GetInvalidated()
-                          << " needWidth=" << GetNeedWidthRecalculation()
-                          << " needHeight=" << GetNeedHeightRecalculation() << std::endl;
-            }
+            std::cout << "Window::DoRender - About to update. Window invalidated=" << GetInvalidated()
+                      << " needWidth=" << GetNeedWidthRecalculation()
+                      << " needHeight=" << GetNeedHeightRecalculation() << std::endl;
         }
+#endif
 
         if (Update(scene.SceneRect))
         {
-            if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
-            {
-                std::cout << "Window::DoRender - Update returned true, proceeding with render" << std::endl;
-            }
+#ifdef DEBUG_WINDOW
+            std::cout << "Window::DoRender - Update returned true, proceeding with render" << std::endl;
+#endif
 
             if (useBackgroundBuffer && backgroundBufferInitialized && !dirtyRegions.empty())
             {
@@ -947,9 +944,11 @@ namespace xit::Drawing
 
             glfwSwapBuffers(window);
         }
-        else if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Window))
+        else
         {
+#ifdef DEBUG_WINDOW
             std::cout << "Window::DoRender - Update returned false, skipping render" << std::endl;
+#endif
         }
     }
 
