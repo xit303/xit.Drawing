@@ -471,6 +471,8 @@ namespace xit::Drawing
 
         // Call base implementation
         InputContent::OnInvalidated(e);
+
+        mainLoopSemaphore.release();
     }
     void Window::OnRender()
     {
@@ -1008,6 +1010,7 @@ namespace xit::Drawing
 
         // Clear dirty regions and force full redraw
         ClearDirtyRegions();
+        Invalidate();
     }
 
     void Window::DestroyBackgroundBuffer()
