@@ -32,14 +32,12 @@ namespace xit::Drawing
     {
         if (isPassword != value)
         {
-            if (isPassword)
-            {
-                // erase aktual value if it already is a secure text
-                Erase();
-            }
-
+#ifdef DEBUG_TEXTBOX
+            std::cout << "[DEBUG] SetIsPassword: Actually changing from " << isPassword << " to " << value << std::endl;
+#endif
             isPassword = value;
 
+            // Mark this TextBox's label for identification
             if (isPassword)
             {
                 textLabel.SetName("PasswordTextBoxLabel");
@@ -50,6 +48,12 @@ namespace xit::Drawing
             }
 
             showPasswordButton.SetIsVisible(isPassword);
+        }
+        else
+        {
+#ifdef DEBUG_TEXTBOX
+            std::cout << "[DEBUG] SetIsPassword: No change needed, already " << value << std::endl;
+#endif
         }
     }
 
@@ -397,29 +401,58 @@ namespace xit::Drawing
 
     void TextBox::UpdateTextHintLabel()
     {
+#ifdef DEBUG_TEXTBOX
+        std::cout << "[DEBUG] UpdateTextHintLabel() called, internalText.empty()=" << internalText.empty() << std::endl;
+#endif
+
         if (internalText.empty())
         {
             textHintLabel.SetFontSize(UIDefaults::DefaultFontSize);
             textHintLabel.SetVerticalAlignment(VerticalAlignment::Center);
+#ifdef DEBUG_TEXTBOX
+            std::cout << "[DEBUG] Set textHintLabel to Center alignment, DefaultFontSize" << std::endl;
+#endif
         }
         else
         {
             textHintLabel.SetFontSize(UIDefaults::SmallFontSize);
             textHintLabel.SetVerticalAlignment(VerticalAlignment::Top);
+#ifdef DEBUG_TEXTBOX
+            std::cout << "[DEBUG] Set textHintLabel to Top alignment, SmallFontSize" << std::endl;
+#endif
         }
+#ifdef DEBUG_TEXTBOX
+        std::cout << "[DEBUG] textLabel VerticalAlignment: " << (int)textLabel.GetVerticalAlignment() << std::endl;
+        std::cout << "[DEBUG] textHintLabel VerticalAlignment: " << (int)textHintLabel.GetVerticalAlignment() << std::endl;
+#endif
         // textHintLabel.SetVisibility(internalText.empty() ? Visibility::Visible : Visibility::Collapsed);
     }
 
     void TextBox::UpdateVisibleText()
     {
+#ifdef DEBUG_TEXTBOX
+        std::cout << "[DEBUG] UpdateVisibleText() called" << std::endl;
+        std::cout << "[DEBUG] isPassword=" << isPassword << ", textLength=" << textLength << std::endl;
+        std::cout << "[DEBUG] internalText='" << internalText << "'" << std::endl;
+#endif
+
         if (showPasswordButton.GetIsActive() || !isPassword)
         {
             viewText = internalText;
+#ifdef DEBUG_TEXTBOX
+            std::cout << "[DEBUG] Using internalText: '" << viewText << "'" << std::endl;
+#endif
         }
         else
         {
             viewText = textLength > 0 ? std::string(textLength, PasswordCharacter) : "";
+#ifdef DEBUG_TEXTBOX
+            std::cout << "[DEBUG] Using asterisks: '" << viewText << "'" << std::endl;
+#endif
         }
+#ifdef DEBUG_TEXTBOX
+        std::cout << "[DEBUG] UpdateVisibleText() complete" << std::endl;
+#endif
         textLabel.SetText(viewText);
     }
     void TextBox::ShowPasswordButton_ActiveChanged(IsActiveProperty &sender, EventArgs &e)
