@@ -13,6 +13,8 @@ namespace xit::Drawing::Pages
             SetInheritForeground(false);
             SetLayoutGroup("Page");
             SetBrushGroup("Page");
+
+            SetName("Page");
         }
     };
 }

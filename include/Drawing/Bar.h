@@ -18,6 +18,8 @@ namespace xit::Drawing
             SetInheritForeground(false);
             SetUseOrientation(true);
 
+            SetName("Bar");
+
             //SetColumns("*");
             //SetRows("*");
 
