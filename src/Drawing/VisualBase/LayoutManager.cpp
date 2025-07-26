@@ -441,10 +441,12 @@ namespace xit::Drawing::VisualBase
                 // Clamp the size to respect minimum and maximum width constraints
                 newSize = CheckMinMaxWidth(*this, newSize);
 
+#ifdef DEBUG_LAYOUT_MANAGER
                 if (newSize != actualWidth)
                     std::cout << " MeasureWidth: availableSize=" << availableSize
                               << ", contentSpace=" << contentSpace
                               << ", newSize=" << newSize << std::endl;
+#endif
             }
 
             desiredSize.SetWidth(newSize);
@@ -513,10 +515,12 @@ namespace xit::Drawing::VisualBase
                 // Clamp the size to respect minimum and maximum width constraints
                 newSize = CheckMinMaxHeight(*this, newSize);
 
+#ifdef DEBUG_LAYOUT_MANAGER
                 if (newSize != actualHeight)
                     std::cout << " MeasureHeight: availableSize=" << availableSize
                               << ", contentSpace=" << contentSpace
                               << ", newSize=" << newSize << std::endl;
+#endif
             }
 
             desiredSize.SetHeight(newSize);
