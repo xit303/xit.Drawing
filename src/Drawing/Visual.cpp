@@ -78,9 +78,6 @@ namespace xit::Drawing
 #endif
             }
         }
-
-        // Always ensure scene knows about the invalidation
-        Scene2D::CurrentScene().Invalidate(this);
     }
 
     //******************************************************************************
