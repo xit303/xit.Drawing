@@ -1,0 +1,137 @@
+{
+    "author": "xit",
+    "configurations": [
+        {
+            "name": "Debug",
+            "build_type": "Executable",
+            "build_dir": ".bin",
+            "output_filename": "testWindow",
+            "compiler_path": "",
+            "compiler": "g++",
+            "linker": "g++",
+            "c_flags": "-std=c11 -Wall -Wextra -pedantic",
+            "cxx_flags": "-std=c++23 -Wall -g",
+            "linker_flags": "-lm -lstdc++ -Wl,--no-as-needed",
+            "defines": [
+                "DEBUG"
+            ],
+            "include_paths": [
+                "include",
+                "../lib/ArduinoJson/src",
+                "../lib/glm/glm/",
+                "/usr/include/xit/",
+                "/usr/include/xit/glad/",
+                "/usr/include/GLFW/",
+                "/usr/include/freetype2"
+            ],
+            "source_paths": [
+                "src/"
+            ],
+            "exclude_paths": [],
+            "exclude_files": [],
+            "library_paths": [],
+            "libraries": [
+                "/usr/lib/x86_64-linux-gnu/libgtest.a",
+                "/usr/lib/xit/libxit.Drawing.so",
+                "/usr/lib/xit/libxit.Application.so",
+                "/usr/lib/xit/libxit.Clipboard.so",
+                "/usr/lib/xit/libxit.Account.so",
+                "/usr/lib/xit/libxit.Input.so",
+                "/usr/lib/xit/libxit.IO.so",
+                "/usr/lib/xit/libxit.Threading.so",
+                "/usr/lib/xit/libxit.Timers.so",
+                "/usr/lib/xit/libxit.Window.so",
+                "/usr/lib/xit/libxit.Security.so",
+                "/usr/lib/xit/libxit.so",
+                "/usr/lib/x86_64-linux-gnu/libssl.so",
+                "/usr/lib/x86_64-linux-gnu/libcrypto.so",
+                "glfw",
+                "X11",
+                "freetype"
+            ],
+            "pre_build_commands": [],
+            "post_build_commands": [
+                "mkdir -p .bin/Debug/Resources",
+                "cp -r Resources/* .bin/Debug/Resources/"
+            ],
+            "pre_run_commands": [
+                "echo 'Running...'"
+            ],
+            "post_run_commands": [
+                "echo 'Run completed!'"
+            ],
+            "install_commands": [
+                "mkdir -p /usr/local/bin",
+                "cp ${output_file} /usr/lib/xit/",
+                "mkdir -p /usr/include/xit",
+                "cp -r include/* /usr/include/xit/"
+            ],
+            "uninstall_commands": [
+                "rm -f /usr/lib/xit/${output_filename}"
+            ],
+            "clean_commands": [
+                "rm -rf ${build_dir}"
+            ]
+        },
+        {
+            "name": "Release",
+            "build_types": "Options are: Executable, StaticLibrary, SharedLibrary",
+            "build_type": "SharedLibrary",
+            "build_dir": ".bin",
+            "output_filename": "libxit.Drawing.so",
+            "compiler_path": "",
+            "compiler": "g++",
+            "linker": "g++",
+            "archiver": "ar",
+            "archiver_flags": "rcs",
+            "c_flags": "-std=c++23 -Wall -Wextra -pedantic -fPIC",
+            "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -MMD -fPIC -O0",
+            "linker_flags": "-lm -lstdc++",
+            "defines": [],
+            "include_paths": [
+                "include",
+                "lib/ArduinoJson/src",
+                "lib/glm/glm/",
+                "../xit/include",
+                "../xit.Clipboard/include",
+                "../xit.Clipboard/lib/glad/include",
+                "../xit.Input/include",
+                "../xit.IO/include",
+                "../xit.Timers/include",
+                "../xit.Threading/include",
+                "../xit.Application/include",
+                "../xit.Account/include",
+                "../xit.Security/include",
+                "/usr/include/GLFW/",
+                "/usr/include/freetype2/"
+            ],
+            "source_paths": [
+                "src/"
+            ],
+            "exclude_paths": [],
+            "exclude_files": [],
+            "library_paths": [],
+            "libraries": [],
+            "pre_build_commands": [],
+            "post_build_commands": [],
+            "pre_run_commands": [
+                "echo 'Running...'"
+            ],
+            "post_run_commands": [
+                "echo 'Run completed!'"
+            ],
+            "install_commands": [
+                "mkdir -p /usr/local/bin",
+                "cp ${output_file} /usr/lib/xit/",
+                "mkdir -p /usr/include/xit",
+                "cp -r include/* /usr/include/xit/"
+            ],
+            "uninstall_commands": [
+                "rm -f /usr/lib/xit/${output_filename}"
+            ],
+            "clean_commands": [
+                "rm -rf ${build_dir}"
+            ]
+        }
+    ]
+}
