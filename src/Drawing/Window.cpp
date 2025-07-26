@@ -381,10 +381,6 @@ namespace xit::Drawing
     // Private
     //******************************************************************************
 
-    void Window::OnSceneInvalidated(EventArgs &e)
-    {
-        mainLoopSemaphore.release();
-    }
     void Window::App_Closing(EventArgs &e)
     {
         Close();
@@ -684,7 +680,6 @@ namespace xit::Drawing
         glfwSetWindowCloseCallback(window, WindowCloseCallback);
 
         scene.Resize(windowSettings.GetWidth(), windowSettings.GetHeight());
-        scene.Invalidated.Add(&Window::OnSceneInvalidated, this);
         Scene2D::MakeCurrent(&scene);
 
         // SetBrushGroup("Window");
@@ -940,8 +935,6 @@ namespace xit::Drawing
                     CopyToBackgroundBuffer(fullRect);
                 }
             }
-
-            scene.SetInvalidationDone();
 
             glfwSwapBuffers(window);
         }

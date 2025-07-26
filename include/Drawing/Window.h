@@ -47,7 +47,6 @@ namespace xit::Drawing
         bool useBackgroundBuffer;
         bool backgroundBufferInitialized;
 
-        void OnSceneInvalidated(EventArgs &e);
         void App_Closing(EventArgs &e);
 
     protected:
