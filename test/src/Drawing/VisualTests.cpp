@@ -3,7 +3,8 @@
 
 using namespace xit::Drawing;
 
-TEST(VisualTest, MeasureWidth_VerySmallAvailableSize) {
+TEST(VisualTest, MeasureWidth_VerySmallAvailableSize)
+{
     Visual visual;
     visual.SetWidth(-1); // Auto size
     visual.SetMargin(Thickness(5));
@@ -22,7 +23,8 @@ TEST(VisualTest, MeasureWidth_VerySmallAvailableSize) {
     ASSERT_EQ(availableSize + visual.GetPadding().GetWidth() + visual.GetBorderThickness().GetWidth(), 7);
 }
 
-TEST(VisualTest, MeasureWidth_VeryLargeAvailableSize) {
+TEST(VisualTest, MeasureWidth_VeryLargeAvailableSize)
+{
     Visual visual;
     visual.SetWidth(-1); // Auto size
     visual.SetMargin(Thickness(5));
@@ -38,10 +40,11 @@ TEST(VisualTest, MeasureWidth_VeryLargeAvailableSize) {
     ASSERT_EQ(visual.GetDesiredSize().GetWidth(), 990);
     ASSERT_EQ(visual.GetTop(), 0);
     ASSERT_EQ(visual.GetLeft(), 0);
-    //ASSERT_EQ(availableSize + visual.GetPadding().GetWidth() + visual.GetBorderThickness().GetWidth(), availableSize);
+    // ASSERT_EQ(availableSize + visual.GetPadding().GetWidth() + visual.GetBorderThickness().GetWidth(), availableSize);
 }
 
-TEST(VisualTest, MeasureWidth_NegativeMarginPaddingBorder) {
+TEST(VisualTest, MeasureWidth_NegativeMarginPaddingBorder)
+{
     Visual visual;
     visual.SetWidth(-1); // Auto size
     visual.SetMargin(Thickness(-5));
@@ -57,10 +60,11 @@ TEST(VisualTest, MeasureWidth_NegativeMarginPaddingBorder) {
     ASSERT_EQ(visual.GetDesiredSize().GetWidth(), 110);
     ASSERT_EQ(visual.GetTop(), 0);
     ASSERT_EQ(visual.GetLeft(), 0);
-    //ASSERT_EQ(availableSize + visual.GetPadding().GetWidth() + visual.GetBorderThickness().GetWidth(), availableSize);
+    // ASSERT_EQ(availableSize + visual.GetPadding().GetWidth() + visual.GetBorderThickness().GetWidth(), availableSize);
 }
 
-TEST(VisualTest, MeasureWidth_ZeroMarginPaddingBorder) {
+TEST(VisualTest, MeasureWidth_ZeroMarginPaddingBorder)
+{
     Visual visual;
     visual.SetWidth(-1); // Auto size
     visual.SetMargin(Thickness(0));
@@ -76,10 +80,11 @@ TEST(VisualTest, MeasureWidth_ZeroMarginPaddingBorder) {
     ASSERT_EQ(visual.GetDesiredSize().GetWidth(), availableSize);
     ASSERT_EQ(visual.GetTop(), 0);
     ASSERT_EQ(visual.GetLeft(), 0);
-    //ASSERT_EQ(availableSize + visual.GetPadding().GetWidth() + visual.GetBorderThickness().GetWidth(), availableSize);
+    // ASSERT_EQ(availableSize + visual.GetPadding().GetWidth() + visual.GetBorderThickness().GetWidth(), availableSize);
 }
 
-TEST(VisualTest, MeasureHeight_VerySmallAvailableSize) {
+TEST(VisualTest, MeasureHeight_VerySmallAvailableSize)
+{
     Visual visual;
     visual.SetHeight(-1); // Auto size
     visual.SetMargin(Thickness(5));
@@ -98,7 +103,8 @@ TEST(VisualTest, MeasureHeight_VerySmallAvailableSize) {
     ASSERT_EQ(availableSize + visual.GetPadding().GetHeight() + visual.GetBorderThickness().GetHeight(), 7);
 }
 
-TEST(VisualTest, MeasureHeight_VeryLargeAvailableSize) {
+TEST(VisualTest, MeasureHeight_VeryLargeAvailableSize)
+{
     Visual visual;
     visual.SetHeight(-1); // Auto size
     visual.SetMargin(Thickness(5));
@@ -114,10 +120,11 @@ TEST(VisualTest, MeasureHeight_VeryLargeAvailableSize) {
     ASSERT_EQ(visual.GetDesiredSize().GetHeight(), 990);
     ASSERT_EQ(visual.GetTop(), 0);
     ASSERT_EQ(visual.GetLeft(), 0);
-    //ASSERT_EQ(availableSize + visual.GetPadding().GetHeight() + visual.GetBorderThickness().GetHeight(), 990);
+    // ASSERT_EQ(availableSize + visual.GetPadding().GetHeight() + visual.GetBorderThickness().GetHeight(), 990);
 }
 
-TEST(VisualTest, MeasureHeight_NegativeMarginPaddingBorder) {
+TEST(VisualTest, MeasureHeight_NegativeMarginPaddingBorder)
+{
     Visual visual;
     visual.SetHeight(-1); // Auto size
     visual.SetMargin(Thickness(-5));
@@ -133,10 +140,11 @@ TEST(VisualTest, MeasureHeight_NegativeMarginPaddingBorder) {
     ASSERT_EQ(visual.GetDesiredSize().GetHeight(), 110);
     ASSERT_EQ(visual.GetTop(), 0);
     ASSERT_EQ(visual.GetLeft(), 0);
-    //ASSERT_EQ(availableSize + visual.GetPadding().GetHeight() + visual.GetBorderThickness().GetHeight(), 110);
+    // ASSERT_EQ(availableSize + visual.GetPadding().GetHeight() + visual.GetBorderThickness().GetHeight(), 110);
 }
 
-TEST(VisualTest, MeasureHeight_ZeroMarginPaddingBorder) {
+TEST(VisualTest, MeasureHeight_ZeroMarginPaddingBorder)
+{
     Visual visual;
     visual.SetHeight(-1); // Auto size
     visual.SetMargin(Thickness(0));
@@ -145,11 +153,11 @@ TEST(VisualTest, MeasureHeight_ZeroMarginPaddingBorder) {
 
     int availableSize = 100;
     int measuredHeight = visual.MeasureHeight(availableSize);
-    
+
     ASSERT_EQ(measuredHeight, 100);
     ASSERT_EQ(visual.GetActualHeight(), 100);
     ASSERT_EQ(visual.GetDesiredSize().GetHeight(), 100);
     ASSERT_EQ(visual.GetTop(), 0);
     ASSERT_EQ(visual.GetLeft(), 0);
-    //ASSERT_EQ(availableSize + visual.GetPadding().GetHeight() + visual.GetBorderThickness().GetHeight(), 100);
+    // ASSERT_EQ(availableSize + visual.GetPadding().GetHeight() + visual.GetBorderThickness().GetHeight(), 100);
 }
