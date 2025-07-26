@@ -44,11 +44,10 @@ namespace xit::Drawing
         // Notify the parent about this child's invalidation for background buffer
         const ParentProperty *parentProp = GetParent();
 
-        if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Visual))
-        {
-            std::cout << "NotifyParentOfInvalidation: " << GetName()
-                      << " parent=" << (parentProp ? "exists" : "null") << std::endl;
-        }
+#ifdef DEBUG_VISUAL
+        std::cout << "NotifyParentOfInvalidation: " << GetName()
+                  << " parent=" << (parentProp ? "exists" : "null") << std::endl;
+#endif
 
         if (parentProp)
         {
@@ -56,11 +55,10 @@ namespace xit::Drawing
             LayoutManager *parentLayout = dynamic_cast<LayoutManager *>(const_cast<ParentProperty *>(parentProp));
             if (parentLayout)
             {
-                if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Visual))
-                {
-                    std::cout << "  -> Notifying parent LayoutManager: " << parentLayout->GetName() << std::endl;
-                    std::cout << "  -> Calling OnChildInvalidated on parent: " << parentLayout->GetName() << std::endl;
-                }
+#ifdef DEBUG_VISUAL
+                std::cout << "  -> Notifying parent LayoutManager: " << parentLayout->GetName() << std::endl;
+                std::cout << "  -> Calling OnChildInvalidated on parent: " << parentLayout->GetName() << std::endl;
+#endif
 
                 parentLayout->OnChildInvalidated(this);
             }
@@ -70,20 +68,14 @@ namespace xit::Drawing
                 Visual *parentVisual = dynamic_cast<Visual *>(const_cast<ParentProperty *>(parentProp));
                 if (parentVisual)
                 {
-                    if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Visual))
-                    {
-                        std::cout << "  -> Fallback invalidating parent Visual: " << parentVisual->GetName() << std::endl;
-                    }
+#ifdef DEBUG_VISUAL
+                    std::cout << "  -> Fallback invalidating parent Visual: " << parentVisual->GetName() << std::endl;
+#endif
                     parentVisual->Invalidate();
                 }
-                if (xit::Drawing::Debug::LayoutDiagnostics::IsDebugEnabled(xit::Drawing::Debug::DebugFlags::Visual))
-                {
-                    std::cout << "  -> Parent exists but can't cast to LayoutManager or Visual" << std::endl;
-                }
-                else
-                {
-                    std::cout << "  -> Parent exists but can't cast to LayoutManager or Visual" << std::endl;
-                }
+#ifdef DEBUG_VISUAL
+                std::cout << "  -> Parent exists but can't cast to LayoutManager or Visual" << std::endl;
+#endif
             }
         }
 
