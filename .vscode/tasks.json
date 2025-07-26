@@ -33,6 +33,15 @@
             "group": "build",
             "problemMatcher": "$gcc",
             "dependsOn": "xmake silent",
+        },
+        {
+            "label": "xmake testWindow",
+            "type": "shell",
+            "command": "xmake",
+            "args": ["testWindow/xmakefile.json"],
+            "group": "build",
+            "problemMatcher": "$gcc",
+            "dependsOn": "xmake silent",
         }
     ]
 }
