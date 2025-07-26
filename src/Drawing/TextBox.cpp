@@ -47,6 +47,9 @@ namespace xit::Drawing
                 textLabel.SetName("TextBoxTextLabel");
             }
 
+            // Always update visible text when password mode changes
+            UpdateVisibleText();
+
             showPasswordButton.SetIsVisible(isPassword);
         }
         else
@@ -61,6 +64,7 @@ namespace xit::Drawing
     {
         if (isEditEnabled && (internalText != value))
         {
+            // For password fields, securely erase old content before setting new text
             if (isPassword)
             {
                 Erase();
@@ -253,7 +257,6 @@ namespace xit::Drawing
     {
         int offset = 0;
 
-        textLabel.SetText(viewText);
         totalSize = textLabel.MeasureText();
 
         int left;
@@ -450,10 +453,12 @@ namespace xit::Drawing
             std::cout << "[DEBUG] Using asterisks: '" << viewText << "'" << std::endl;
 #endif
         }
+
+        textLabel.SetText(viewText);
+
 #ifdef DEBUG_TEXTBOX
         std::cout << "[DEBUG] UpdateVisibleText() complete" << std::endl;
 #endif
-        textLabel.SetText(viewText);
     }
     void TextBox::ShowPasswordButton_ActiveChanged(IsActiveProperty &sender, EventArgs &e)
     {
@@ -1106,21 +1111,7 @@ namespace xit::Drawing
         std::string tmp;
 
         tmp = internalText.insert(index, s);
-        if (!internalText.empty())
-        {
-            if (isPassword)
-                Erase();
-        }
-
         internalText = tmp;
-
-        /*if (isPassword)
-        {
-            tmp = viewText.insert(index, s ? String::Create(PasswordCharacter, sLength) : "");
-        }
-
-        viewText = tmp;*/
-
         textLength += sLength;
 
         UpdateVisibleText();
@@ -1134,21 +1125,7 @@ namespace xit::Drawing
             return;
 
         tmp = internalText.insert(index, 1, c);
-        if (!internalText.empty())
-        {
-            if (isPassword)
-                Erase();
-        }
-
         internalText = tmp;
-
-        // if (isPassword)
-        //{
-        //     tmp = viewText.insert(index, isPassword ? PasswordCharacter : c);
-        // }
-
-        // viewText = tmp;
-
         textLength += sLength;
 
         UpdateVisibleText();
@@ -1158,24 +1135,7 @@ namespace xit::Drawing
         if (index < textLength && index >= 0)
         {
             std::string tmp = internalText.substr(0, index) + internalText.substr(index + count);
-            if (!internalText.empty())
-            {
-                if (isPassword)
-                    Erase();
-            }
-
             internalText = tmp;
-
-            // if (isPassword)
-            //{
-            //     tmp = String::Create(PasswordCharacter, textLength - count);
-
-            //    if (!tmp)
-            //        tmp.clear();
-            //}
-
-            // viewText = tmp;
-
             textLength = internalText.length();
 
             UpdateVisibleText();
@@ -1194,5 +1154,6 @@ namespace xit::Drawing
             SecureClear(&internalText[0], internalText.size()); // Securely overwrite memory
         }
         internalText.clear(); // Clear the string
+        textLength = 0;       // Reset text length to match cleared content
     }
 }
