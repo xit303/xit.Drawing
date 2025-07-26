@@ -8,6 +8,7 @@ namespace xit::Drawing
         SetBrushGroup("ToggleButton");
         SetLayoutGroup("ToggleButton");
         SetShowLabel(false);
+        SetName("ToggleButtonBase");
     }
 
     Size ToggleButtonBase::Measure(const Size &availableSize)

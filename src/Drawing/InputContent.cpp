@@ -72,6 +72,8 @@ namespace xit::Drawing
         wasKeyboardHandled = false;
 
         toolTipHidden = false;
+
+        SetName("InputContent");
     }
 
     //******************************************************************************

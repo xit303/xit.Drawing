@@ -6,6 +6,7 @@ namespace xit::Drawing
 {
     SplitContainer::SplitContainer()
     {
+        SetName("SplitContainer");
         SetInheritForeground(true);
 
         grid.SetChildren(&children);

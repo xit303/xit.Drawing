@@ -17,6 +17,8 @@ namespace xit::Drawing
         grid.SetChildren(&children);
         grid.SetColumns(GetColumns());
         grid.SetRows(GetRows());
+
+        SetName("ContainerBase");
     }
 
     void ContainerBase::AddChild(Visual *content)

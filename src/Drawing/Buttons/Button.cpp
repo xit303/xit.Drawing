@@ -7,6 +7,8 @@ namespace xit::Drawing
         SetBrushGroup("Button");
         SetLayoutGroup("Button");
 
+        SetName("Button");
+
         SetUniformImageSize(UIDefaults::ButtonImageHeight);
     }
 }

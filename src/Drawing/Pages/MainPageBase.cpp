@@ -2,7 +2,11 @@
 
 namespace xit::Drawing::Pages
 {
-    MainPageBase::MainPageBase() {}
+    MainPageBase::MainPageBase()
+    {
+        SetName("MainPageBase");
+    }
+
     void MainPageBase::SaveState() {}
 
     void MainPageBase::LoadAccountData()

@@ -11,6 +11,8 @@ namespace xit::Drawing
         SetBrushGroup("ToolTip");
         SetLayoutGroup("ToolTip");
 
+        SetName("ToolTip");
+
         SetColumns("Auto");
         SetRows("Auto");
 

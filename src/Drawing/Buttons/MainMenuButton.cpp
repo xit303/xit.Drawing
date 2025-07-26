@@ -32,6 +32,8 @@ namespace xit::Drawing
         SetBrushGroup("MainMenuButton");
         SetLayoutGroup("MainMenuButton");
 
+        SetName("MainMenuButton");
+
         SetUniformImageSize(UIDefaults::MenuButtonImageSize);
         SetShowImage(true);
 

@@ -6,6 +6,8 @@ namespace xit::Drawing
     {
         SetCanActivate(true);
         SetShowImage(true);
+
+        SetName("ToggleButton");
     }
 
     ToggleButton* ToggleButton::CreateRenameButton()

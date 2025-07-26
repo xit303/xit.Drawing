@@ -28,16 +28,19 @@ namespace xit::Drawing
 
         SetBackground(new SolidColorBrush(0x00000000));//(Color::Transparent));
         SetLayoutGroup("Switch");
+        SetName("Switch");
 
         // label is the text of the switch
         // we place it at the bottom to be close to the description
         label.SetGrid(0, 0);
+        label.SetName("SwitchLabel");
         AddChild(&label);
 
         // description is the part of the switch that describes the funtion of the switch
         // this should be aligned to the top to be close to the label above
         description.SetGrid(0, 1);
         description.SetFontSize(UIDefaults::SmallFontSize);
+        description.SetName("SwitchDescription");
         AddChild(&description);
 
         trackBorder.SetGrid(1, 0, 1, 2);
@@ -49,6 +52,7 @@ namespace xit::Drawing
         trackBorder.SetCornerRadius((double)(UIDefaults::DefaultItemHeight >> 3));
         trackBorder.SetBorderThickness(UIDefaults::DefaultBorderThickness);
         trackBorder.SetBrushGroup("Switch");
+        trackBorder.SetName("SwitchTrackBorder");
         AddChild(&trackBorder);
 
         thumbBorder.SetGrid(1, 0, 1, 2);
@@ -57,6 +61,7 @@ namespace xit::Drawing
         thumbBorder.SetWidth(UIDefaults::DefaultItemHeight >> 1);
         thumbBorder.SetCornerRadius((double)(UIDefaults::DefaultItemHeight >> 3));
         thumbBorder.SetBackground(trackBorder.GetForeground());
+        thumbBorder.SetName("SwitchThumbBorder");
         trackBorder.SetContent(&thumbBorder);
     }
 

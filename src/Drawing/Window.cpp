@@ -358,6 +358,7 @@ namespace xit::Drawing
         backgroundBufferInitialized = false;
 
         SetBrushGroup("Window");
+        SetName("Window");
 
         if (!glfwInit())
         {

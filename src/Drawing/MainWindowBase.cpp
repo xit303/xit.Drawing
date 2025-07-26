@@ -12,7 +12,7 @@ namespace xit::Drawing
     {
         // DefaultTitle = App::Name;
         // UseWindowSettings = true;
-        SetName("MainWindow");
+        SetName("MainWindowBase");
         SetLayoutGroup("MainWindow");
 
         // App.AddInitializationAction(AppInitializationPriority.High, () => OnInitializeComponents());

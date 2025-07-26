@@ -42,6 +42,11 @@ namespace xit::Drawing
 
             if (isPassword)
             {
+                textLabel.SetName("PasswordTextBoxLabel");
+            }
+            else
+            {
+                textLabel.SetName("TextBoxTextLabel");
             }
 
             showPasswordButton.SetIsVisible(isPassword);
@@ -137,6 +142,8 @@ namespace xit::Drawing
         SetBrushGroup("TextBox");
         SetLayoutGroup("TextBox");
 
+        SetName("TextBox");
+
         SetHandleMouse(true);
         SetHandleKeyboard(true);
         SetCanFocus(true);
@@ -174,6 +181,7 @@ namespace xit::Drawing
         selectionBorder.SetWidth(2);
         selectionBorder.SetVisibility(Visibility::Collapsed);
         selectionBorder.SetVerticalAlignment(VerticalAlignment::Center);
+        selectionBorder.SetName("TextBoxSelectionBorder");
         AddChild(&selectionBorder);
 
         textLabel.SetName("TextBoxTextLabel");
@@ -184,9 +192,11 @@ namespace xit::Drawing
 
         caret.SetWidth(1);
         caret.SetVerticalAlignment(VerticalAlignment::Center);
+        caret.SetName("TextBoxCaret");
 
         textHintLabel.SetTextWrapping(TextWrapping::NoWrap);
         textHintLabel.SetMargin(UIDefaults::TextBoxPaddingLeft, 0, UIDefaults::TextBoxPaddingRight, 0);
+        textHintLabel.SetName("TextBoxTextHintLabel");
         AddChild(&textHintLabel);
 
         caretTimer.SetInterval(750);
@@ -201,6 +211,7 @@ namespace xit::Drawing
         showPasswordButton.SetVisibility(Visibility::Collapsed);
         showPasswordButton.SetToolTip("Show/hide password");
         showPasswordButton.IsActiveChanged.Add(&TextBox::ShowPasswordButton_ActiveChanged, this);
+        showPasswordButton.SetName("TextBoxShowPasswordButton");
         AddChild(&showPasswordButton);
 
         showPasswordButton.InputPressed.Add([](InputContent &sender, MouseEventArgs &e) -> void

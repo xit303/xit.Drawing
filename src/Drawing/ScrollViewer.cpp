@@ -16,6 +16,8 @@ namespace xit::Drawing
     {
         isScrollBarAlwaysVisible = false;
 
+        SetName("ScrollViewer");
+
         SetHandleMouse(true);
         SetHandleKeyboard(true);
         SetClipToBounds(true);

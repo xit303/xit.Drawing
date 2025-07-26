@@ -32,6 +32,8 @@ namespace xit::Drawing
         : stretch(Stretch::Uniform)
     {
         SetClipToBounds(true);
+
+        SetName("Image");
     }
 
     Image::Image(int column, int row, int columnSpan, int rowSpan)

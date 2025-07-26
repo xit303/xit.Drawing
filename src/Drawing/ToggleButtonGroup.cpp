@@ -16,6 +16,7 @@ namespace xit::Drawing
           activeButton(nullptr)
     {
         SetUseOrientation(true);
+        SetName("ToggleButtonGroup");
     }
 
     void ToggleButtonGroup::ButtonIsActiveChanged(IsActiveProperty &sender, EventArgs &e)

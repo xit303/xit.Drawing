@@ -99,6 +99,7 @@ namespace xit::Drawing::Pages
         }
 
         SetLayoutGroup("LoginPage");
+        SetName("LoginPageBase");
 
         canCreateAccount = true;
         canPreload = true;

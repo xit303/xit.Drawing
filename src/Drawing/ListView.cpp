@@ -108,6 +108,7 @@ namespace xit::Drawing
 
         SetBrushGroup("List");
         SetLayoutGroup("List");
+        SetName("ListView");
 
         selectionMode = SelectionMode::Single;
 

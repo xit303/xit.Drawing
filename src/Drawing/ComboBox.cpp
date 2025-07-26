@@ -11,6 +11,7 @@ namespace xit::Drawing
 
         SetBrushGroup("ComboBox");
         SetLayoutGroup("ComboBox");
+        SetName("ComboBox");
 
         SetCanFocus(true);
         SetHandleMouse(true);
@@ -22,6 +23,7 @@ namespace xit::Drawing
         ComboBoxButton.SetCanActivate(true);
         ComboBoxButton.IsActiveChanged.Add(&ComboBox::ComboBoxButton_ActiveChanged, this);
         ComboBoxButton.InputScroll.Add(&ComboBox::ComboBoxButton_InputScroll, this);
+        ComboBoxButton.SetName("ComboBoxButton");
         AddChild(&ComboBoxButton);
 
         textBox.SetHeight(-1);
@@ -31,6 +33,7 @@ namespace xit::Drawing
         textBox.KeyDown.Add(&ComboBox::TextBox_KeyDown, this);
         textBox.TextChanged.Add(&ComboBox::TextBox_TextChanged, this);
         textBox.InputScroll.Add(&ComboBox::ComboBoxButton_InputScroll, this);
+        textBox.SetName("ComboBoxTextBox");
         AddChild(&textBox);
 
         expandButton.SetBrushGroup("IconButton");
@@ -42,6 +45,7 @@ namespace xit::Drawing
         expandButton.SetCanActivate(true);
         expandButton.SetVisibility(Visibility::Collapsed);
         expandButton.IsActiveChanged.Add(&ComboBox::ComboBoxButton_ActiveChanged, this);
+        expandButton.SetName("ComboBoxExpandButton");
         AddChild(&expandButton);
 
         //popup.SetMaxHeight(UIDefaults::TextBoxHeight * 10);
@@ -54,6 +58,7 @@ namespace xit::Drawing
         listView.ChildAdded.Add(&ComboBox::ListView_ChildrenChanged, this);
         listView.ChildRemoved.Add(&ComboBox::ListView_ChildrenChanged, this);
         listView.SelectionChanged.Add(&ComboBox::ListView_SelectionChanged, this);
+        listView.SetName("ComboBoxListView");
         //popup.AddChild(listView);
     }
 

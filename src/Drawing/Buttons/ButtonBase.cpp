@@ -39,6 +39,8 @@ namespace xit::Drawing
 
     ButtonBase::ButtonBase()
     {
+        SetName("ButtonBase");
+        
         SetHandleMouse(true);
         SetHandleKeyboard(true);
         SetCanDeactivate(true);

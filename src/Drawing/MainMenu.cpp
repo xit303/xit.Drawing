@@ -31,6 +31,8 @@ namespace xit::Drawing
           isUpdating(false),
           mainMenuItemCount(0)
     {
+        SetName("MainMenu");
+
         mainMenuToggleButtonGroup.SetBrushGroup("MainMenu");
         mainMenuToggleButtonGroup.SetLayoutGroup("MainMenu");
         mainMenuToggleButtonGroup.SetColumns("Auto");
@@ -38,7 +40,7 @@ namespace xit::Drawing
         mainMenuToggleButtonGroup.SetHorizontalAlignment(HorizontalAlignment::Stretch);
         mainMenuToggleButtonGroup.SetVerticalAlignment(VerticalAlignment::Top);
         mainMenuToggleButtonGroup.SetHorizontalContentAlignment(HorizontalAlignment::Center);
-
+        mainMenuToggleButtonGroup.SetName("MainMenuToggleButtonGroup");
         mainMenuToggleButtonGroup.ToggleButtonChecked.Add(&MainMenu::MainMenuToggleButtonGroup_ToggleButtonChecked, this);
         mainMenuToggleButtonGroup.GroupClosed.Add(&MainMenu::MainMenuToggleButtonGroup_GroupClosed, this);
         SetPanel1(&mainMenuToggleButtonGroup);
@@ -46,6 +48,7 @@ namespace xit::Drawing
         mainMenuContentContainer.SetBrushGroup("MainMenuContent");
         mainMenuContentContainer.SetHorizontalAlignment(HorizontalAlignment::Center);
         mainMenuContentContainer.SetVerticalAlignment(VerticalAlignment::Top);
+        mainMenuContentContainer.SetName("MainMenuContentContainer");
 
         mainMenuContentContainer.SetMinWidth(700);
         mainMenuContentContainer.SetMaxWidth(1400);

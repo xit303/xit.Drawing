@@ -16,6 +16,7 @@ namespace xit::Drawing
     // isActiveSetting(nullptr)
     {
         UpdateState();
+        SetName("Container");
     }
 
     void Container::UpdateOrientation()

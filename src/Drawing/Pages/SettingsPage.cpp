@@ -7,6 +7,8 @@ namespace xit::Drawing::Pages
         // SetRows("Auto");
         SetRowSpacing(UIDefaults::RowSpacing);
 
+        SetName("SettingsPage");
+
 #ifdef DEBUG
         debugSettingsExpander.SetName("debugSettingsExpander");
         debugSettingsExpander.SetText("Debug settings");
