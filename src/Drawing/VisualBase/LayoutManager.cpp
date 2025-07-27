@@ -87,14 +87,29 @@ namespace xit::Drawing::VisualBase
 
         if (GetVisibility() != Visibility::Collapsed)
         {
-            // Force recalculation because the invalidation pipeline has bugs
-            // and flags are not always set correctly when needed
-            needWidthRecalculation = true;
-            needHeightRecalculation = true;
-            needLeftRecalculation = true;
-            needTopRecalculation = true;
+            // Check if recalculation is needed based on actual changes
+            bool boundsChanged = (bounds != newBounds);
 
-            needRedraw = needLeftRecalculation || needTopRecalculation || needWidthRecalculation || needHeightRecalculation || invalidated || (bounds != newBounds);
+            // Set recalculation flags for layout changes (bounds changed)
+            if (boundsChanged)
+            {
+                needWidthRecalculation = true;
+                needHeightRecalculation = true;
+                needLeftRecalculation = true;
+                needTopRecalculation = true;
+            }
+
+#ifdef DEBUG_LAYOUT_MANAGER
+            if (boundsChanged || invalidated)
+            {
+                std::cout << "LayoutManager::Update - " << GetName() << " boundsChanged="
+                          << boundsChanged << " invalidated=" << invalidated
+                          << " layoutRecalc=" << (needWidthRecalculation || needHeightRecalculation || needLeftRecalculation || needTopRecalculation) << std::endl;
+            }
+#endif
+
+            // Always update if invalidated (for visual refreshes) or if layout recalculation is needed
+            needRedraw = needLeftRecalculation || needTopRecalculation || needWidthRecalculation || needHeightRecalculation || invalidated || boundsChanged;
 
             if (needRedraw)
             {
@@ -142,6 +157,9 @@ namespace xit::Drawing::VisualBase
 
     void LayoutManager::OnHorizontalAlignmentChanged(EventArgs &e)
     {
+#ifdef DEBUG_LAYOUT_MANAGER
+        std::cout << "LayoutManager::OnHorizontalAlignmentChanged - " << GetName() << std::endl;
+#endif
         needWidthRecalculation = true;
         needLeftRecalculation = true; // Position depends on alignment
         Invalidate();
@@ -149,6 +167,9 @@ namespace xit::Drawing::VisualBase
 
     void LayoutManager::OnVerticalAlignmentChanged(EventArgs &e)
     {
+#ifdef DEBUG_LAYOUT_MANAGER
+        std::cout << "LayoutManager::OnVerticalAlignmentChanged - " << GetName() << std::endl;
+#endif
         needHeightRecalculation = true;
         needTopRecalculation = true; // Position depends on alignment
         Invalidate();
@@ -156,6 +177,9 @@ namespace xit::Drawing::VisualBase
 
     void LayoutManager::OnWidthChanged(EventArgs &e)
     {
+#ifdef DEBUG_LAYOUT_MANAGER
+        std::cout << "LayoutManager::OnWidthChanged - " << GetName() << std::endl;
+#endif
         needWidthRecalculation = true;
         // Width change can affect horizontal position for non-stretch alignments
         needLeftRecalculation = true;
@@ -515,30 +539,46 @@ namespace xit::Drawing::VisualBase
         // store for later update of buffers
         bool updateLocation = needLeftRecalculation || needTopRecalculation || GetIsAbsolutePosition() || invalidated;
 
+        // Always measure when invalidated to handle visual content changes (like text updates)
         if (needWidthRecalculation || needHeightRecalculation || invalidated)
         {
             const Size &s = bounds.GetSize();
+            Size oldDesiredSize = desiredSize;
             desiredSize = Measure(s);
 
-            // Calculate actualWidth
-            if (GetWidth() > -1)
-                actualWidth = GetWidth(); // Use explicitly set width
-            else if (desiredSize.GetWidth() <= bounds.GetWidth())
-                actualWidth = desiredSize.GetWidth(); // Use desired size if it fits
-            else if (GetMinWidth() > 0 && GetMinWidth() <= bounds.GetWidth())
-                actualWidth = GetMinWidth(); // Use minimum width if it fits
-            else
-                actualWidth = std::max(0, bounds.GetWidth()); // Use available width as fallback
+            // Check if content size changed significantly (this indicates layout change needed)
+            bool contentSizeChanged = (oldDesiredSize.GetWidth() != desiredSize.GetWidth() ||
+                                       oldDesiredSize.GetHeight() != desiredSize.GetHeight());
 
-            // Calculate actualHeight
-            if (GetHeight() > -1)
-                actualHeight = GetHeight(); // Use explicitly set height
-            else if (desiredSize.GetHeight() <= bounds.GetHeight())
-                actualHeight = desiredSize.GetHeight(); // Use desired size if it fits
-            else if (GetMinHeight() > 0 && GetMinHeight() <= bounds.GetHeight())
-                actualHeight = GetMinHeight(); // Use minimum height if it fits
-            else
-                actualHeight = std::max(0, bounds.GetHeight()); // Use available height as fallback
+            // Recalculate actual dimensions if layout flags are set OR if content size changed
+            if (needWidthRecalculation || needHeightRecalculation || contentSizeChanged)
+            {
+                // Calculate actualWidth
+                if (GetWidth() > -1)
+                    actualWidth = GetWidth(); // Use explicitly set width
+                else if (desiredSize.GetWidth() <= bounds.GetWidth())
+                    actualWidth = desiredSize.GetWidth(); // Use desired size if it fits
+                else if (GetMinWidth() > 0 && GetMinWidth() <= bounds.GetWidth())
+                    actualWidth = GetMinWidth(); // Use minimum width if it fits
+                else
+                    actualWidth = std::max(0, bounds.GetWidth()); // Use available width as fallback
+
+                // Calculate actualHeight
+                if (GetHeight() > -1)
+                    actualHeight = GetHeight(); // Use explicitly set height
+                else if (desiredSize.GetHeight() <= bounds.GetHeight())
+                    actualHeight = desiredSize.GetHeight(); // Use desired size if it fits
+                else if (GetMinHeight() > 0 && GetMinHeight() <= bounds.GetHeight())
+                    actualHeight = GetMinHeight(); // Use minimum height if it fits
+                else
+                    actualHeight = std::max(0, bounds.GetHeight()); // Use available height as fallback
+
+                // If content size changed, we may need to update location too
+                if (contentSizeChanged)
+                    updateLocation = true;
+            }
+            // If only visual invalidated without content size change, keep existing actualWidth/actualHeight
+            // but still call Measure() to update content (like text rendering)
         }
 
         if (!GetIsAbsolutePosition() && needLeftRecalculation)
@@ -591,7 +631,7 @@ namespace xit::Drawing::VisualBase
             clientBounds = GetClientRectangle(GetLeft(), GetTop(), actualWidth, actualHeight);
 
 #ifdef DEBUG_LAYOUT_MANAGER
-        std::cout << "LayoutManager::PerformLayout - Updating clientBounds for " << GetName() 
+        std::cout << "LayoutManager::PerformLayout - Updating clientBounds for " << GetName()
                   << " to (" << clientBounds.GetLeft() << "," << clientBounds.GetTop()
                   << "," << clientBounds.GetWidth() << "," << clientBounds.GetHeight() << ")"
                   << " from GetLeft()=" << GetLeft() << " GetTop()=" << GetTop()
