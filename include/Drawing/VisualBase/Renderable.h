@@ -31,9 +31,14 @@ namespace xit::Drawing::VisualBase
         float *foregroundColors;
         float *borderColors;
         bool clipToBounds;
+
         bool isBrushGroupChanging;
         BrushVisualStateGroup *brushVisualStateGroup;
         BrushVisualState *currentBrushVisualState;
+
+        bool isLayoutGroupChanging;
+        LayoutVisualStateGroup *layoutVisualStateGroup;
+        LayoutVisualState *currentLayoutVisualState;
 
         static Renderable *firstInvalidator;
 
@@ -49,10 +54,17 @@ namespace xit::Drawing::VisualBase
         virtual void OnBackgroundChanged(EventArgs &e) override;
         virtual void OnForegroundChanged(EventArgs &e) override;
         virtual void OnBorderBrushChanged(EventArgs &e) override;
+
         virtual void OnBrushGroupChanged(EventArgs &e);
         virtual void OnUpdateBrushes(BrushVisualState *value);
+        virtual void UpdateBrushVisualState() override;
 
-        void UpdateBrushVisualState();
+        virtual void OnLayoutGroupChanged(EventArgs &e) override;
+        virtual void OnUpdateLayout(LayoutVisualState *value);
+        virtual void UpdateLayoutVisualState() override;
+
+        virtual void OnVisualStateChanged(EventArgs &e) override;
+
         virtual void OnRender();
 
     public:

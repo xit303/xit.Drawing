@@ -13,6 +13,9 @@ namespace xit::Drawing::VisualBase
         isBrushGroupChanging = false;
         brushVisualStateGroup = nullptr;
         currentBrushVisualState = nullptr;
+        layoutVisualStateGroup = nullptr;
+        currentLayoutVisualState = nullptr;
+        isLayoutGroupChanging = false;
         backgroundTexture = nullptr;
         borderTexture = nullptr;
 
@@ -223,6 +226,89 @@ namespace xit::Drawing::VisualBase
             OnUpdateBrushes(nullptr);
             return;
         }
+    }
+
+    void Renderable::OnLayoutGroupChanged(EventArgs &e)
+    {
+        isLayoutGroupChanging = true;
+        UpdateLayoutVisualState();
+        Invalidate();
+    }
+
+    void Renderable::OnUpdateLayout(LayoutVisualState *value)
+    {
+        if (value)
+        {
+            SetWidth(value->GetWidth());
+            SetMinWidth(value->GetMinWidth());
+            SetMaxWidth(value->GetMaxWidth());
+
+            SetHeight(value->GetHeight());
+            SetMinHeight(value->GetMinHeight());
+            SetMaxHeight(value->GetMaxHeight());
+
+            SetMargin(value->GetMargin());
+            SetPadding(value->GetPadding());
+            SetBorderThickness(value->GetBorderThickness());
+
+            // TODO is this correct? In LayoutManager we do this in OnScaleChanged
+            // maybe we have to do it because if we use SetDPIScale from ScaleProperty
+            // we don't call OnScaleChanged if scaleX and scaleY did not change
+            float scaleX = GetScaleX();
+            float scaleY = GetScaleY();
+            SetMarginScale(scaleX, scaleY);
+            SetPaddingScale(scaleX, scaleY);
+            SetBorderThicknessScale(scaleX, scaleY);
+            Sizeable::Scale(scaleX, scaleY);
+
+            SetCornerRadius(value->GetCornerRadius());
+
+            SetHorizontalAlignment(value->GetHorizontalAlignment());
+            SetVerticalAlignment(value->GetVerticalAlignment());
+        }
+    }
+
+    void Renderable::UpdateLayoutVisualState()
+    {
+        LayoutVisualState *value = nullptr;
+        if (layoutVisualStateGroup != nullptr && !isLayoutGroupChanging)
+        {
+            if ((value = layoutVisualStateGroup->GetVisualState(visualState)))
+            {
+                OnUpdateLayout(value);
+                currentLayoutVisualState = value;
+            }
+            else if (currentLayoutVisualState)
+            {
+                visualState = currentLayoutVisualState->GetName();
+            }
+        }
+        else
+        {
+            isLayoutGroupChanging = false;
+            LayoutVisualStateGroup *visualStateGroup = ThemeManager::Default.GetLayoutVisualStateGroup(GetLayoutGroup());
+            if (visualStateGroup)
+            {
+                if ((value = visualStateGroup->GetVisualState(visualState)))
+                {
+                    layoutVisualStateGroup = visualStateGroup;
+                    OnUpdateLayout(value);
+                    currentLayoutVisualState = value;
+                    return;
+                }
+                else if (currentLayoutVisualState)
+                {
+                    visualState = currentLayoutVisualState->GetName();
+                    return;
+                }
+            }
+            OnUpdateLayout(nullptr);
+        }
+    }
+
+    void Renderable::OnVisualStateChanged(EventArgs &e)
+    {
+        Invalidate();
     }
 
     void Renderable::OnRender()

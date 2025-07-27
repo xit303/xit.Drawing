@@ -14,11 +14,6 @@ namespace xit::Drawing::VisualBase
         actualHeight = 0;
         renderLeft = 0;
         renderTop = 0;
-        scaleX = 1;
-        scaleY = 1;
-        layoutVisualStateGroup = nullptr;
-        currentLayoutVisualState = nullptr;
-        isLayoutGroupChanging = false;
         needWidthRecalculation = true;
         needHeightRecalculation = true;
         needLeftRecalculation = true;
@@ -32,7 +27,6 @@ namespace xit::Drawing::VisualBase
         {
             invalidated = true;
 
-// Add debugging info to track invalidation chains
 #ifdef DEBUG_LAYOUT_MANAGER
             std::cout << "Invalidating: " << GetName() << " (Type: " << typeid(*this).name() << ")" << std::endl;
 #endif
@@ -48,7 +42,6 @@ namespace xit::Drawing::VisualBase
 #endif
         }
     }
-
 
     void LayoutManager::NotifyParentOfInvalidation()
     {
@@ -140,73 +133,9 @@ namespace xit::Drawing::VisualBase
         return needRedraw || wasInvalidated;
     }
 
-    void LayoutManager::SetDPIScale(float scaleX, float scaleY)
-    {
-        if (scaleX <= 0)
-            scaleX = 1;
-        if (scaleY <= 0)
-            scaleY = 1;
-
-        this->scaleX = scaleX;
-        this->scaleY = scaleY;
-
-        Sizeable::Scale(scaleX, scaleY);
-        SetMarginScale(scaleX, scaleY);
-        SetPaddingScale(scaleX, scaleY);
-        SetBorderThicknessScale(scaleX, scaleY);
-    }
-
     //******************************************************************************
     // Protected
     //******************************************************************************
-
-    void LayoutManager::UpdateLayoutVisualState()
-    {
-        LayoutVisualState *value = nullptr;
-        if (layoutVisualStateGroup != nullptr && !isLayoutGroupChanging)
-        {
-            if ((value = layoutVisualStateGroup->GetVisualState(visualState)))
-            {
-                OnUpdateLayout(value);
-                currentLayoutVisualState = value;
-            }
-            else if (currentLayoutVisualState)
-            {
-                visualState = currentLayoutVisualState->GetName();
-            }
-        }
-        else
-        {
-            isLayoutGroupChanging = false;
-            LayoutVisualStateGroup *visualStateGroup = ThemeManager::Default.GetLayoutVisualStateGroup(GetLayoutGroup());
-            if (visualStateGroup)
-            {
-                if ((value = visualStateGroup->GetVisualState(visualState)))
-                {
-                    layoutVisualStateGroup = visualStateGroup;
-                    OnUpdateLayout(value);
-                    currentLayoutVisualState = value;
-                    return;
-                }
-                else if (currentLayoutVisualState)
-                {
-                    visualState = currentLayoutVisualState->GetName();
-                    return;
-                }
-            }
-            OnUpdateLayout(nullptr);
-            return;
-        }
-    }
-
-    void LayoutManager::OnVisualStateChanged(EventArgs &e)
-    {
-        needWidthRecalculation = true;
-        needHeightRecalculation = true;
-        needLeftRecalculation = true;
-        needTopRecalculation = true;
-        Invalidate();
-    }
 
     void LayoutManager::OnHorizontalAlignmentChanged(EventArgs &e)
     {
@@ -278,6 +207,7 @@ namespace xit::Drawing::VisualBase
         needHeightRecalculation = true;
         Invalidate();
     }
+
     void LayoutManager::OnPaddingChanged(EventArgs &e)
     {
         needLeftRecalculation = true;
@@ -322,15 +252,15 @@ namespace xit::Drawing::VisualBase
         Invalidate();
     }
 
-    void LayoutManager::OnLayoutGroupChanged(EventArgs &e)
+    void LayoutManager::OnScaleChanged(EventArgs &e)
     {
-        needWidthRecalculation = true;
-        needHeightRecalculation = true;
-        needLeftRecalculation = true;
-        needTopRecalculation = true;
-        isLayoutGroupChanging = true;
-        UpdateLayoutVisualState();
-        Invalidate();
+        float scaleX = GetScaleX();
+        float scaleY = GetScaleY();
+
+        Sizeable::Scale(scaleX, scaleY);
+        SetMarginScale(scaleX, scaleY);
+        SetPaddingScale(scaleX, scaleY);
+        SetBorderThicknessScale(scaleX, scaleY);
     }
 
     int LayoutManager::OnMeasureWidth(int availableSize)
@@ -539,35 +469,6 @@ namespace xit::Drawing::VisualBase
         // }
 
         return newSize;
-    }
-
-    void LayoutManager::OnUpdateLayout(LayoutVisualState *value)
-    {
-        if (value)
-        {
-            SetWidth(value->GetWidth());
-            SetMinWidth(value->GetMinWidth());
-            SetMaxWidth(value->GetMaxWidth());
-
-            SetHeight(value->GetHeight());
-            SetMinHeight(value->GetMinHeight());
-            SetMaxHeight(value->GetMaxHeight());
-
-            SetMargin(value->GetMargin());
-            SetPadding(value->GetPadding());
-            SetBorderThickness(value->GetBorderThickness());
-
-            SetMarginScale(scaleX, scaleY);
-            SetPaddingScale(scaleX, scaleY);
-            SetBorderThicknessScale(scaleX, scaleY);
-
-            Sizeable::Scale(scaleX, scaleY);
-
-            SetCornerRadius(value->GetCornerRadius());
-
-            SetHorizontalAlignment(value->GetHorizontalAlignment());
-            SetVerticalAlignment(value->GetVerticalAlignment());
-        }
     }
 
     void LayoutManager::OnUpdate(const Rectangle &bounds)

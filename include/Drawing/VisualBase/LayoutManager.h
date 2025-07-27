@@ -11,6 +11,7 @@
 #include <Drawing/Properties/HorizontalAlignmentProperty.h>
 #include <Drawing/Properties/LayoutGroupProperty.h>
 #include <Drawing/Properties/Location.h>
+#include <Drawing/Properties/ScaleProperty.h>
 #include <Drawing/Properties/VerticalAlignmentProperty.h>
 #include <Drawing/Properties/VisibilityProperty.h>
 #include <Drawing/VisualBase/VisualStateManager.h>
@@ -24,6 +25,7 @@ namespace xit::Drawing::VisualBase
                           public ISizeable,
                           public BoxModel,
                           public HorizontalAlignmentProperty,
+                          public ScaleProperty,
                           public VerticalAlignmentProperty,
                           public VisibilityProperty,
                           public LayoutGroupProperty,
@@ -31,13 +33,6 @@ namespace xit::Drawing::VisualBase
                           public VisualStateManager
     {
     private:
-        float scaleX;
-        float scaleY;
-
-        LayoutVisualStateGroup *layoutVisualStateGroup;
-        LayoutVisualState *currentLayoutVisualState;
-        bool isLayoutGroupChanging;
-
         bool invalidated;
 
         bool needWidthRecalculation;
@@ -54,9 +49,6 @@ namespace xit::Drawing::VisualBase
         int actualHeight;
 
         Rectangle bounds;
-
-        void UpdateLayoutVisualState();
-        virtual void OnVisualStateChanged(EventArgs &e) override;
 
         virtual void OnInvalidated(EventArgs &e) {}
 
@@ -76,12 +68,12 @@ namespace xit::Drawing::VisualBase
         virtual void OnLocationChanged(EventArgs &e) override;
         virtual void OnSizeChanged(const Size &newSize);
         virtual void OnVisibilityChanged(EventArgs &e) override;
-        virtual void OnLayoutGroupChanged(EventArgs &e) override;
+
+        virtual void OnScaleChanged(EventArgs &e) override;
 
         virtual int OnMeasureWidth(int availableSize);
         virtual int OnMeasureHeight(int availableSize);
 
-        virtual void OnUpdateLayout(LayoutVisualState *value);
         virtual void OnUpdate(const Rectangle &bounds);
 
         // Core layout calculation method - performs the actual layout work
@@ -110,7 +102,7 @@ namespace xit::Drawing::VisualBase
         LayoutManager();
 
         virtual void Invalidate();
-        
+
         virtual int MeasureWidth(int availableSize);
         virtual int MeasureHeight(int availableSize);
         virtual Size Measure(const Size &availableSize);
@@ -121,12 +113,7 @@ namespace xit::Drawing::VisualBase
         virtual inline int GetActualHeight() const override { return actualHeight; }
         inline const Size &GetDesiredSize() const { return desiredSize; }
 
-        __always_inline float GetScaleX() const { return scaleX; }
-        __always_inline float GetScaleY() const { return scaleY; }
-
         __always_inline const Rectangle &GetBounds() const { return bounds; }
-
-        virtual void SetDPIScale(float scaleX, float scaleY);
 
         // Public getters for recalculation flags - useful for derived classes
         __always_inline bool GetNeedWidthRecalculation() const { return needWidthRecalculation; }
@@ -140,6 +127,6 @@ namespace xit::Drawing::VisualBase
         virtual void OnBorderBrushChanged(EventArgs &e) {}
 
         // Child invalidation notification for background buffer support
-        virtual void OnChildInvalidated(LayoutManager* childLayout);
+        virtual void OnChildInvalidated(LayoutManager *childLayout);
     };
 } // namespace xit::Drawing::VisualBase
