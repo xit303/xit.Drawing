@@ -5,6 +5,11 @@
 #include <chrono>
 #endif
 
+#ifdef DEBUG_FONT_PERFORMANCE
+#include <chrono>
+#include <iostream>
+#endif
+
 namespace xit::Drawing
 {
     Label::Label(int column, int row, int columnSpan, int rowSpan)
@@ -143,6 +148,12 @@ namespace xit::Drawing
 
         if (needMeasureText && GetIsVisible())
         {
+#ifdef DEBUG_FONT_PERFORMANCE
+            auto start = std::chrono::high_resolution_clock::now();
+            std::cout << "Label::MeasureText - Starting measurement for '" << GetName() 
+                      << "' text='" << GetText() << "'" << std::endl;
+#endif
+
             int scaledFontSize = (int)((float)GetFontSize() * GetScaleX());
             const std::string &thisText = GetText();
 
@@ -155,6 +166,13 @@ namespace xit::Drawing
             }
 
             MeasureText(GetFontName(), scaledFontSize, thisText, textSize);
+
+#ifdef DEBUG_FONT_PERFORMANCE
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            std::cout << "Label::MeasureText - '" << GetName() << "' completed in " << duration.count() 
+                      << "μs, result: " << textSize.GetWidth() << "x" << textSize.GetHeight() << std::endl;
+#endif
 
             if (!textSize.IsEmpty())
             {
@@ -173,7 +191,20 @@ namespace xit::Drawing
 
     const void Label::MeasureText(const std::string &fontName, int fontSize, const std::string &text, Size &target)
     {
+#ifdef DEBUG_FONT_PERFORMANCE
+        auto start = std::chrono::high_resolution_clock::now();
+        std::cout << "Label::MeasureText(static) - FontStorage::FindOrCreate('" << fontName 
+                  << "', " << fontSize << ") for text '" << text << "'" << std::endl;
+#endif
+
         FontStorage::FindOrCreate(fontName, fontSize).Measure(text, target);
+
+#ifdef DEBUG_FONT_PERFORMANCE
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << "Label::MeasureText(static) - FontStorage operation completed in " << duration.count() 
+                  << "μs, result: " << target.GetWidth() << "x" << target.GetHeight() << std::endl;
+#endif
     }
 
     //******************************************************************************

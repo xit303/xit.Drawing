@@ -1,5 +1,9 @@
 #include <Drawing/ContainerBase.h>
 #include <Input/InputHandler.h>
+#ifdef DEBUG_GRID_PERFORMANCE
+#include <chrono>
+#include <iostream>
+#endif
 
 namespace xit::Drawing
 {
@@ -341,10 +345,21 @@ namespace xit::Drawing
         bool updateSize = GetNeedWidthRecalculation() || GetNeedHeightRecalculation();
         bool updateLocations = GetNeedLeftRecalculation() || GetNeedTopRecalculation();
 
+#ifdef DEBUG_GRID_PERFORMANCE
+        auto start = std::chrono::high_resolution_clock::now();
+        std::cout << "ContainerBase::OnUpdate - " << GetName() << " with " << children.size() 
+                  << " children, updateSize=" << updateSize << ", updateLocations=" << updateLocations << std::endl;
+#endif
+
         InputContent::OnUpdate(bounds);
 
         // Use cached client bounds from LayoutManager for optimal performance
         Rectangle stored = GetClientBounds();
+
+#ifdef DEBUG_GRID_PERFORMANCE
+        std::cout << "ContainerBase::OnUpdate - Client bounds: (" << stored.GetLeft() << "," 
+                  << stored.GetTop() << "," << stored.GetWidth() << "," << stored.GetHeight() << ")" << std::endl;
+#endif
 
         // Handle negative margin (special case for SplitContainer)
         int left = stored.GetLeft();
@@ -361,7 +376,15 @@ namespace xit::Drawing
         //     left += margin.GetLeft();
 
         // TODO this order is different to ScrollViewer
+#ifdef DEBUG_GRID_PERFORMANCE
+        auto gridStart = std::chrono::high_resolution_clock::now();
+#endif
         grid.SetBounds(stored);
+#ifdef DEBUG_GRID_PERFORMANCE
+        auto gridEnd = std::chrono::high_resolution_clock::now();
+        auto gridDuration = std::chrono::duration_cast<std::chrono::microseconds>(gridEnd - gridStart);
+        std::cout << "ContainerBase::OnUpdate - Grid.SetBounds() took " << gridDuration.count() << "μs" << std::endl;
+#endif
 
         if (updateSize || updateLocations)
         {
@@ -451,6 +474,12 @@ namespace xit::Drawing
                 content->Update(thisClientsBounds);
             }
         }
+
+#ifdef DEBUG_GRID_PERFORMANCE
+        auto end = std::chrono::high_resolution_clock::now();
+        auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << "ContainerBase::OnUpdate - " << GetName() << " total time: " << totalDuration.count() << "μs" << std::endl;
+#endif
     }
     void ContainerBase::OnRender()
     {

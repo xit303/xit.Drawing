@@ -1,4 +1,8 @@
 #include <Drawing/GridDimensionManager.h>
+#ifdef DEBUG_GRID_PERFORMANCE
+#include <chrono>
+#include <iostream>
+#endif
 
 namespace xit::Drawing
 {
@@ -35,10 +39,16 @@ namespace xit::Drawing
     {
         if (updateInfo.UpdateAuto && children != nullptr && children->size() > 0)
         {
+#ifdef DEBUG_GRID_PERFORMANCE
+            auto start = std::chrono::high_resolution_clock::now();
+            std::cout << "GridDimensionManager::UpdateAuto - Processing " << children->size() 
+                      << " children, " << autoValues.size() << " auto values" << std::endl;
+#endif
             autoTotalSize = 0;
 
             if (autoValues.size() > 0)
             {
+                // Performance critical: Reset auto sizes
                 for (size_t a : autoValues)
                 {
                     if (a >= sizes.size())
@@ -48,6 +58,7 @@ namespace xit::Drawing
                     sizes[a] = 0;
                 }
 
+                // Performance critical: Measure all children for auto sizing
                 for (Visual *content : *children)
                 {
                     if (content->GetVisibility() != Visibility::Collapsed)
@@ -58,27 +69,35 @@ namespace xit::Drawing
                     }
                 }
 
+                // Performance critical: Sum auto sizes
                 for (size_t a : autoValues)
                 {
                     autoTotalSize += sizes[a];
                 }
 
-                // Debugging logs
-                // std::cout << "Auto values: ";
-                // for (size_t a : autoValues)
-                // {
-                //     std::cout << a << " ";
-                // }
-                // std::cout << std::endl;
+#ifdef DEBUG_GRID_PERFORMANCE
+                auto end = std::chrono::high_resolution_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+                std::cout << "GridDimensionManager::UpdateAuto - Completed in " << duration.count() << "μs" << std::endl;
+#endif
 
-                // std::cout << "Auto sizes: ";
-                // for (size_t a : autoValues)
-                // {
-                //     std::cout << sizes[a] << " ";
-                // }
-                // std::cout << std::endl;
+#ifdef DEBUG_GRID
+                std::cout << "Auto values: ";
+                for (size_t a : autoValues)
+                {
+                    std::cout << a << " ";
+                }
+                std::cout << std::endl;
 
-                // std::cout << "Auto Total Size: " << autoTotalSize << std::endl;
+                std::cout << "Auto sizes: ";
+                for (size_t a : autoValues)
+                {
+                    std::cout << sizes[a] << " ";
+                }
+                std::cout << std::endl;
+
+                std::cout << "Auto Total Size: " << autoTotalSize << std::endl;
+#endif
             }
 
             updateInfo.UpdateAuto = false;
@@ -109,6 +128,14 @@ namespace xit::Drawing
     {
         if (updateInfo.NeedUpdate())
         {
+#ifdef DEBUG_GRID_PERFORMANCE
+            auto timing_start = std::chrono::high_resolution_clock::now();
+            std::cout << "GridDimensionManager::UpdateSizes - Starting layout calculation" << std::endl;
+            std::cout << "  Fixed values: " << fixedValues.size() 
+                      << ", Auto values: " << autoValues.size() 
+                      << ", Star values: " << starValues.size() << std::endl;
+#endif
+            
             GridLayoutHelper::CheckSizeListLength(numberOfValues, sizes, positions);
 
             UpdateFixed();
@@ -136,6 +163,13 @@ namespace xit::Drawing
             }
 
             currentSize = total;
+            
+#ifdef DEBUG_GRID_PERFORMANCE
+            auto timing_end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timing_end - timing_start);
+            std::cout << "GridDimensionManager::UpdateSizes - Completed in " << duration.count() 
+                      << "μs, final size: " << currentSize << std::endl;
+#endif
         }
     }
 

@@ -9,7 +9,11 @@ namespace PassMaga
     class MainWindow : public MainWindowBase
     {
     private:
-        TextBox *textBox;
+        TextBox *textBox1;
+        TextBox *textBox2;
+        Label *label1;
+
+        Container *container;
 
         void OnMenuClosed(EventArgs &e)
         {

@@ -1,6 +1,10 @@
 #include <StringHelper.h>
 #include <Exceptions.h>
 #include <Drawing/GridLayoutHelper.h>
+#ifdef DEBUG_GRID_PERFORMANCE
+#include <chrono>
+#include <iostream>
+#endif
 
 namespace xit::Drawing
 {
@@ -140,7 +144,20 @@ namespace xit::Drawing
         if ((item != autoValues.end()) &&
             content->GetVisibility() != Visibility::Collapsed)
         {
+#ifdef DEBUG_GRID_PERFORMANCE
+            auto start = std::chrono::high_resolution_clock::now();
+            std::cout << "GridLayoutHelper::CheckAutoContent - Measuring " << content->GetName() 
+                      << " at index " << index << ", span " << span << std::endl;
+#endif
+            
             size_t contentSize = (content->*measureDelegate)(availableSize);
+
+#ifdef DEBUG_GRID_PERFORMANCE
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            std::cout << "GridLayoutHelper::CheckAutoContent - Measurement took " << duration.count() 
+                      << "μs, result: " << contentSize << std::endl;
+#endif
 
             if (span == 1)
             {
