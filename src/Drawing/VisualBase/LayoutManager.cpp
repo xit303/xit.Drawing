@@ -87,14 +87,14 @@ namespace xit::Drawing::VisualBase
 
         if (GetVisibility() != Visibility::Collapsed)
         {
-            // TODO this needs to be removed somehow. Right now we need to recalculate everything
-            // when the layout is updated, because these flags seem to be wrong when we need them.
+            // Force recalculation because the invalidation pipeline has bugs
+            // and flags are not always set correctly when needed
             needWidthRecalculation = true;
             needHeightRecalculation = true;
             needLeftRecalculation = true;
             needTopRecalculation = true;
 
-            needRedraw = needLeftRecalculation || needTopRecalculation || needWidthRecalculation || needHeightRecalculation || invalidated;
+            needRedraw = needLeftRecalculation || needTopRecalculation || needWidthRecalculation || needHeightRecalculation || invalidated || (bounds != newBounds);
 
             if (needRedraw)
             {
@@ -110,12 +110,15 @@ namespace xit::Drawing::VisualBase
                 OnUpdate(bounds);
             }
 #ifdef DEBUG_LAYOUT_MANAGER
-            std::cout << "NOT updating layout for: " << GetName()
-                      << " (needRedraw=false) invalidated=" << invalidated
-                      << " needLeft=" << needLeftRecalculation
-                      << " needTop=" << needTopRecalculation
-                      << " needWidth=" << needWidthRecalculation
-                      << " needHeight=" << needHeightRecalculation << std::endl;
+            else
+            {
+                std::cout << "NOT updating layout for: " << GetName()
+                          << " (needRedraw=false) invalidated=" << invalidated
+                          << " needLeft=" << needLeftRecalculation
+                          << " needTop=" << needTopRecalculation
+                          << " needWidth=" << needWidthRecalculation
+                          << " needHeight=" << needHeightRecalculation << std::endl;
+            }
 #endif
         }
         else
