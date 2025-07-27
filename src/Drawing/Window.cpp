@@ -892,23 +892,23 @@ namespace xit::Drawing
 
     void Window::DoRender()
     {
-
         static size_t renderCount = 0;
 
 #ifdef DEBUG_WINDOW
         auto renderStartTime = std::chrono::high_resolution_clock::now();
         std::cout << "\n=== Window::DoRender START ===" << std::endl;
-        std::cout << "Window::DoRender - Render count: " << renderCount++ << std::endl;
 #endif
 
         // Reset the scheduled flag
         redrawScheduled = false;
 
+        // TODO i do not want to call update every time, but only when needed
+        // find possible spots to trigger update
         Update(scene.SceneRect);
 
         Scene2D::MakeCurrent(&scene);
 
-        //if (!framebuffersInitialized)
+        if (!framebuffersInitialized)
         {
 #ifdef DEBUG_WINDOW
             std::cout << "DoRender: Framebuffers not initialized, using fallback rendering" << std::endl;
@@ -939,212 +939,213 @@ namespace xit::Drawing
         }
 #endif
 
-//         if (content)
-//         {
-// #ifdef DEBUG_WINDOW
-//             auto regionExtractionStart = std::chrono::high_resolution_clock::now();
-// #endif
+        if (content)
+        {
+#ifdef DEBUG_WINDOW
+            auto regionExtractionStart = std::chrono::high_resolution_clock::now();
+#endif
 
-//             // Storage for regions to process thread-safely
-//             std::vector<std::pair<Visual *, Rectangle>> regionsToProcess;
+            // Storage for regions to process thread-safely
+            std::vector<std::pair<Visual *, Rectangle>> regionsToProcess;
 
-//             {
-//                 std::lock_guard<std::mutex> lock(invalidRegionsMutex);
-//                 if (!invalidRegions.empty())
-//                 {
-//                     regionsToProcess = std::move(invalidRegions);
-//                     invalidRegions.clear();
-//                 }
-//             }
+            {
+                std::lock_guard<std::mutex> lock(invalidRegionsMutex);
+                if (!invalidRegions.empty())
+                {
+                    regionsToProcess = std::move(invalidRegions);
+                    invalidRegions.clear();
+                }
+            }
 
-// #ifdef DEBUG_WINDOW
-//             auto regionExtractionEnd = std::chrono::high_resolution_clock::now();
-//             auto regionExtractionDuration = std::chrono::duration_cast<std::chrono::microseconds>(regionExtractionEnd - regionExtractionStart);
-//             std::cout << "DoRender: Region extraction took " << regionExtractionDuration.count() << "μs" << std::endl;
-//             std::cout << "DoRender: Found " << regionsToProcess.size() << " invalid regions" << std::endl;
-// #endif
+#ifdef DEBUG_WINDOW
+            auto regionExtractionEnd = std::chrono::high_resolution_clock::now();
+            auto regionExtractionDuration = std::chrono::duration_cast<std::chrono::microseconds>(regionExtractionEnd - regionExtractionStart);
+            std::cout << "DoRender: Region extraction took " << regionExtractionDuration.count() << "μs" << std::endl;
+            std::cout << "DoRender: Found " << regionsToProcess.size() << " invalid regions" << std::endl;
+#endif
 
-//             // Bind back framebuffer for rendering
-//             glBindFramebuffer(GL_FRAMEBUFFER, backFramebuffer);
-//             glViewport(0, 0, scene.GetWidth(), scene.GetHeight());
+            // Bind back framebuffer for rendering
+            glBindFramebuffer(GL_FRAMEBUFFER, backFramebuffer);
+            glViewport(0, 0, scene.GetWidth(), scene.GetHeight());
 
-//             bool hasInvalidRegions = !regionsToProcess.empty();
-//             bool needsFullRedraw = GetInvalidated() || GetNeedWidthRecalculation() || 
-//                                    GetNeedHeightRecalculation() || GetNeedLeftRecalculation() || 
-//                                    GetNeedTopRecalculation();
+            bool hasInvalidRegions = !regionsToProcess.empty();
+            bool needsFullRedraw = GetInvalidated() || GetNeedWidthRecalculation() || 
+                                   GetNeedHeightRecalculation() || GetNeedLeftRecalculation() || 
+                                   GetNeedTopRecalculation();
 
-// #ifdef DEBUG_WINDOW
-//             std::cout << "DoRender: Rendering strategy - hasInvalidRegions=" << hasInvalidRegions 
-//                       << " needsFullRedraw=" << needsFullRedraw << std::endl;
-//             if (needsFullRedraw)
-//             {
-//                 std::cout << "DoRender: Full redraw reasons - invalidated=" << GetInvalidated()
-//                           << " needWidth=" << GetNeedWidthRecalculation()
-//                           << " needHeight=" << GetNeedHeightRecalculation()
-//                           << " needLeft=" << GetNeedLeftRecalculation()
-//                           << " needTop=" << GetNeedTopRecalculation() << std::endl;
-//             }
-//             auto renderingStart = std::chrono::high_resolution_clock::now();
-// #endif
+#ifdef DEBUG_WINDOW
+            std::cout << "DoRender: Rendering strategy - hasInvalidRegions=" << hasInvalidRegions 
+                      << " needsFullRedraw=" << needsFullRedraw << std::endl;
+            if (needsFullRedraw)
+            {
+                std::cout << "DoRender: Full redraw reasons - invalidated=" << GetInvalidated()
+                          << " needWidth=" << GetNeedWidthRecalculation()
+                          << " needHeight=" << GetNeedHeightRecalculation()
+                          << " needLeft=" << GetNeedLeftRecalculation()
+                          << " needTop=" << GetNeedTopRecalculation() << std::endl;
+            }
+            auto renderingStart = std::chrono::high_resolution_clock::now();
+#endif
 
-//             if (needsFullRedraw)
-//             {
-// #ifdef DEBUG_WINDOW
-//                 std::cout << "DoRender: Performing FULL REDRAW" << std::endl;
-//                 auto fullRedrawStart = std::chrono::high_resolution_clock::now();
-// #endif
-//                 // Full redraw - clear and render everything
-//                 OpenGLExtensions::ClearScene2D();
-//                 Render();
-// #ifdef DEBUG_WINDOW
-//                 auto fullRedrawEnd = std::chrono::high_resolution_clock::now();
-//                 auto fullRedrawDuration = std::chrono::duration_cast<std::chrono::microseconds>(fullRedrawEnd - fullRedrawStart);
-//                 std::cout << "DoRender: Full redraw completed in " << fullRedrawDuration.count() << "μs" << std::endl;
-// #endif
-//             }
-//             else if (hasInvalidRegions)
-//             {
-// #ifdef DEBUG_WINDOW
-//                 std::cout << "DoRender: Performing PARTIAL REDRAW with " << regionsToProcess.size() << " regions" << std::endl;
-//                 auto partialRedrawStart = std::chrono::high_resolution_clock::now();
-// #endif
-//                 // Partial redraw - copy unchanged regions from front buffer and render only invalid regions
+            if (needsFullRedraw)
+            {
+#ifdef DEBUG_WINDOW
+                std::cout << "DoRender: Performing FULL REDRAW" << std::endl;
+                auto fullRedrawStart = std::chrono::high_resolution_clock::now();
+#endif
+                // Full redraw - clear and render everything
+                OpenGLExtensions::ClearScene2D();
+                Render();
+#ifdef DEBUG_WINDOW
+                auto fullRedrawEnd = std::chrono::high_resolution_clock::now();
+                auto fullRedrawDuration = std::chrono::duration_cast<std::chrono::microseconds>(fullRedrawEnd - fullRedrawStart);
+                std::cout << "DoRender: Full redraw completed in " << fullRedrawDuration.count() << "μs" << std::endl;
+#endif
+            }
+            else if (hasInvalidRegions)
+            {
+#ifdef DEBUG_WINDOW
+                std::cout << "DoRender: Performing PARTIAL REDRAW with " << regionsToProcess.size() << " regions" << std::endl;
+                auto partialRedrawStart = std::chrono::high_resolution_clock::now();
+#endif
+                // Partial redraw - copy unchanged regions from front buffer and render only invalid regions
                 
-//                 // First, copy the entire front buffer to back buffer
-// #ifdef DEBUG_WINDOW
-//                 auto copyStart = std::chrono::high_resolution_clock::now();
-// #endif
-//                 glBindFramebuffer(GL_READ_FRAMEBUFFER, frontFramebuffer);
-//                 glBindFramebuffer(GL_DRAW_FRAMEBUFFER, backFramebuffer);
-//                 glBlitFramebuffer(0, 0, scene.GetWidth(), scene.GetHeight(),
-//                                  0, 0, scene.GetWidth(), scene.GetHeight(),
-//                                  GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-// #ifdef DEBUG_WINDOW
-//                 auto copyEnd = std::chrono::high_resolution_clock::now();
-//                 auto copyDuration = std::chrono::duration_cast<std::chrono::microseconds>(copyEnd - copyStart);
-//                 std::cout << "DoRender: Buffer copy (" << scene.GetWidth() << "x" << scene.GetHeight() 
-//                           << ") took " << copyDuration.count() << "μs" << std::endl;
-// #endif
+                // First, copy the entire front buffer to back buffer
+#ifdef DEBUG_WINDOW
+                auto copyStart = std::chrono::high_resolution_clock::now();
+#endif
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, frontFramebuffer);
+                glBindFramebuffer(GL_DRAW_FRAMEBUFFER, backFramebuffer);
+                glBlitFramebuffer(0, 0, scene.GetWidth(), scene.GetHeight(),
+                                 0, 0, scene.GetWidth(), scene.GetHeight(),
+                                 GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+#ifdef DEBUG_WINDOW
+                auto copyEnd = std::chrono::high_resolution_clock::now();
+                auto copyDuration = std::chrono::duration_cast<std::chrono::microseconds>(copyEnd - copyStart);
+                std::cout << "DoRender: Buffer copy (" << scene.GetWidth() << "x" << scene.GetHeight() 
+                          << ") took " << copyDuration.count() << "μs" << std::endl;
+#endif
 
-//                 // Now render only the invalidated regions
-//                 glBindFramebuffer(GL_FRAMEBUFFER, backFramebuffer);
+                // Now render only the invalidated regions
+                glBindFramebuffer(GL_FRAMEBUFFER, backFramebuffer);
                 
-// #ifdef DEBUG_WINDOW
-//                 int regionIndex = 0;
-// #endif
-//                 for (const auto &region : regionsToProcess)
-//                 {
-//                     Visual *visual = region.first;
-//                     Rectangle bounds = region.second;
+#ifdef DEBUG_WINDOW
+                int regionIndex = 0;
+#endif
+                for (const auto &region : regionsToProcess)
+                {
+                    Visual *visual = region.first;
+                    Rectangle bounds = region.second;
 
-// #ifdef DEBUG_WINDOW
-//                     std::cout << "DoRender: Processing region " << regionIndex++ << " - bounds("
-//                               << bounds.GetLeft() << "," << bounds.GetTop() 
-//                               << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")"
-//                               << " visual=" << (visual ? visual->GetName() : "null") << std::endl;
-//                     auto regionRenderStart = std::chrono::high_resolution_clock::now();
-// #endif
+#ifdef DEBUG_WINDOW
+                    std::cout << "DoRender: Processing region " << regionIndex++ << " - bounds("
+                              << bounds.GetLeft() << "," << bounds.GetTop() 
+                              << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")"
+                              << " visual=" << (visual ? visual->GetName() : "null") << std::endl;
+                    auto regionRenderStart = std::chrono::high_resolution_clock::now();
+#endif
 
-//                     if (visual)
-//                     {
-//                         // Set scissor test to limit rendering to the invalid region
-//                         glEnable(GL_SCISSOR_TEST);
+                    if (visual)
+                    {
+                        // Set scissor test to limit rendering to the invalid region
+                        glEnable(GL_SCISSOR_TEST);
                         
-//                         // Convert coordinates (OpenGL uses bottom-left origin)
-//                         int scissorY = scene.GetHeight() - bounds.GetTop() - bounds.GetHeight();
-//                         glScissor(bounds.GetLeft(), scissorY, bounds.GetWidth(), bounds.GetHeight());
+                        // Convert coordinates (OpenGL uses bottom-left origin)
+                        int scissorY = scene.GetHeight() - bounds.GetTop() - bounds.GetHeight();
+                        glScissor(bounds.GetLeft(), scissorY, bounds.GetWidth(), bounds.GetHeight());
 
-// #ifdef DEBUG_WINDOW
-//                         std::cout << "DoRender: Scissor region set to (" 
-//                                   << bounds.GetLeft() << "," << scissorY 
-//                                   << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
-// #endif
+#ifdef DEBUG_WINDOW
+                        std::cout << "DoRender: Scissor region set to (" 
+                                  << bounds.GetLeft() << "," << scissorY 
+                                  << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
+#endif
 
-//                         // Clear only this region
-//                         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-//                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                        // Clear only this region
+                        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//                         // Render the visual
-//                         visual->Render();
+                        // Render the visual
+                        visual->Render();
                         
-//                         glDisable(GL_SCISSOR_TEST);
+                        glDisable(GL_SCISSOR_TEST);
 
-// #ifdef DEBUG_WINDOW
-//                         auto regionRenderEnd = std::chrono::high_resolution_clock::now();
-//                         auto regionRenderDuration = std::chrono::duration_cast<std::chrono::microseconds>(regionRenderEnd - regionRenderStart);
-//                         std::cout << "DoRender: Region render completed in " << regionRenderDuration.count() << "μs" << std::endl;
-// #endif
-//                     }
-// #ifdef DEBUG_WINDOW
-//                     else
-//                     {
-//                         std::cout << "DoRender: WARNING - Null visual for region " << (regionIndex-1) << std::endl;
-//                     }
-// #endif
-//                 }
-// #ifdef DEBUG_WINDOW
-//                 auto partialRedrawEnd = std::chrono::high_resolution_clock::now();
-//                 auto partialRedrawDuration = std::chrono::duration_cast<std::chrono::microseconds>(partialRedrawEnd - partialRedrawStart);
-//                 std::cout << "DoRender: Partial redraw completed in " << partialRedrawDuration.count() << "μs" << std::endl;
-// #endif
-//             }
-//             else
-//             {
-// #ifdef DEBUG_WINDOW
-//                 std::cout << "DoRender: Performing BUFFER COPY (no changes)" << std::endl;
-//                 auto noCopyStart = std::chrono::high_resolution_clock::now();
-// #endif
-//                 // No changes - just copy front buffer to back buffer
-//                 glBindFramebuffer(GL_READ_FRAMEBUFFER, frontFramebuffer);
-//                 glBindFramebuffer(GL_DRAW_FRAMEBUFFER, backFramebuffer);
-//                 glBlitFramebuffer(0, 0, scene.GetWidth(), scene.GetHeight(),
-//                                  0, 0, scene.GetWidth(), scene.GetHeight(),
-//                                  GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-// #ifdef DEBUG_WINDOW
-//                 auto noCopyEnd = std::chrono::high_resolution_clock::now();
-//                 auto noCopyDuration = std::chrono::duration_cast<std::chrono::microseconds>(noCopyEnd - noCopyStart);
-//                 std::cout << "DoRender: No-change buffer copy completed in " << noCopyDuration.count() << "μs" << std::endl;
-// #endif
-//             }
+#ifdef DEBUG_WINDOW
+                        auto regionRenderEnd = std::chrono::high_resolution_clock::now();
+                        auto regionRenderDuration = std::chrono::duration_cast<std::chrono::microseconds>(regionRenderEnd - regionRenderStart);
+                        std::cout << "DoRender: Region render completed in " << regionRenderDuration.count() << "μs" << std::endl;
+#endif
+                    }
+#ifdef DEBUG_WINDOW
+                    else
+                    {
+                        std::cout << "DoRender: WARNING - Null visual for region " << (regionIndex-1) << std::endl;
+                    }
+#endif
+                }
+#ifdef DEBUG_WINDOW
+                auto partialRedrawEnd = std::chrono::high_resolution_clock::now();
+                auto partialRedrawDuration = std::chrono::duration_cast<std::chrono::microseconds>(partialRedrawEnd - partialRedrawStart);
+                std::cout << "DoRender: Partial redraw completed in " << partialRedrawDuration.count() << "μs" << std::endl;
+#endif
+            }
+            else
+            {
+#ifdef DEBUG_WINDOW
+                std::cout << "DoRender: Performing BUFFER COPY (no changes)" << std::endl;
+                auto noCopyStart = std::chrono::high_resolution_clock::now();
+#endif
+                // No changes - just copy front buffer to back buffer
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, frontFramebuffer);
+                glBindFramebuffer(GL_DRAW_FRAMEBUFFER, backFramebuffer);
+                glBlitFramebuffer(0, 0, scene.GetWidth(), scene.GetHeight(),
+                                 0, 0, scene.GetWidth(), scene.GetHeight(),
+                                 GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+#ifdef DEBUG_WINDOW
+                auto noCopyEnd = std::chrono::high_resolution_clock::now();
+                auto noCopyDuration = std::chrono::duration_cast<std::chrono::microseconds>(noCopyEnd - noCopyStart);
+                std::cout << "DoRender: No-change buffer copy completed in " << noCopyDuration.count() << "μs" << std::endl;
+#endif
+            }
 
-// #ifdef DEBUG_WINDOW
-//             auto renderingEnd = std::chrono::high_resolution_clock::now();
-//             auto renderingDuration = std::chrono::duration_cast<std::chrono::microseconds>(renderingEnd - renderingStart);
-//             std::cout << "DoRender: Total rendering phase took " << renderingDuration.count() << "μs" << std::endl;
+#ifdef DEBUG_WINDOW
+            auto renderingEnd = std::chrono::high_resolution_clock::now();
+            auto renderingDuration = std::chrono::duration_cast<std::chrono::microseconds>(renderingEnd - renderingStart);
+            std::cout << "DoRender: Total rendering phase took " << renderingDuration.count() << "μs" << std::endl;
 
-//             auto swapStart = std::chrono::high_resolution_clock::now();
-// #endif
+            auto swapStart = std::chrono::high_resolution_clock::now();
+#endif
 
-//             // Swap the framebuffers
-//             SwapFramebuffers();
+            // Swap the framebuffers
+            SwapFramebuffers();
 
-// #ifdef DEBUG_WINDOW
-//             auto swapEnd = std::chrono::high_resolution_clock::now();
-//             auto swapDuration = std::chrono::duration_cast<std::chrono::microseconds>(swapEnd - swapStart);
-//             std::cout << "DoRender: Framebuffer swap took " << swapDuration.count() << "μs" << std::endl;
+#ifdef DEBUG_WINDOW
+            auto swapEnd = std::chrono::high_resolution_clock::now();
+            auto swapDuration = std::chrono::duration_cast<std::chrono::microseconds>(swapEnd - swapStart);
+            std::cout << "DoRender: Framebuffer swap took " << swapDuration.count() << "μs" << std::endl;
 
-//             auto presentStart = std::chrono::high_resolution_clock::now();
-// #endif
+            auto presentStart = std::chrono::high_resolution_clock::now();
+#endif
 
-//             // Copy the front framebuffer content to the default framebuffer for display
-//             glBindFramebuffer(GL_READ_FRAMEBUFFER, frontFramebuffer);
-//             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-//             glBlitFramebuffer(0, 0, scene.GetWidth(), scene.GetHeight(),
-//                              0, 0, scene.GetWidth(), scene.GetHeight(),
-//                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            // Copy the front framebuffer content to the default framebuffer for display
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, frontFramebuffer);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+            glBlitFramebuffer(0, 0, scene.GetWidth(), scene.GetHeight(),
+                             0, 0, scene.GetWidth(), scene.GetHeight(),
+                             GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-//             glfwSwapBuffers(window);
+            glfwSwapBuffers(window);
 
-// #ifdef DEBUG_WINDOW
-//             auto presentEnd = std::chrono::high_resolution_clock::now();
-//             auto presentDuration = std::chrono::duration_cast<std::chrono::microseconds>(presentEnd - presentStart);
-//             std::cout << "DoRender: Present to screen took " << presentDuration.count() << "μs" << std::endl;
-// #endif
-//         }
+#ifdef DEBUG_WINDOW
+            auto presentEnd = std::chrono::high_resolution_clock::now();
+            auto presentDuration = std::chrono::duration_cast<std::chrono::microseconds>(presentEnd - presentStart);
+            std::cout << "DoRender: Present to screen took " << presentDuration.count() << "μs" << std::endl;
+#endif
+        }
 
 #ifdef DEBUG_WINDOW
         auto renderEndTime = std::chrono::high_resolution_clock::now();
         auto totalRenderDuration = std::chrono::duration_cast<std::chrono::microseconds>(renderEndTime - renderStartTime);
+        std::cout << "Window::DoRender - Render count: " << renderCount++ << std::endl;
         std::cout << "DoRender: TOTAL RENDER TIME: " << totalRenderDuration.count() << "μs (" 
                   << (totalRenderDuration.count() / 1000.0) << "ms)" << std::endl;
         std::cout << "=== Window::DoRender END ===\n" << std::endl;
