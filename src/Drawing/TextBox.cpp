@@ -261,6 +261,14 @@ namespace xit::Drawing
         int offset = 0;
 
         totalSize = textLabel.MeasureText();
+        std::string fullTextToMeasure = textLabel.GetText();
+
+#ifdef DEBUG_TEXTBOX
+        std::cout << "[DEBUG] UpdateCaret() - caretIndex=" << caretIndex << ", textLength=" << textLength << std::endl;
+        std::cout << "[DEBUG] UpdateCaret() - totalSize.GetWidth()=" << totalSize.GetWidth() << std::endl;
+        std::cout << "[DEBUG] UpdateCaret() - fullTextToMeasure='" << fullTextToMeasure << "' (using viewText)" << std::endl;
+        std::cout << "[DEBUG] UpdateCaret() - alignment=" << (int)GetTextAlignment() << " (0=Left, 1=Center, 2=Right, 3=Stretch)" << std::endl;
+#endif
 
         int left;
 
@@ -288,6 +296,11 @@ namespace xit::Drawing
             offset = (int)((float)offset / GetScaleX());
 
             left = (int)((float)left / GetScaleX());
+            
+#ifdef DEBUG_TEXTBOX
+            std::cout << "[DEBUG] UpdateCaret() - LEFT alignment: offset=" << offset << ", left=" << left << std::endl;
+            std::cout << "[DEBUG] UpdateCaret() - LEFT final position=" << (offset + left) << std::endl;
+#endif
         }
         else if (GetTextAlignment() == HorizontalAlignment::Right)
         {
@@ -296,9 +309,19 @@ namespace xit::Drawing
             offset = (int)((float)offset / GetScaleX());
 
             left = (int)((float)left / GetScaleX());
+            
+#ifdef DEBUG_TEXTBOX
+            std::cout << "[DEBUG] UpdateCaret() - RIGHT alignment: offset=" << offset << ", left=" << left << std::endl;
+            std::cout << "[DEBUG] UpdateCaret() - RIGHT final position=" << (offset + left) << std::endl;
+#endif
         }
 
         caret.SetMargin((offset + left), 0, 0, 0);
+
+#ifdef DEBUG_TEXTBOX
+        std::cout << "[DEBUG] UpdateCaret() - FINAL: Setting caret margin to " << (offset + left) << std::endl;
+        std::cout << "[DEBUG] UpdateCaret() - ===========================================" << std::endl;
+#endif
 
         if (caretTimer.Enabled)
         {
@@ -309,6 +332,10 @@ namespace xit::Drawing
     }
     void TextBox::UpdateSelection()
     {
+#ifdef DEBUG_TEXTBOX
+        std::cout << "[DEBUG] UpdateSelection() - selectionStart=" << selectionStart << ", selectionLength=" << selectionLength << std::endl;
+#endif
+
         bool isVisible = selectionLength > 0;
 
         if (isVisible)
