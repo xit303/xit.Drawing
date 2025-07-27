@@ -23,10 +23,9 @@ namespace PassMaga
         textBox = new TextBox();
         textBox->SetName("MainTextBox");
         textBox->SetIsPassword(true);
+        textBox->SetHintText("Enter your password here");
         textBox->SetTextAlignment(HorizontalAlignment::Center);
-
         SetContent(textBox);
-
 
         textBox->Focus();
     }

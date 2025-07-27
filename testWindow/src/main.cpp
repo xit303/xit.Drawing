@@ -1,6 +1,5 @@
 #include <Application/App.h>
 #include "MainWindow.h"
-#include <Drawing/DebugUtils.h>
 
 using namespace xit;
 using namespace PassMaga;
@@ -17,18 +16,12 @@ int main(int argc, char **argv)
     WindowSettings windowSettings;
     windowSettings.Load(App::UserPath());
 
-    // xit::Drawing::Debug::LayoutDiagnostics::TestPasswordTextBox();
-    // return 0;
-
-    // xit::Drawing::Debug::LayoutDiagnostics::SetDebugEnabled(true);
-    xit::Drawing::Debug::LayoutDiagnostics::EnableTextBoxDebuggingOnly();
     MainWindow window;
 
     if (window.Initialize(windowSettings, appName + " v" + version))
     {
         try
         {
-            // xit::Drawing::Debug::LayoutDiagnostics::TestWindowUpdates(static_cast<Window*>(&window));
             window.Show();
         }
         catch (const std::exception &e)
