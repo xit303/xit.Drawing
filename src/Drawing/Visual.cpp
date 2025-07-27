@@ -1,5 +1,5 @@
 #include <Drawing/Visual.h>
-// #include <Drawing/Visual.h>
+#include <Drawing/Window.h>
 #include <Drawing/Brushes/ImageBrush.h>
 #include <Drawing/VisualBase/LayoutManager.h>
 #include <Drawing/DebugUtils.h>
@@ -22,6 +22,16 @@ namespace xit::Drawing
         tag = nullptr;
     }
 
+    Window *Visual::GetWindow()
+    {
+        Visual *current = this;
+        while (current->GetParent() != nullptr)
+        {
+            current = static_cast<Visual *>(current->GetParent());
+        }
+        return dynamic_cast<Window *>(current);
+    }
+
     //******************************************************************************
     // Private
     //******************************************************************************
@@ -39,44 +49,22 @@ namespace xit::Drawing
         }
     }
 
-    void Visual::NotifyParentOfInvalidation()
+    void Visual::NotifyWindowOfInvalidation()
     {
-        // Notify the parent about this child's invalidation for background buffer
-        const ParentProperty *parentProp = GetParent();
-
-#ifdef DEBUG_VISUAL
-        std::cout << "NotifyParentOfInvalidation: " << GetName()
-                  << " parent=" << (parentProp ? "exists" : "null") << std::endl;
-#endif
-
-        if (parentProp)
+        // Notify the window about this child's invalidation for background buffer
+        if (auto *window = GetWindow())
         {
-            // Try to cast parent to LayoutManager to call OnChildInvalidated
-            LayoutManager *parentLayout = dynamic_cast<LayoutManager *>(const_cast<ParentProperty *>(parentProp));
-            if (parentLayout)
-            {
 #ifdef DEBUG_VISUAL
-                std::cout << "  -> Notifying parent LayoutManager: " << parentLayout->GetName() << std::endl;
-                std::cout << "  -> Calling OnChildInvalidated on parent: " << parentLayout->GetName() << std::endl;
+            std::cout << "NotifyWindowOfInvalidation: " << GetName()
+                      << " window=" << (window ? "exists" : "null") << std::endl;
 #endif
-
-                parentLayout->OnChildInvalidated(this);
-            }
-            else
-            {
-                // Fallback: try to invalidate parent directly if it's also a Visual
-                Visual *parentVisual = dynamic_cast<Visual *>(const_cast<ParentProperty *>(parentProp));
-                if (parentVisual)
-                {
+            window->InvalidateRegion(this, GetBounds());
+        }
+        else
+        {
 #ifdef DEBUG_VISUAL
-                    std::cout << "  -> Fallback invalidating parent Visual: " << parentVisual->GetName() << std::endl;
+            std::cout << "NotifyWindowOfInvalidation: No window found for " << GetName() << std::endl;
 #endif
-                    parentVisual->Invalidate();
-                }
-#ifdef DEBUG_VISUAL
-                std::cout << "  -> Parent exists but can't cast to LayoutManager or Visual" << std::endl;
-#endif
-            }
         }
     }
 

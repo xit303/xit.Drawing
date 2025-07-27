@@ -13,6 +13,8 @@
 
 namespace xit::Drawing
 {
+    class Window; // Forward declaration
+
     class Visual : public ToolTipBase,
                    public GridContentBase,
                    public Renderable,
@@ -23,12 +25,15 @@ namespace xit::Drawing
 
     protected:
         virtual void OnNameChanged(EventArgs &e) override;
-        virtual void NotifyParentOfInvalidation() override;
+        virtual void NotifyWindowOfInvalidation() override;
 
     public:
         __always_inline std::any &GetTag() { return tag; }
         __always_inline const std::any &GetTag() const { return tag; }
         __always_inline void SetTag(const std::any &value) { tag = value; }
+
+        Window* GetWindow();
+        const Window* GetWindow() const;
 
         Event<Visual &, EventArgs &> BrushGroupChanged;
 

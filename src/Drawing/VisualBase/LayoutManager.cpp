@@ -33,7 +33,7 @@ namespace xit::Drawing::VisualBase
 
             EventArgs e;
             OnInvalidated(e);
-            NotifyParentOfInvalidation();
+            NotifyWindowOfInvalidation();
         }
         else
         {
@@ -43,34 +43,10 @@ namespace xit::Drawing::VisualBase
         }
     }
 
-    void LayoutManager::NotifyParentOfInvalidation()
+    void LayoutManager::NotifyWindowOfInvalidation()
     {
         // This method will be overridden by Visual class to access the parent properly
         // Base LayoutManager doesn't have access to parent, so this is a no-op
-    }
-
-    void LayoutManager::OnChildInvalidated(LayoutManager *childLayout)
-    {
-        // When a child is invalidated, the parent must also be invalidated
-        // to ensure the update chain propagates correctly
-
-        // Only invalidate parent if it's not already invalidated
-        // This prevents infinite recursion loops
-        if (!invalidated)
-        {
-#ifdef DEBUG_LAYOUT_MANAGER
-            std::cout << "Child invalidated: " << (childLayout ? childLayout->GetName() : "null")
-                      << " -> invalidating parent: " << GetName() << std::endl;
-#endif
-
-            // Invalidate this parent when child invalidates
-            Invalidate();
-        }
-#ifdef DEBUG_LAYOUT_MANAGER
-        std::cout << "Child invalidated: " << (childLayout ? childLayout->GetName() : "null")
-                  << " -> parent " << GetName() << " already invalidated, skipping" << std::endl;
-#endif
-        // Note: Don't call NotifyParentOfInvalidation() here as Invalidate() already does that
     }
 
     Size LayoutManager::Measure(const Size &availableSize)
@@ -288,6 +264,16 @@ namespace xit::Drawing::VisualBase
         SetMarginScale(scaleX, scaleY);
         SetPaddingScale(scaleX, scaleY);
         SetBorderThicknessScale(scaleX, scaleY);
+    }
+
+    void LayoutManager::OnCornerRadiusChanged(EventArgs &e)
+    {
+        // Corner radius changes may affect layout, so we need to recalculate
+        needWidthRecalculation = true;
+        needHeightRecalculation = true;
+        needLeftRecalculation = true;
+        needTopRecalculation = true;
+        Invalidate();
     }
 
     int LayoutManager::OnMeasureWidth(int availableSize)

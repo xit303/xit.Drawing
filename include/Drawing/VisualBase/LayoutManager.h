@@ -70,6 +70,7 @@ namespace xit::Drawing::VisualBase
         virtual void OnVisibilityChanged(EventArgs &e) override;
 
         virtual void OnScaleChanged(EventArgs &e) override;
+        virtual void OnCornerRadiusChanged(EventArgs &e) override;
 
         virtual int OnMeasureWidth(int availableSize);
         virtual int OnMeasureHeight(int availableSize);
@@ -87,7 +88,7 @@ namespace xit::Drawing::VisualBase
         virtual void ResetRecalculationFlags();
 
         // Parent notification methods for background buffer support
-        virtual void NotifyParentOfInvalidation();
+        virtual void NotifyWindowOfInvalidation();
 
         static inline int CheckMinMaxWidth(const LayoutManager &visual, int value)
         {
@@ -126,8 +127,5 @@ namespace xit::Drawing::VisualBase
         virtual void OnBackgroundChanged(EventArgs &e) {}
         virtual void OnForegroundChanged(EventArgs &e) {}
         virtual void OnBorderBrushChanged(EventArgs &e) {}
-
-        // Child invalidation notification for background buffer support
-        virtual void OnChildInvalidated(LayoutManager *childLayout);
     };
 } // namespace xit::Drawing::VisualBase
