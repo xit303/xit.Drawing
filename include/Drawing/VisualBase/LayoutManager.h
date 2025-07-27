@@ -14,7 +14,6 @@
 #include <Drawing/Properties/ScaleProperty.h>
 #include <Drawing/Properties/VerticalAlignmentProperty.h>
 #include <Drawing/Properties/VisibilityProperty.h>
-#include <Drawing/VisualBase/VisualStateManager.h>
 #include <Drawing/Theme/ThemeManager.h>
 
 namespace xit::Drawing::VisualBase
@@ -29,8 +28,7 @@ namespace xit::Drawing::VisualBase
                           public VerticalAlignmentProperty,
                           public VisibilityProperty,
                           public LayoutGroupProperty,
-                          public Location,
-                          public VisualStateManager
+                          public Location
     {
     private:
         bool invalidated;

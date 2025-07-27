@@ -9,6 +9,7 @@
 #include <Drawing/Properties/RotationProperty.h>
 #include <Drawing/Properties/ZIndexProperty.h>
 #include <Drawing/VisualBase/LayoutManager.h>
+#include <Drawing/VisualBase/VisualStateManager.h>
 #include <OpenGL/Texture.h>
 #include <OpenGL/Graphics.h>
 #include <OpenGL/Scene2D.h>
@@ -22,7 +23,8 @@ namespace xit::Drawing::VisualBase
                        public ZIndexProperty,
                        public BackgroundProperty,
                        public ForegroundProperty,
-                       public BorderBrushProperty
+                       public BorderBrushProperty,
+                       public VisualStateManager
     {
     private:
         using Texture = xit::OpenGL::Texture;
