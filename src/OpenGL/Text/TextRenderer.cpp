@@ -112,31 +112,13 @@ namespace xit::OpenGL
         int drawCalls = 0;
 #endif
 
-        // iterate through all characters with texture batching optimization
-        std::vector<int> batchVertices;
-        int currentTexture = -1;
-        int batchSize = 0;
-        
+        // iterate through all characters
         for (size_t i = 0; i < textLength; i++)
         {
             char c = text[i];
 
             if (c == '\n')
             {
-                // Flush current batch before line break
-                if (batchSize > 0)
-                {
-                    glBindTexture(GL_TEXTURE_2D, currentTexture);
-                    vertexDataBuffer->SetData(batchVertices.size(), batchVertices.data(), 3);
-                    glDrawArrays(GL_TRIANGLES, 0, batchSize * 6);
-#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
-                    drawCalls++;
-#endif
-                    batchVertices.clear();
-                    batchSize = 0;
-                    currentTexture = -1;
-                }
-                
                 y -= characterList.FontHeight;
                 x = xStart;
                 continue;
@@ -152,25 +134,9 @@ namespace xit::OpenGL
                 int width = character.GlyphSize.GetWidth();
                 int height = character.GlyphSize.GetHeight();
 
-                // Check if we need to flush current batch (different texture or batch size limit)
-                if (currentTexture != -1 && (currentTexture != character.TextureID || batchSize >= 32))
-                {
-                    // Render current batch
-                    glBindTexture(GL_TEXTURE_2D, currentTexture);
-                    vertexDataBuffer->SetData(batchVertices.size(), batchVertices.data(), 3);
-                    glDrawArrays(GL_TRIANGLES, 0, batchSize * 6);
-#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
-                    drawCalls++;
-#endif
-                    batchVertices.clear();
-                    batchSize = 0;
-                }
-
-                // Add character to batch
-                currentTexture = character.TextureID;
-                
-                // Add vertices for this character (6 vertices = 18 ints)
-                int vertices[] = {
+                // update VBO for each character
+                int vertices[] =
+                    {
                     left, top + height, z,
                     left, top, z,
                     left + width, top, z,
@@ -178,13 +144,20 @@ namespace xit::OpenGL
                     left + width, top + height, z,
                     left, top + height, z,
                     left + width, top, z,
-                };
-                
-                for (int j = 0; j < 18; j++)
-                {
-                    batchVertices.push_back(vertices[j]);
-                }
-                batchSize++;
+                    };
+
+                // render glyph texture over quad
+                glBindTexture(GL_TEXTURE_2D, character.TextureID);
+
+                // update content of VBO memory
+                vertexDataBuffer->SetData(18, vertices, 3);
+
+                // render quad
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+                drawCalls++;
+#endif
 
                 // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
                 x += character.Advance;
@@ -193,17 +166,6 @@ namespace xit::OpenGL
             // {
             //     Logger::Log(LogLevel::Error, "TextRenderer.RenderText", "Specified character not found %c", c);
             // }
-        }
-
-        // Flush final batch
-        if (batchSize > 0)
-        {
-            glBindTexture(GL_TEXTURE_2D, currentTexture);
-            vertexDataBuffer->SetData(batchVertices.size(), batchVertices.data(), 3);
-            glDrawArrays(GL_TRIANGLES, 0, batchSize * 6);
-#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
-            drawCalls++;
-#endif
         }
 
 #ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
