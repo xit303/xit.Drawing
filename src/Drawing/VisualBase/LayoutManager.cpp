@@ -578,6 +578,8 @@ namespace xit::Drawing::VisualBase
             {
                 SetLeft(bounds.GetRight() - actualWidth - GetMargin().GetRight());
             }
+
+            needLeftRecalculation = false; // Reset after setting position
         }
 
         if (!GetIsAbsolutePosition() && needTopRecalculation)
@@ -594,6 +596,8 @@ namespace xit::Drawing::VisualBase
             {
                 SetTop(bounds.GetBottom() - actualHeight - GetMargin().GetBottom());
             }
+
+            needTopRecalculation = false; // Reset after setting position
         }
 
         if (updateLocation)
@@ -627,13 +631,5 @@ namespace xit::Drawing::VisualBase
         // Base implementation does nothing
         // Derived classes can override this to perform additional calculations
         // while recalculation flags are still available
-    }
-
-    void LayoutManager::ResetRecalculationFlags()
-    {
-        needWidthRecalculation = false;
-        needHeightRecalculation = false;
-        needLeftRecalculation = false;
-        needTopRecalculation = false;
     }
 }
