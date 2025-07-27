@@ -485,6 +485,7 @@ namespace xit::Drawing
         }
 
         textLabel.SetText(viewText);
+        UpdateCaret();
 
 #ifdef DEBUG_TEXTBOX
         std::cout << "[DEBUG] UpdateVisibleText() complete" << std::endl;
@@ -571,7 +572,6 @@ namespace xit::Drawing
                 selectionLength = 0;
                 selectionStart = 0;
                 caretIndex = 0;
-                UpdateCaret();
                 UpdateSelection();
                 OnTextChanged(tce);
 
