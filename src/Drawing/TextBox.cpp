@@ -410,7 +410,7 @@ namespace xit::Drawing
             return index;
         }
 
-        for (size_t i = 0; i < textLength + 1; i++)
+        for (size_t i = 0; i <= textLength; i++)
         {
             Label::MeasureText(GetFontName(), GetFontSize(), viewText.substr(0, i), size);
 
