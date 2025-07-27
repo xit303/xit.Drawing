@@ -61,7 +61,7 @@ namespace xit::Drawing::VisualBase
         // When a child is invalidated, the parent must also be invalidated
         // to ensure the update chain propagates correctly
 
-        // CRITICAL FIX: Only invalidate parent if it's not already invalidated
+        // Only invalidate parent if it's not already invalidated
         // This prevents infinite recursion loops
         if (!invalidated)
         {
@@ -94,6 +94,12 @@ namespace xit::Drawing::VisualBase
 
         if (GetVisibility() != Visibility::Collapsed)
         {
+            // TODO this needs to be removed somehow. Right now we need to recalculate everything
+            // when the layout is updated, because these flags seem to be wrong when we need them.
+            needWidthRecalculation = true;
+            needHeightRecalculation = true;
+            needLeftRecalculation = true;
+            needTopRecalculation = true;
 
             needRedraw = needLeftRecalculation || needTopRecalculation || needWidthRecalculation || needHeightRecalculation || invalidated;
 
@@ -603,7 +609,7 @@ namespace xit::Drawing::VisualBase
             return;*/
 
         // store for later update of buffers
-        bool updateLocation = needLeftRecalculation || needTopRecalculation || GetIsAbsolutePosition();
+        bool updateLocation = needLeftRecalculation || needTopRecalculation || GetIsAbsolutePosition() || invalidated;
 
         if (needWidthRecalculation || needHeightRecalculation || invalidated)
         {
