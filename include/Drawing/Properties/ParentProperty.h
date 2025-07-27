@@ -31,7 +31,7 @@ namespace xit::Drawing::VisualBase
         /*!
          * @brief
          */
-        const ParentProperty *GetParent() { return parent; }
+        ParentProperty *GetParent() { return parent; }
 
         /*!
          * @brief
