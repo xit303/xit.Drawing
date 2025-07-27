@@ -117,10 +117,11 @@ namespace xit::Drawing
         if (caretIndex != value)
         {
             if (value <= textLength)
-            {
                 caretIndex = value;
-                UpdateCaret();
-            }
+            else
+                caretIndex = textLength; // Clamp to valid range
+
+            UpdateCaret();
         }
     }
 
