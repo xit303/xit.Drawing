@@ -84,9 +84,6 @@ namespace xit::Drawing::VisualBase
         // Override this for additional calculations that need the recalculation flags
         virtual void OnLayoutCompleted(const Rectangle &bounds);
 
-        // Method to reset recalculation flags - call this after derived classes have processed the flags
-        virtual void ResetRecalculationFlags();
-
         // Parent notification methods for background buffer support
         virtual void NotifyWindowOfInvalidation();
 

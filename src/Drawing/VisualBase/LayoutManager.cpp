@@ -492,9 +492,6 @@ namespace xit::Drawing::VisualBase
         // Allow derived classes to do additional work while flags are still available
         OnLayoutCompleted(bounds);
 
-        // Reset flags after everything is done
-        ResetRecalculationFlags();
-
         // Reset invalidated flag after successful update - this must be done here
         // so the Update() function can use it in its return value
         invalidated = false;
