@@ -5,6 +5,11 @@
 
 #include <gtc/type_ptr.hpp>
 
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+#include <chrono>
+#include <iostream>
+#endif
+
 namespace xit::OpenGL
 {
     bool TextRenderer::isInitialized = false;
@@ -44,11 +49,28 @@ namespace xit::OpenGL
 
     void TextRenderer::RenderText(const std::string &fontName, int fontSize, const std::string &text, int x, int y, int z, glm::vec4 &color)
     {
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+        auto totalStart = std::chrono::high_resolution_clock::now();
+        std::cout << "TextRenderer::RenderText - Rendering text '" << text << "' at (" << x << "," << y << ")" << std::endl;
+#endif
+
         Initialize();
+
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+        auto initEnd = std::chrono::high_resolution_clock::now();
+        auto initDuration = std::chrono::duration_cast<std::chrono::microseconds>(initEnd - totalStart);
+        std::cout << "TextRenderer::RenderText - Initialize() took " << initDuration.count() << "μs" << std::endl;
+#endif
 
         CharacterList &characterList = FontStorage::FindOrCreate(fontName, fontSize);
         if (characterList.empty())
             return;
+
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+        auto fontEnd = std::chrono::high_resolution_clock::now();
+        auto fontDuration = std::chrono::duration_cast<std::chrono::microseconds>(fontEnd - initEnd);
+        std::cout << "TextRenderer::RenderText - FontStorage::FindOrCreate() took " << fontDuration.count() << "μs" << std::endl;
+#endif
 
         // activate corresponding render state
         textShader->Bind();
@@ -56,6 +78,12 @@ namespace xit::OpenGL
         textShader->SetUniform4("textColor", color.r, color.g, color.b, color.a);
         glActiveTexture(GL_TEXTURE0);
         attributeBufferList->Bind();
+
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+        auto setupEnd = std::chrono::high_resolution_clock::now();
+        auto setupDuration = std::chrono::duration_cast<std::chrono::microseconds>(setupEnd - fontEnd);
+        std::cout << "TextRenderer::RenderText - OpenGL setup took " << setupDuration.count() << "μs" << std::endl;
+#endif
 
         const float *texCoords = OpenGLExtensions::RectangleTexCoords;
 
@@ -76,13 +104,39 @@ namespace xit::OpenGL
         int xStart = x;
         y += rows * characterList.FontHeight;
 
-        // iterate through all characters
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+        auto preprocessEnd = std::chrono::high_resolution_clock::now();
+        auto preprocessDuration = std::chrono::duration_cast<std::chrono::microseconds>(preprocessEnd - setupEnd);
+        std::cout << "TextRenderer::RenderText - Text preprocessing took " << preprocessDuration.count() << "μs for " << textLength << " characters" << std::endl;
+        auto renderStart = std::chrono::high_resolution_clock::now();
+        int drawCalls = 0;
+#endif
+
+        // iterate through all characters with texture batching optimization
+        std::vector<int> batchVertices;
+        int currentTexture = -1;
+        int batchSize = 0;
+        
         for (size_t i = 0; i < textLength; i++)
         {
             char c = text[i];
 
             if (c == '\n')
             {
+                // Flush current batch before line break
+                if (batchSize > 0)
+                {
+                    glBindTexture(GL_TEXTURE_2D, currentTexture);
+                    vertexDataBuffer->SetData(batchVertices.size(), batchVertices.data(), 3);
+                    glDrawArrays(GL_TRIANGLES, 0, batchSize * 6);
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+                    drawCalls++;
+#endif
+                    batchVertices.clear();
+                    batchSize = 0;
+                    currentTexture = -1;
+                }
+                
                 y -= characterList.FontHeight;
                 x = xStart;
                 continue;
@@ -98,9 +152,25 @@ namespace xit::OpenGL
                 int width = character.GlyphSize.GetWidth();
                 int height = character.GlyphSize.GetHeight();
 
-                // update VBO for each character
-                int vertices[] =
-                    {
+                // Check if we need to flush current batch (different texture or batch size limit)
+                if (currentTexture != -1 && (currentTexture != character.TextureID || batchSize >= 32))
+                {
+                    // Render current batch
+                    glBindTexture(GL_TEXTURE_2D, currentTexture);
+                    vertexDataBuffer->SetData(batchVertices.size(), batchVertices.data(), 3);
+                    glDrawArrays(GL_TRIANGLES, 0, batchSize * 6);
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+                    drawCalls++;
+#endif
+                    batchVertices.clear();
+                    batchSize = 0;
+                }
+
+                // Add character to batch
+                currentTexture = character.TextureID;
+                
+                // Add vertices for this character (6 vertices = 18 ints)
+                int vertices[] = {
                     left, top + height, z,
                     left, top, z,
                     left + width, top, z,
@@ -108,17 +178,14 @@ namespace xit::OpenGL
                     left + width, top + height, z,
                     left, top + height, z,
                     left + width, top, z,
-                    };
-                // int* vertices = OpenGLExtensions::CreateRectangle(left, top, z, width, height);
+                };
+                
+                for (int j = 0; j < 18; j++)
+                {
+                    batchVertices.push_back(vertices[j]);
+                }
+                batchSize++;
 
-                // render glyph texture over quad
-                glBindTexture(GL_TEXTURE_2D, character.TextureID);
-
-                // update content of VBO memory
-                vertexDataBuffer->SetData(18, vertices, 3);
-
-                // render quad
-                glDrawArrays(GL_TRIANGLES, 0, 6);
                 // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
                 x += character.Advance;
             }
@@ -128,8 +195,31 @@ namespace xit::OpenGL
             // }
         }
 
+        // Flush final batch
+        if (batchSize > 0)
+        {
+            glBindTexture(GL_TEXTURE_2D, currentTexture);
+            vertexDataBuffer->SetData(batchVertices.size(), batchVertices.data(), 3);
+            glDrawArrays(GL_TRIANGLES, 0, batchSize * 6);
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+            drawCalls++;
+#endif
+        }
+
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+        auto renderEnd = std::chrono::high_resolution_clock::now();
+        auto renderDuration = std::chrono::duration_cast<std::chrono::microseconds>(renderEnd - renderStart);
+        std::cout << "TextRenderer::RenderText - Character rendering took " << renderDuration.count() << "μs for " << drawCalls << " draw calls" << std::endl;
+#endif
+
         attributeBufferList->Unbind();
 
         glBindTexture(GL_TEXTURE_2D, 0);
+
+#ifdef DEBUG_TEXT_RENDERER_PERFORMANCE
+        auto totalEnd = std::chrono::high_resolution_clock::now();
+        auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(totalEnd - totalStart);
+        std::cout << "TextRenderer::RenderText - Total rendering took " << totalDuration.count() << "μs" << std::endl;
+#endif
     }
 }
