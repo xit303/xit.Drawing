@@ -40,6 +40,8 @@ namespace xit::Drawing::VisualBase
         bool needLeftRecalculation;
         bool needTopRecalculation;
 
+        Rectangle clientBounds;
+
     protected:
         Size desiredSize;
 
@@ -114,6 +116,7 @@ namespace xit::Drawing::VisualBase
         inline const Size &GetDesiredSize() const { return desiredSize; }
 
         __always_inline const Rectangle &GetBounds() const { return bounds; }
+        __always_inline const Rectangle &GetClientBounds() const { return clientBounds; }
 
         // Public getters for recalculation flags - useful for derived classes
         __always_inline bool GetNeedWidthRecalculation() const { return needWidthRecalculation; }

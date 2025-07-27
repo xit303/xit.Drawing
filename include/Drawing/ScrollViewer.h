@@ -17,8 +17,6 @@ namespace xit::Drawing
         Timer scrollBarTimer;
         bool isScrollBarAlwaysVisible;
 
-        Rectangle clientBounds;
-
         void ScrollBarTimerTick(EventArgs &e);
 
         void ShowScrollBars();
@@ -51,8 +49,6 @@ namespace xit::Drawing
                 isScrollBarAlwaysVisible = value;
             }
         }
-
-        const Rectangle &ClientBounds = clientBounds;
 
         ScrollViewer();
         ~ScrollViewer();

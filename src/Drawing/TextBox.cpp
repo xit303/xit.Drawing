@@ -1103,8 +1103,7 @@ namespace xit::Drawing
             selectionBorder.SetHeight(height);
         }
         // Use BoxModel method to calculate client bounds for the caret
-        Rectangle clientBounds = GetClientRectangle(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
-        caret.Update(clientBounds);
+        caret.Update(GetClientBounds());
     }
     void TextBox::OnRender()
     {

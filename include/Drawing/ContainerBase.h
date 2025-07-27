@@ -65,8 +65,6 @@ namespace xit::Drawing
 
         std::vector<Visual *> children;
 
-        Rectangle clientBounds;
-
         // void Children_CollectionChanged(NotifyCollectionChangedEventArgs<Visual *> &e);
 
         // void Content_EnabledChanged(EnabledProperty &sender, EventArgs &e);
@@ -107,8 +105,6 @@ namespace xit::Drawing
 
     public:
         __always_inline const std::vector<Visual *> GetChildren() const { return children; }
-
-        __always_inline const Rectangle &GetClientBounds() const { return clientBounds; }
 
         Event<Visual &, EventArgs &> ChildAdded;
         Event<Visual &, EventArgs &> ChildRemoved;

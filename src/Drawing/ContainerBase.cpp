@@ -343,8 +343,8 @@ namespace xit::Drawing
 
         InputContent::OnUpdate(bounds);
 
-        // Use optimized BoxModel method for client bounds calculation
-        Rectangle stored = GetClientRectangle(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
+        // Use cached client bounds from LayoutManager for optimal performance
+        Rectangle stored = GetClientBounds();
 
         // Handle negative margin (special case for SplitContainer)
         int left = stored.GetLeft();
@@ -361,7 +361,6 @@ namespace xit::Drawing
         //     left += margin.GetLeft();
 
         // TODO this order is different to ScrollViewer
-        // TODO create Method GetClientBounds(Visual& v); see Window, SplitContainer, ScrollViewer, ContainerBase
         grid.SetBounds(stored);
 
         if (updateSize || updateLocations)

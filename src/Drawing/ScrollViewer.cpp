@@ -61,34 +61,34 @@ namespace xit::Drawing
 
     void ScrollViewer::ScrollToBottom()
     {
-            ScrollLogic::ScrollToBottom();
-            verticalScrollBar.SetValue(verticalScrollBar.GetMaximum());
-            GetContentContainer().SetMargin(GetScrollMargin());
-            Invalidate();
+        ScrollLogic::ScrollToBottom();
+        verticalScrollBar.SetValue(verticalScrollBar.GetMaximum());
+        GetContentContainer().SetMargin(GetScrollMargin());
+        Invalidate();
     }
 
     void ScrollViewer::ScrollToRight()
     {
-            ScrollLogic::ScrollToRight();
-            horizontalScrollBar.SetValue(horizontalScrollBar.GetMaximum());
-            GetContentContainer().SetMargin(GetScrollMargin());
-            Invalidate();
+        ScrollLogic::ScrollToRight();
+        horizontalScrollBar.SetValue(horizontalScrollBar.GetMaximum());
+        GetContentContainer().SetMargin(GetScrollMargin());
+        Invalidate();
     }
 
     void ScrollViewer::ScrollToVerticalOffset(int offset)
     {
-            ScrollLogic::ScrollToVerticalOffset(offset);
-            verticalScrollBar.SetValue(std::round((float)offset * GetScaleY()));
-            GetContentContainer().SetMargin(GetScrollMargin());
-            Invalidate();
+        ScrollLogic::ScrollToVerticalOffset(offset);
+        verticalScrollBar.SetValue(std::round((float)offset * GetScaleY()));
+        GetContentContainer().SetMargin(GetScrollMargin());
+        Invalidate();
     }
 
     void ScrollViewer::ScrollToHorizontalOffset(int offset)
     {
-            ScrollLogic::ScrollToHorizontalOffset(offset);
-            horizontalScrollBar.SetValue(std::round((float)offset * GetScaleX()));
-            GetContentContainer().SetMargin(GetScrollMargin());
-            Invalidate();
+        ScrollLogic::ScrollToHorizontalOffset(offset);
+        horizontalScrollBar.SetValue(std::round((float)offset * GetScaleX()));
+        GetContentContainer().SetMargin(GetScrollMargin());
+        Invalidate();
     }
 
     //******************************************************************************
@@ -242,7 +242,6 @@ namespace xit::Drawing
         if (e.Handled)
             return;
 
-
         if (InputHandler::IsShift())
         {
             e.Handled = ScrollHorizontal(e.WheelDelta);
@@ -302,8 +301,20 @@ namespace xit::Drawing
     {
         ContentContainer::OnUpdate(bounds);
 
-        // Use optimized BoxModel method for client bounds calculation
-        clientBounds = GetClientRectangle(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
+        // Use cached client bounds from LayoutManager for optimal performance
+        Rectangle clientBounds = GetClientBounds();
+
+#ifdef DEBUG_SCROLL_VIEWER
+        Rectangle manualClientBounds = GetClientRectangle(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
+        std::cout << "ScrollViewer::OnUpdate - Manual: ("
+                  << manualClientBounds.GetLeft() << "," << manualClientBounds.GetTop()
+                  << "," << manualClientBounds.GetWidth() << "," << manualClientBounds.GetHeight() << ")" << std::endl;
+        std::cout << "ScrollViewer::OnUpdate - Cached: ("
+                  << clientBounds.GetLeft() << "," << clientBounds.GetTop()
+                  << "," << clientBounds.GetWidth() << "," << clientBounds.GetHeight() << ")" << std::endl;
+        std::cout << "ScrollViewer values: GetLeft()=" << GetLeft() << " GetTop()=" << GetTop()
+                  << " GetActualWidth()=" << GetActualWidth() << " GetActualHeight()=" << GetActualHeight() << std::endl;
+#endif
 
         GetContentContainer().Update(clientBounds);
 
@@ -313,8 +324,7 @@ namespace xit::Drawing
             GetLeft() + borderThickness.GetLeft(),
             GetTop() + borderThickness.GetTop(),
             GetActualWidth() - borderThickness.GetWidth(),
-            GetActualHeight() - borderThickness.GetHeight()
-        );
+            GetActualHeight() - borderThickness.GetHeight());
 
         int availableWidth = scrollBarBounds.GetWidth();
         int availableHeight = scrollBarBounds.GetHeight();

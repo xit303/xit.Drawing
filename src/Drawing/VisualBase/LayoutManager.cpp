@@ -587,7 +587,16 @@ namespace xit::Drawing::VisualBase
                 renderLeft += GetMargin().GetLeft();
         }
 
-        // isUpdating = false; // Removed - now handled by RAII guard
+        if (updateLocation || needWidthRecalculation || needHeightRecalculation)
+            clientBounds = GetClientRectangle(GetLeft(), GetTop(), actualWidth, actualHeight);
+
+#ifdef DEBUG_LAYOUT_MANAGER
+        std::cout << "LayoutManager::PerformLayout - Updating clientBounds for " << GetName() 
+                  << " to (" << clientBounds.GetLeft() << "," << clientBounds.GetTop()
+                  << "," << clientBounds.GetWidth() << "," << clientBounds.GetHeight() << ")"
+                  << " from GetLeft()=" << GetLeft() << " GetTop()=" << GetTop()
+                  << " actualWidth=" << actualWidth << " actualHeight=" << actualHeight << std::endl;
+#endif
     }
 
     void LayoutManager::OnLayoutCompleted(const Rectangle &bounds)
