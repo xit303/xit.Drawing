@@ -38,7 +38,7 @@
             "label": "xmake testWindow",
             "type": "shell",
             "command": "xmake",
-            "args": ["testWindow/xmakefile.json"],
+            "args": ["testWindow/xmakefile.json", "clean", "&&", "xmake", "testWindow/xmakefile.json"],
             "group": "build",
             "problemMatcher": "$gcc",
             "dependsOn": "xmake silent",
