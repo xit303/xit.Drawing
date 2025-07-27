@@ -5,6 +5,10 @@
 
 #include <gtc/type_ptr.hpp>
 
+#ifdef USE_AI_SUGGESTED_FIX
+#include <algorithm>
+#endif
+
 namespace xit::OpenGL
 {
     bool Graphics::isInitialized = false;
@@ -81,6 +85,25 @@ namespace xit::OpenGL
 
         const Scene2D &currentScene = Scene2D::CurrentScene();
 
+#ifdef USE_AI_SUGGESTED_FIX
+        // Ensure we have valid scene dimensions to prevent rendering issues during resize
+        int sceneWidth = currentScene.GetWidth();
+        int sceneHeight = currentScene.GetHeight();
+
+        if (sceneWidth <= 0 || sceneHeight <= 0)
+            return; // Skip rendering if scene has invalid dimensions
+
+        // Clamp rendering coordinates to scene bounds to prevent artifacts
+        renderX = std::max(0, std::min(renderX, sceneWidth));
+        renderY = std::max(0, std::min(renderY, sceneHeight));
+        width = std::max(0, std::min(width, sceneWidth - renderX));
+        height = std::max(0, std::min(height, sceneHeight - renderY));
+
+        if (width <= 0 || height <= 0)
+            return; // Skip rendering if rectangle has no area
+
+#endif
+
         shaderProgram->Bind();
         shaderProgram->SetUniformMatrix4("projection", glm::value_ptr(currentScene.ProjectionMatrix));
         // TODO shaderProgram->SetUniformMatrix4(gl, "model", modelMatrix.to_array());
@@ -98,7 +121,11 @@ namespace xit::OpenGL
         shaderProgram->SetUniform2("iLocation", (float)x, (float)y);
         shaderProgram->SetUniform3("iRotation", rotation.x, rotation.y, rotation.z);
         shaderProgram->SetUniform2("iSize", (float)width, (float)height);
+#ifdef USE_AI_SUGGESTED_FIX
+        shaderProgram->SetUniform2("iResolution", (float)sceneWidth, (float)sceneHeight);
+#else
         shaderProgram->SetUniform2("iResolution", (float)currentScene.GetWidth(), (float)currentScene.GetHeight());
+#endif
         shaderProgram->SetUniform1("iTime", (float)currentScene.GetFrameTime());
 
         attributeBufferList->Bind();

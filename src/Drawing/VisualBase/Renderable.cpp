@@ -57,6 +57,27 @@ namespace xit::Drawing::VisualBase
                     glGetIntegerv(GL_SCISSOR_BOX, cachedRect);
                 }
 
+#ifdef USE_AI_SUGGESTED_FIX
+                // FIXED: Improved coordinate conversion for scissor testing
+                // Ensure we use the current scene dimensions for coordinate conversion
+                const Scene2D &currentScene = Scene2D::CurrentScene();
+                int sceneHeight = currentScene.GetHeight();
+
+                // convert bounds to screen coordinates
+                Rectangle bounds = this->bounds;
+                bounds.SetTop(sceneHeight - bounds.GetTop() - bounds.GetHeight());
+
+                // Ensure coordinates are within valid scene bounds
+                int top = std::max(0, std::max(renderTop, bounds.GetTop()));
+                int left = std::max(0, std::max(renderLeft, bounds.GetLeft()));
+
+                // Calculate width and height with proper bounds checking
+                int maxRight = std::min(currentScene.GetWidth(), bounds.GetRight());
+                int maxBottom = std::min(sceneHeight, bounds.GetBottom());
+
+                int width = (left + actualWidth > maxRight) ? std::max(0, maxRight - left) : actualWidth;
+                int height = (top + actualHeight > maxBottom) ? std::max(0, maxBottom - top) : actualHeight;
+#else
                 // TODO something here is really wrong
                 // Left and top seem to be calculated wrong because some items are cut off
 
@@ -68,6 +89,7 @@ namespace xit::Drawing::VisualBase
                 int left = std::max(renderLeft, bounds.GetLeft());
                 int width = left + actualWidth > bounds.GetRight() ? bounds.GetRight() - left : actualWidth;
                 int height = top + actualHeight > bounds.GetBottom() ? bounds.GetBottom() - top : actualHeight;
+#endif
 
                 if (enabled)
                 {
@@ -77,12 +99,19 @@ namespace xit::Drawing::VisualBase
                     int lastXMax = cachedRect[0] + cachedRect[2];
                     int myXMax = renderLeft + actualWidth;
 
+#ifdef USE_AI_SUGGESTED_FIX
+                    width = std::max(0, std::min(lastXMax, myXMax) - left);
+#else
                     width = std::min(lastXMax, myXMax) - left;
-
+#endif
                     int lastYMax = cachedRect[1] + cachedRect[3];
                     int myYMax = renderTop + actualHeight;
 
+#ifdef USE_AI_SUGGESTED_FIX
+                    height = std::max(0, std::min(lastYMax, myYMax) - top);
+#else
                     height = std::min(lastYMax, myYMax) - top;
+#endif
                 }
 
                 if (width > 0 && height > 0)

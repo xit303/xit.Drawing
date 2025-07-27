@@ -22,7 +22,8 @@
                 "../xit.Timers/include"
             ],
             "defines": [
-                "DEBUG"
+                "DEBUG",
+                "USE_AI_SUGGESTED_FIX"
             ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",

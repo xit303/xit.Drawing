@@ -20,7 +20,8 @@
             "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -MMD -fPIC -O0",
             "linker_flags": "-lm -lstdc++",
             "defines": [
-                "DEBUG"
+                "DEBUG",
+                "USE_AI_SUGGESTED_FIX"
             ],
             "include_paths": [
                 "include",
