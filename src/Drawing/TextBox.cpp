@@ -110,6 +110,8 @@ namespace xit::Drawing
         caret.SetHorizontalAlignment(value);
         textHintLabel.SetHorizontalAlignment(value);
         selectionBorder.SetHorizontalAlignment(value);
+
+        UpdateCaret();
     }
 
     void TextBox::SetCaretIndex(size_t value)
