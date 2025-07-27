@@ -494,6 +494,7 @@ namespace xit::Drawing
     void TextBox::ShowPasswordButton_ActiveChanged(IsActiveProperty &sender, EventArgs &e)
     {
         UpdateVisibleText();
+        UpdateSelection();
     }
 
     void TextBox::HandleControl(KeyEventArgs &e, bool isSelection)
