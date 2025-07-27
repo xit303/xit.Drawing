@@ -302,20 +302,13 @@ namespace xit::Drawing
     {
         ContentContainer::OnUpdate(bounds);
 
-        const Thickness &padding = GetPadding();
-        const Thickness &borderThickness = GetBorderThickness();
-
-        // Calculate client bounds
-        clientBounds.Set(
-            GetLeft() + padding.GetLeft() + borderThickness.GetLeft(),
-            GetTop() + padding.GetTop() + borderThickness.GetTop(),
-            GetActualWidth() - padding.GetWidth() - borderThickness.GetWidth(),
-            GetActualHeight() - padding.GetHeight() - borderThickness.GetHeight()
-        );
+        // Use optimized BoxModel method for client bounds calculation
+        clientBounds = GetClientRectangle(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
 
         GetContentContainer().Update(clientBounds);
 
-        // Calculate scroll bar bounds
+        // Calculate scroll bar bounds - still using border thickness directly for scroll bars
+        const Thickness &borderThickness = GetBorderThickness();
         Rectangle scrollBarBounds(
             GetLeft() + borderThickness.GetLeft(),
             GetTop() + borderThickness.GetTop(),

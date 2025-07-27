@@ -64,14 +64,8 @@ namespace xit::Drawing
 
             if (content)
             {
-                Rectangle clientBounds;
-                const Thickness &padding = GetPadding();
-                const Thickness &borderThickness = GetBorderThickness();
-
-                clientBounds.Set(GetLeft() + padding.GetLeft() + borderThickness.GetLeft(),
-                                 GetTop() + padding.GetTop() + borderThickness.GetTop(),
-                                 GetActualWidth() - (GetBoxWidthWithoutMargin()),
-                                 GetActualHeight() - (GetBoxHeightWithoutMargin()));
+                // Use optimized BoxModel method for client bounds calculation
+                Rectangle clientBounds = GetClientRectangle(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
                 content->Update(clientBounds);
             }
         }

@@ -359,7 +359,7 @@ namespace xit::Drawing::VisualBase
 
                 // Calculate content space for content calculation
                 // hint: Margin is outside of the available size for the content.
-                contentSpace = availableSize - GetMargin().GetWidth() - GetPadding().GetWidth() - GetBorderThickness().GetWidth();
+                contentSpace = availableSize - GetTotalBoxWidth();
 
                 // Call OnMeasureWidth to calculate the content's width
                 newSize = OnMeasureWidth(std::max(0, contentSpace));
@@ -374,7 +374,7 @@ namespace xit::Drawing::VisualBase
                 {
                     // Add padding and border thickness to get the total size
                     // hint: margin is not added because own size is ALWAYS without margin
-                    newSize += GetPadding().GetWidth() + GetBorderThickness().GetWidth();
+                    newSize += GetNonContentWidth();
                 }
 
                 // Clamp the size to respect minimum and maximum width constraints
@@ -433,9 +433,9 @@ namespace xit::Drawing::VisualBase
             {
                 // Calculate content space for content calculation
                 // hint: Margin is outside of the available size for the content.
-                int contentSpace = availableSize - GetMargin().GetHeight() - GetPadding().GetHeight() - GetBorderThickness().GetHeight();
+                int contentSpace = availableSize - GetTotalBoxHeight();
 
-                // Call OnMeasureWidth to calculate the content's width
+                // Call OnMeasureHeight to calculate the content's height
                 newSize = OnMeasureHeight(std::max(0, contentSpace));
 
                 // Adjust size if VerticalAlignment is Stretch
@@ -448,7 +448,7 @@ namespace xit::Drawing::VisualBase
                 {
                     // Add padding and border thickness to get the total size
                     // hint: margin is not added because own size is ALWAYS without margin
-                    newSize += GetPadding().GetHeight() + GetBorderThickness().GetHeight();
+                    newSize += GetNonContentHeight();
                 }
 
                 // Clamp the size to respect minimum and maximum width constraints

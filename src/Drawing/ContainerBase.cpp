@@ -343,16 +343,14 @@ namespace xit::Drawing
 
         InputContent::OnUpdate(bounds);
 
-        const Thickness &padding = GetPadding();
-        const Thickness &borderThickness = GetBorderThickness();
+        // Use optimized BoxModel method for client bounds calculation
+        Rectangle stored = GetClientRectangle(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
 
-        // TODO all these calculations seem to be redundant with the Border, ScrollViewer and Window class
-        int left = GetLeft() + padding.GetLeft() + borderThickness.GetLeft();
-        int top = GetTop() + padding.GetTop() + borderThickness.GetTop();
-        int width = GetActualWidth() - padding.GetWidth() - borderThickness.GetWidth();
-        int height = GetActualHeight() - padding.GetHeight() - borderThickness.GetHeight();
-
-        const Rectangle stored(left, top, width, height);
+        // Handle negative margin (special case for SplitContainer)
+        int left = stored.GetLeft();
+        int top = stored.GetTop();
+        int width = stored.GetWidth();
+        int height = stored.GetHeight();
 
         const Thickness &margin = GetMargin();
 
@@ -361,8 +359,6 @@ namespace xit::Drawing
             top -= margin.GetTop();
         // if (margin.GetLeft() < 0)
         //     left += margin.GetLeft();
-
-        clientBounds.Set(left, top, width, height);
 
         // TODO this order is different to ScrollViewer
         // TODO create Method GetClientBounds(Visual& v); see Window, SplitContainer, ScrollViewer, ContainerBase

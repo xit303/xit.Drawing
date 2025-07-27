@@ -414,14 +414,8 @@ namespace xit::Drawing
 #ifdef DEBUG_WINDOW
             std::cout << "Window::OnUpdate - Updating client bounds and content" << std::endl;
 #endif
-            // TODO create Method GetClientBounds(Visual& v); see Window, SplitContainer, ScrollViewer, ContainerBase
-
-            const Thickness &padding = GetPadding();
-            const Thickness &borderThickness = GetBorderThickness();
-
-            clientBounds.SetLocation(padding.GetLeft() + borderThickness.GetLeft(), padding.GetTop() + borderThickness.GetTop());
-            clientBounds.SetWidth(GetActualWidth() - padding.GetWidth() - borderThickness.GetWidth());
-            clientBounds.SetHeight(GetActualHeight() - padding.GetHeight() - borderThickness.GetHeight());
+            // Use optimized BoxModel method for client bounds calculation
+            clientBounds = GetClientRectangle(0, 0, GetActualWidth(), GetActualHeight());
 
             if (content)
             {
