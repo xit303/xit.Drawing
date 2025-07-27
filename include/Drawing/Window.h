@@ -16,11 +16,8 @@ namespace xit::Drawing
     private:
         // Screen screen;
         std::string title;
-
         GLFWwindow *window;
-
         Visual *content;
-
         WindowSettings windowSettings;
 
         bool topmost;
@@ -37,9 +34,28 @@ namespace xit::Drawing
         Rectangle clientBounds;
         Scene2D scene;
 
+        std::vector<std::pair<Visual *, Rectangle>> invalidRegions;
+        std::atomic<bool> redrawScheduled{false};
+        std::mutex invalidRegionsMutex;
         std::binary_semaphore mainLoopSemaphore{0};
 
+        // Double buffering for partial region rendering
+        GLuint frontFramebuffer{0};
+        GLuint backFramebuffer{0};
+        GLuint frontColorTexture{0};
+        GLuint backColorTexture{0};
+        GLuint frontDepthTexture{0};
+        GLuint backDepthTexture{0};
+        bool framebuffersInitialized{false};
+
         void App_Closing(EventArgs &e);
+        void ScheduleRedraw();
+
+        // Double buffering methods
+        void InitializeFramebuffers();
+        void CleanupFramebuffers();
+        void SwapFramebuffers();
+        void CopyRegionBetweenFramebuffers(const Rectangle& region);
 
     protected:
         bool isClosing;
@@ -66,6 +82,8 @@ namespace xit::Drawing
         __always_inline const std::string &GetTitle() { return title; }
         void SetTitle(const std::string &value);
 
+        void InvalidateRegion(Visual *visual, Rectangle bounds);
+
         Window();
 
     protected:
@@ -78,7 +96,6 @@ namespace xit::Drawing
         virtual void OnInitializeComponent() = 0;
 
         virtual void OnContentChanged(Visual *oldContent, Visual *newContent) {}
-        virtual void OnChildInvalidated(LayoutManager* childLayout) override;
 
     public:
         void ExecuteInputEnter(EventArgs &e);
