@@ -48,6 +48,13 @@ namespace xit::Drawing
         GLuint backDepthTexture{0};
         bool framebuffersInitialized{false};
 
+        // Debug timing for construction to first frame
+        std::chrono::steady_clock::time_point constructionStartTime;
+        std::chrono::steady_clock::time_point initializeStartTime;
+        std::chrono::steady_clock::time_point showStartTime;
+        std::chrono::steady_clock::time_point firstFrameCompleteTime;
+        bool firstFrameCompleted{false};
+
         void App_Closing(EventArgs &e);
         void ScheduleRedraw();
 
