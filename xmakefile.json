@@ -48,13 +48,13 @@
             "library_paths": [],
             "libraries": [
                 "glfw",
-                "/usr/lib/xit/libxit.Application.so",
-                "/usr/lib/xit/libxit.Threading.so",
-                "/usr/lib/xit/libxit.Timers.so",
-                "/usr/lib/xit/libxit.Input.so",
-                "/usr/lib/xit/libxit.IO.so",
-                "/usr/lib/xit/libxit.Clipboard.so",
-                "/usr/lib/xit/libxit.so"
+                "../xit.Application/.bin/Debug/libxit.Application.so",
+                "../xit.Threading/.bin/Debug/libxit.Threading.so",
+                "../xit.Timers/.bin/Debug/libxit.Timers.so",
+                "../xit.Input/.bin/Debug/libxit.Input.so",
+                "../xit.IO/.bin/Debug/libxit.IO.so",
+                "../xit.Clipboard/.bin/Debug/libxit.Clipboard.so",
+                "../xit/.bin/Debug/libxit.so"
             ],
             "pre_build_commands": [],
             "post_build_commands": [],
