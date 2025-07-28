@@ -25,11 +25,11 @@ namespace xit::Drawing::VisualBase
     Renderable::~Renderable()
     {
         if (backgroundColors)
-            delete backgroundColors;
+            delete[] backgroundColors;
         if (foregroundColors)
-            delete foregroundColors;
+            delete[] foregroundColors;
         if (borderColors)
-            delete borderColors;
+            delete[] borderColors;
     }
 
     void Renderable::SetClipToBounds(bool value)
@@ -155,6 +155,12 @@ namespace xit::Drawing::VisualBase
 
     void Renderable::OnBackgroundChanged(EventArgs &e)
     {
+        if (backgroundColors)
+        {
+            delete[] backgroundColors;
+            backgroundColors = nullptr;
+        }
+
         const ImageBrush *imageBrush = dynamic_cast<const ImageBrush *>(GetBackground());
         if (imageBrush)
         {
@@ -173,7 +179,7 @@ namespace xit::Drawing::VisualBase
     {
         if (foregroundColors)
         {
-            delete foregroundColors;
+            delete[] foregroundColors;
             foregroundColors = nullptr;
         }
         if (GetInheritForeground() && GetForeground())
@@ -187,7 +193,7 @@ namespace xit::Drawing::VisualBase
     {
         if (borderColors)
         {
-            delete borderColors;
+            delete[] borderColors;
             borderColors = nullptr;
         }
         const ImageBrush *imageBrush = dynamic_cast<const ImageBrush *>(GetBorderBrush());
