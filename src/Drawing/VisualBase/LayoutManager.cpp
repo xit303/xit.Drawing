@@ -348,7 +348,9 @@ namespace xit::Drawing::VisualBase
 
         if (availableSize < 0)
         {
+#ifdef DEBUG_LAYOUT_MANAGER
             std::cout << "Available width cannot be negative " << std::to_string(availableSize) << std::endl;
+#endif
             return 0; // Or some default value
         }
 
@@ -424,7 +426,9 @@ namespace xit::Drawing::VisualBase
 
         if (availableSize < 0)
         {
+#ifdef DEBUG_LAYOUT_MANAGER
             std::cout << "Available height cannot be negative " << std::to_string(availableSize) << std::endl;
+#endif
             return 0; // Or some default value
         }
 
