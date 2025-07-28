@@ -9,16 +9,19 @@ namespace xit::Drawing::VisualBase
     //******************************************************************************
 
     LayoutManager::LayoutManager()
+        : invalidated(true),
+          needWidthRecalculation(true),
+          needHeightRecalculation(true),
+          needLeftRecalculation(true),
+          needTopRecalculation(true),
+          clientBounds(0, 0, 0, 0),
+          desiredSize(),
+          renderTop(0),
+          renderLeft(0),
+          actualWidth(0),
+          actualHeight(0),
+          bounds(0, 0, 0, 0)
     {
-        actualWidth = 0;
-        actualHeight = 0;
-        renderLeft = 0;
-        renderTop = 0;
-        needWidthRecalculation = true;
-        needHeightRecalculation = true;
-        needLeftRecalculation = true;
-        needTopRecalculation = true;
-        invalidated = true;
     }
 
     void LayoutManager::Invalidate()

@@ -107,6 +107,18 @@ namespace xit::Drawing
          */
         Thickness(int uniformLength)
         {
+            scaledLeft = 0;
+            scaledTop = 0;
+            scaledRight = 0;
+            scaledBottom = 0;
+
+            width = 0;
+            height = 0;
+
+            isZeroWidth = true;
+            isZeroHeight = true;
+            isZero = true;
+            isUniform = true;
             scalingFactorX = 1;
             scalingFactorY = 1;
             SetValues(uniformLength);

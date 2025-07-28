@@ -38,6 +38,7 @@ namespace xit::Drawing
         Event<Visual &, EventArgs &> BrushGroupChanged;
 
         Visual();
+        virtual ~Visual() = default; // Ensure proper cleanup of derived classes
 
         bool operator==(Visual *other)
         {
