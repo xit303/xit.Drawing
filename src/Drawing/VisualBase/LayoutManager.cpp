@@ -70,7 +70,7 @@ namespace xit::Drawing::VisualBase
             bool boundsChanged = (bounds != newBounds);
 
             // Set recalculation flags for layout changes (bounds changed)
-            if (boundsChanged)
+            // if (boundsChanged)
             {
                 needWidthRecalculation = true;
                 needHeightRecalculation = true;
@@ -520,8 +520,10 @@ namespace xit::Drawing::VisualBase
         // Use RAII to ensure isUpdating is always reset
         struct UpdateGuard
         {
-            ~UpdateGuard() { isUpdating = false; }
-        } guard;
+            bool &flag;
+            UpdateGuard(bool &f) : flag(f) { flag = true; }
+            ~UpdateGuard() { flag = false; }
+        } guard(isUpdating);
 
         /*if (cancelInvalidate)
             return;*/
