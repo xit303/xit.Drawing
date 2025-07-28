@@ -1,4 +1,8 @@
 #include <Drawing/VisualBase/Renderable.h>
+#ifdef DEBUG_INITIALIZATION
+#include <chrono>
+#include <iostream>
+#endif
 
 namespace xit::Drawing::VisualBase
 {
@@ -358,6 +362,12 @@ namespace xit::Drawing::VisualBase
             return;
         }
 
+#ifdef DEBUG_INITIALIZATION
+        static int callCount = 0;
+        callCount++;
+        auto start = std::chrono::steady_clock::now();
+#endif
+
         isBrushGroupChanging = true;
 
         if (brushVisualStateGroup != nullptr)
@@ -366,7 +376,16 @@ namespace xit::Drawing::VisualBase
             brushVisualStateGroup = nullptr;
         }
 
+#ifdef DEBUG_INITIALIZATION
+        auto afterClear = std::chrono::steady_clock::now();
+#endif
+
         BrushVisualStateGroup *value = ThemeManager::Active().GetBrushVisualStateGroup(GetBrushGroup());
+
+#ifdef DEBUG_INITIALIZATION
+        auto afterLookup = std::chrono::steady_clock::now();
+#endif
+
         if (value)
         {
             brushVisualStateGroup = value;
@@ -375,10 +394,36 @@ namespace xit::Drawing::VisualBase
 
         UpdateBrushVisualState();
 
+#ifdef DEBUG_INITIALIZATION
+        auto afterUpdate = std::chrono::steady_clock::now();
+#endif
+
         isBrushGroupChanging = false;
 
         EventArgs e;
         BrushGroupChanged(*this, e);
         OnBrushGroupChanged(e);
+
+#ifdef DEBUG_INITIALIZATION
+        auto end = std::chrono::steady_clock::now();
+        auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        auto clearDuration = std::chrono::duration_cast<std::chrono::microseconds>(afterClear - start);
+        auto lookupDuration = std::chrono::duration_cast<std::chrono::microseconds>(afterLookup - afterClear);
+        auto updateDuration = std::chrono::duration_cast<std::chrono::microseconds>(afterUpdate - afterLookup);
+        auto eventDuration = std::chrono::duration_cast<std::chrono::microseconds>(end - afterUpdate);
+        
+        if (totalDuration.count() > 100 || callCount <= 10) // Log first 10 calls or any > 100μs
+        {
+            std::cout << ">>> BRUSH GROUP CHANGE #" << callCount << " for '" << GetBrushGroup() 
+                      << "': Total=" << totalDuration.count() << "μs, Clear=" << clearDuration.count() 
+                      << "μs, Lookup=" << lookupDuration.count() << "μs, Update=" 
+                      << updateDuration.count() << "μs, Events=" << eventDuration.count() << "μs <<<" << std::endl;
+        }
+        
+        if (callCount % 100 == 0) // Summary every 100 calls
+        {
+            std::cout << ">>> BRUSH GROUP SUMMARY: " << callCount << " calls completed <<<" << std::endl;
+        }
+#endif
     }
 }

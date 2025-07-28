@@ -9,6 +9,7 @@
 #include <Drawing/ToolTip.h>
 #include <Drawing/Window.h>
 #include <Drawing/DebugUtils.h>
+#include <Drawing/Theme/BrushPool.h>
 // #include <Drawing/Container.h>
 #include <Threading/Dispatcher.h>
 
@@ -403,15 +404,21 @@ namespace xit::Drawing
         firstFrameCompleted = false;
 
 #ifdef DEBUG_INITIALIZATION
+        std::cout << ">>> INITIALIZATION: BrushPool has " << BrushPool::GetPoolSize() 
+                  << " unique colors before SetBrushGroup() <<<" << std::endl;
         auto setBrushGroupStart = std::chrono::steady_clock::now();
+        std::cout << ">>> DEBUG: About to call SetBrushGroup('Window') <<<" << std::endl;
 #endif
         SetBrushGroup("Window");
 #ifdef DEBUG_INITIALIZATION
+        std::cout << ">>> DEBUG: SetBrushGroup('Window') completed <<<" << std::endl;
         auto setBrushGroupEnd = std::chrono::steady_clock::now();
         auto setBrushGroupDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             setBrushGroupEnd - setBrushGroupStart);
         std::cout << ">>> INITIALIZATION: SetBrushGroup() took " 
                   << setBrushGroupDuration.count() << "μs <<<" << std::endl;
+        std::cout << ">>> INITIALIZATION: BrushPool now has " << BrushPool::GetPoolSize() 
+                  << " unique colors after SetBrushGroup() <<<" << std::endl;
 #endif
 
 #ifdef DEBUG_INITIALIZATION

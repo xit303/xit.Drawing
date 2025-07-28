@@ -4,6 +4,7 @@
 #include <Drawing/Theme/Theme.h>
 // #include "../Collections/ObservableCollection.h"
 #include <Drawing/Brushes/SolidColorBrush.h>
+#include <Drawing/Theme/BrushPool.h>
 // #include <Drawing/Brushes/LinearGradientBrush.h>
 // #include <Drawing/Brushes/ImageBrush.h>
 

@@ -2,6 +2,9 @@
 #include <Threading/Dispatcher.h>
 #include <Security/Cryptography.h>
 #include <Application/App.h>
+
+// STB Image performance optimizations
+#define STBI_NO_FAILURE_STRINGS  // Disable error strings for performance
 #define STB_IMAGE_IMPLEMENTATION
 #include <OpenGL/stb_image.h>
 
@@ -78,46 +81,21 @@ namespace xit::OpenGL
 
     bool Texture::Create(const std::string &path, int width, int height)
     {
-        //  Try and load the bitmap. Return false on failure.
+        //  Store path for async loading and dispatch entire loading process to background thread
         try
         {
-            std::string fileName = path; // TODO File::Find(path);
-
-            if (!fileName.empty())
-            {
-                int imageWidth, imageHeight, nrChannels;
-
-                std::vector<char> bytes;
-
-                if (fileName.ends_with(".enc"))
-                {
-                    bytes = Security::Cryptography::DecryptFromFile(fileName, App::GetPassword());
-                }
-                else
-                {
-                    bytes = File::ReadAllBytes(fileName);
-                }
-
-                pixelData = stbi_load_from_memory((unsigned char *)bytes.data(), bytes.size(), &imageWidth, &imageHeight, &nrChannels, 0);
-
-                if (!pixelData)
-                    return false;
-
-                this->width = imageWidth;
-                this->height = imageHeight;
-                this->numberOfChannels = nrChannels;
-
-                Dispatcher::Invoke(std::bind(&Texture::CreateAsync, this));
-
-                return true;
-            }
+            this->filePath = path;
+            
+            // Dispatch entire loading process to background thread
+            Dispatcher::Invoke(std::bind(&Texture::CreateFromFileAsync, this));
+            
+            return true; // Optimistic return, check done flag later
         }
         catch (...)
         {
-            // Couldn't load the image; probably because of an invalid path
+            // Couldn't initiate async loading
+            return false;
         }
-
-        return false;
     }
 
     void Texture::Destroy()
@@ -149,14 +127,12 @@ namespace xit::OpenGL
             return &it->second;
         }
 
-        // Create a new texture entry in the map.
+        // Create a new texture entry in the map and keep the lock
         Texture &texture = textures[file];
-
-        // Unlock the mutex before creating the texture.
-        lock.unlock();
-
-        // Create the texture.
+        
+        // Create the texture while holding the lock to prevent race conditions
         texture.Create(file, width, height);
+        
         return &texture;
     }
 
@@ -174,5 +150,50 @@ namespace xit::OpenGL
 
         stbi_image_free(pixelData);
         pixelData = nullptr;
+    }
+
+    void Texture::CreateFromFileAsync()
+    {
+        try
+        {
+            std::string fileName = filePath; // TODO File::Find(filePath);
+            
+            if (!fileName.empty())
+            {
+                int imageWidth, imageHeight, nrChannels;
+                
+                // Optimize: Load directly from file instead of loading to memory first
+                if (fileName.ends_with(".enc"))
+                {
+                    // For encrypted files, we still need to decrypt first
+                    std::vector<char> bytes = Security::Cryptography::DecryptFromFile(fileName, App::GetPassword());
+                    pixelData = stbi_load_from_memory((unsigned char *)bytes.data(), bytes.size(), &imageWidth, &imageHeight, &nrChannels, 0);
+                }
+                else
+                {
+                    // Direct file loading - much faster than loading to memory first
+                    pixelData = stbi_load(fileName.c_str(), &imageWidth, &imageHeight, &nrChannels, 0);
+                }
+                
+                if (pixelData)
+                {
+                    this->width = imageWidth;
+                    this->height = imageHeight;
+                    this->numberOfChannels = nrChannels;
+                    
+                    created = Create(pixelData, width, height, numberOfChannels);
+                    
+                    stbi_image_free(pixelData);
+                    pixelData = nullptr;
+                }
+            }
+            
+            done = true;
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "Texture loading failed: " << e.what() << std::endl;
+            done = true; // Mark as done even on failure
+        }
     }
 }

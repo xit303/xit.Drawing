@@ -27,6 +27,7 @@ namespace xit::OpenGL
         bool created = false;
         bool done = false;
         int numberOfChannels = 0;
+        std::string filePath;
 
         /**
          * @brief This is an array of bytes (r, g, b, a) that represent the pixels in this
@@ -50,6 +51,7 @@ namespace xit::OpenGL
         GLuint textureId = 0;
 
         void CreateAsync();
+        void CreateFromFileAsync();
 
     public:
         const int& Width = width;
