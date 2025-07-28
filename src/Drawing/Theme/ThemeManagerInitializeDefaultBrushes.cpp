@@ -1,52 +1,55 @@
 #include <Drawing/Theme/ThemeManager.h>
 #include <Drawing/Brushes/ImageBrush.h>
+#include <Drawing/Theme/BrushPool.h>
 
 namespace xit::Drawing
 {
 
     void ThemeManager::InitializeDefaultBrushes()
     {
+        // Optimized async texture loading
         BrushBase *imageBackgroundBrush = new ImageBrush("Resources/Images/Background/Background1.jpg");
 
-        BrushBase *disabledBackgroundBrush = new SolidColorBrush(0x3FCCCCCC);
-        BrushBase *disabledForegroundBrush = new SolidColorBrush(0xFF808080);
-        BrushBase *disabledBorderBrush = new SolidColorBrush(0x5FCCCCCC);
+        // Use BrushPool for shared color brushes
+        BrushBase *disabledBackgroundBrush = BrushPool::GetSolidColorBrush(0x3FCCCCCC);
+        BrushBase *disabledForegroundBrush = BrushPool::GetSolidColorBrush(0xFF808080);
+        BrushBase *disabledBorderBrush = BrushPool::GetSolidColorBrush(0x5FCCCCCC);
 
-        BrushBase *normalBackgroundBrush = new SolidColorBrush(0xFF7160E8);
-        BrushBase *normalForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        BrushBase *normalBorderBrush = new SolidColorBrush(0x7F7160E8);
+        BrushBase *normalBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
+        BrushBase *normalForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        BrushBase *normalBorderBrush = BrushPool::GetSolidColorBrush(0x7F7160E8);
 
-        BrushBase *hoveredBackgroundBrush = new SolidColorBrush(0xFF4b39cf);
-        BrushBase *hoveredForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        BrushBase *hoveredBorderBrush = new SolidColorBrush(0xFF9E9E9E);
+        BrushBase *hoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF4b39cf);
+        BrushBase *hoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        BrushBase *hoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF9E9E9E);
 
-        BrushBase *pressedBackgroundBrush = new SolidColorBrush(0xFF343434);
-        BrushBase *pressedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        BrushBase *pressedBorderBrush = new SolidColorBrush(0xFF877EC3);
+        BrushBase *pressedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF343434);
+        BrushBase *pressedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        BrushBase *pressedBorderBrush = BrushPool::GetSolidColorBrush(0xFF877EC3);
 
-        BrushBase *activeBackgroundBrush = new SolidColorBrush(0xFF494949);
-        BrushBase *activeForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        BrushBase *activeBorderBrush = new SolidColorBrush(0xFF7160E8);
+        BrushBase *activeBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF494949);
+        BrushBase *activeForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        BrushBase *activeBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        BrushBase *focusedBackgroundBrush = new SolidColorBrush(0xFF7160E8);
-        BrushBase *focusedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        BrushBase *focusedBorderBrush = new SolidColorBrush(0xFFF1F1F1);
+        BrushBase *focusedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
+        BrushBase *focusedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        BrushBase *focusedBorderBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
 
-        BrushBase *activeHoveredBackgroundBrush = new SolidColorBrush(0xFF494949);
-        BrushBase *activeHoveredForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        BrushBase *activeHoveredBorderBrush = new SolidColorBrush(0xFF8E8E8E);
+        BrushBase *activeHoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF494949);
+        BrushBase *activeHoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        BrushBase *activeHoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF8E8E8E);
 
-        BrushBase *midiLearnBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        BrushBase *midiLearnForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        BrushBase *midiLearnBorderBrush = new SolidColorBrush(0x00424242);
+        BrushBase *midiLearnBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        BrushBase *midiLearnForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        BrushBase *midiLearnBorderBrush = BrushPool::GetSolidColorBrush(0x00424242);
 
-        BrushBase *errorBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        BrushBase *errorForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        BrushBase *errorBorderBrush = new SolidColorBrush(0xFFFF0000);
+        BrushBase *errorBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        BrushBase *errorForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        BrushBase *errorBorderBrush = BrushPool::GetSolidColorBrush(0xFFFF0000);
 
-        BrushBase *highlightBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        BrushBase *highlightForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        BrushBase *highlightBorderBrush = new SolidColorBrush(0xFFFFFF00);
+        BrushBase *highlightBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        BrushBase *highlightForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        BrushBase *highlightBorderBrush = BrushPool::GetSolidColorBrush(0xFFFFFF00);
 
         BrushVisualStateGroup *visualStateGroup;
 
@@ -56,7 +59,7 @@ namespace xit::Drawing
 
         visualStateGroup = new BrushVisualStateGroup("Window");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
-        visualStateGroup->AddState(new BrushVisualState("Normal", imageBackgroundBrush, normalForegroundBrush, new SolidColorBrush(0xFF4C4C4C)));
+        visualStateGroup->AddState(new BrushVisualState("Normal", imageBackgroundBrush, normalForegroundBrush, BrushPool::GetSolidColorBrush(0xFF4C4C4C)));
         Default.GetBrushVisualStateGroups().push_back(visualStateGroup);
 
         //******************************************************************************
@@ -97,8 +100,8 @@ namespace xit::Drawing
         //******************************************************************************
 
         visualStateGroup = new BrushVisualStateGroup("ComboBox");
-        visualStateGroup->AddState(new BrushVisualState("Disabled", new SolidColorBrush(0x0AFFFFFF), disabledForegroundBrush, new SolidColorBrush(0x0A4C4C4C)));
-        visualStateGroup->AddState(new BrushVisualState("Normal", new SolidColorBrush(0xD71B2833), normalForegroundBrush, new SolidColorBrush(0xFF4C4C4C)));
+        visualStateGroup->AddState(new BrushVisualState("Disabled", BrushPool::GetSolidColorBrush(0x0AFFFFFF), disabledForegroundBrush, BrushPool::GetSolidColorBrush(0x0A4C4C4C)));
+        visualStateGroup->AddState(new BrushVisualState("Normal", BrushPool::GetSolidColorBrush(0xD71B2833), normalForegroundBrush, BrushPool::GetSolidColorBrush(0xFF4C4C4C)));
         Default.GetBrushVisualStateGroups().push_back(visualStateGroup);
 
         //******************************************************************************
@@ -121,41 +124,42 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        disabledBackgroundBrush = new SolidColorBrush(0x3FCCCCCC);
-        disabledForegroundBrush = new SolidColorBrush(0xFF808080);
-        disabledBorderBrush = new SolidColorBrush(0x5FCCCCCC);
+        // Update brush pointers to use pool for next visual state groups
+        disabledBackgroundBrush = BrushPool::GetSolidColorBrush(0x3FCCCCCC);
+        disabledForegroundBrush = BrushPool::GetSolidColorBrush(0xFF808080);
+        disabledBorderBrush = BrushPool::GetSolidColorBrush(0x5FCCCCCC);
 
-        normalBackgroundBrush = new SolidColorBrush(0x7F2B2B2B);
-        normalForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        normalBorderBrush = new SolidColorBrush(0xFF424242);
+        normalBackgroundBrush = BrushPool::GetSolidColorBrush(0x7F2B2B2B);
+        normalForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        normalBorderBrush = BrushPool::GetSolidColorBrush(0xFF424242);
 
-        hoveredBackgroundBrush = new SolidColorBrush(0xFF333333);
-        hoveredForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        hoveredBorderBrush = new SolidColorBrush(0xFF9E9E9E);
+        hoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF333333);
+        hoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        hoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF9E9E9E);
 
-        pressedBackgroundBrush = new SolidColorBrush(0xFF343434);
-        pressedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        pressedBorderBrush = new SolidColorBrush(0xFF877EC3);
+        pressedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF343434);
+        pressedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        pressedBorderBrush = BrushPool::GetSolidColorBrush(0xFF877EC3);
 
-        activeBackgroundBrush = new SolidColorBrush(0xFF494949);
-        activeForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeBorderBrush = new SolidColorBrush(0xFF7160E8);
+        activeBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF494949);
+        activeForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        focusedBackgroundBrush = new SolidColorBrush(0xFF494949);
-        focusedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        focusedBorderBrush = new SolidColorBrush(0xFF7160E8);
+        focusedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF494949);
+        focusedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        focusedBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        activeHoveredBackgroundBrush = new SolidColorBrush(0xFF494949);
-        activeHoveredForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeHoveredBorderBrush = new SolidColorBrush(0xFF8E8E8E);
+        activeHoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF494949);
+        activeHoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeHoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF8E8E8E);
 
-        midiLearnBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        midiLearnForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        midiLearnBorderBrush = new SolidColorBrush(0x00424242);
+        midiLearnBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        midiLearnForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        midiLearnBorderBrush = BrushPool::GetSolidColorBrush(0x00424242);
 
-        errorBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        errorForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        errorBorderBrush = new SolidColorBrush(0xFFFF0000);
+        errorBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        errorForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        errorBorderBrush = BrushPool::GetSolidColorBrush(0xFFFF0000);
 
         visualStateGroup = new BrushVisualStateGroup("MainMenuButton");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -173,13 +177,13 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        activeBackgroundBrush = new SolidColorBrush(0xFF7160E8);
-        activeForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeBorderBrush = new SolidColorBrush(0xFF7160E8);
+        activeBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
+        activeForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        focusedBackgroundBrush = new SolidColorBrush(0xFF7160E8);
-        focusedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        focusedBorderBrush = new SolidColorBrush(0xFF7160E8);
+        focusedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
+        focusedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        focusedBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
         visualStateGroup = new BrushVisualStateGroup("IconButton");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -229,41 +233,41 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        disabledBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        disabledForegroundBrush = new SolidColorBrush(0xFF808080);
-        disabledBorderBrush = new SolidColorBrush(0x5FCCCCCC);
+        disabledBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        disabledForegroundBrush = BrushPool::GetSolidColorBrush(0xFF808080);
+        disabledBorderBrush = BrushPool::GetSolidColorBrush(0x5FCCCCCC);
 
-        normalBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        normalForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        normalBorderBrush = new SolidColorBrush(0xFF424242);
+        normalBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        normalForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        normalBorderBrush = BrushPool::GetSolidColorBrush(0xFF424242);
 
-        hoveredBackgroundBrush = new SolidColorBrush(0x4AFFFFFF);
-        hoveredForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        hoveredBorderBrush = new SolidColorBrush(0xFF9E9E9E);
+        hoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0x4AFFFFFF);
+        hoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        hoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF9E9E9E);
 
-        pressedBackgroundBrush = new SolidColorBrush(0xFF343434);
-        pressedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        pressedBorderBrush = new SolidColorBrush(0xFF877EC3);
+        pressedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF343434);
+        pressedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        pressedBorderBrush = BrushPool::GetSolidColorBrush(0xFF877EC3);
 
-        activeBackgroundBrush = new SolidColorBrush(0xFF7160E8);
-        activeForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeBorderBrush = new SolidColorBrush(0xFF7160E8);
+        activeBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
+        activeForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        focusedBackgroundBrush = new SolidColorBrush(0xFF7160E8);
-        focusedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        focusedBorderBrush = new SolidColorBrush(0xFF7160E8);
+        focusedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
+        focusedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        focusedBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        activeHoveredBackgroundBrush = new SolidColorBrush(0xFF7160E8);
-        activeHoveredForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeHoveredBorderBrush = new SolidColorBrush(0xFF8E8E8E);
+        activeHoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
+        activeHoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeHoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF8E8E8E);
 
-        midiLearnBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        midiLearnForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        midiLearnBorderBrush = new SolidColorBrush(0x00424242);
+        midiLearnBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        midiLearnForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        midiLearnBorderBrush = BrushPool::GetSolidColorBrush(0x00424242);
 
-        errorBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        errorForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        errorBorderBrush = new SolidColorBrush(0xFFFF0000);
+        errorBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        errorForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        errorBorderBrush = BrushPool::GetSolidColorBrush(0xFFFF0000);
 
         visualStateGroup = new BrushVisualStateGroup("ListItem");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -281,41 +285,41 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        disabledBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        disabledForegroundBrush = new SolidColorBrush(0xFF808080);
-        disabledBorderBrush = new SolidColorBrush(0x5FCCCCCC);
+        disabledBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        disabledForegroundBrush = BrushPool::GetSolidColorBrush(0xFF808080);
+        disabledBorderBrush = BrushPool::GetSolidColorBrush(0x5FCCCCCC);
 
-        normalBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        normalForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        normalBorderBrush = new SolidColorBrush(0xFF424242);
+        normalBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        normalForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        normalBorderBrush = BrushPool::GetSolidColorBrush(0xFF424242);
 
-        hoveredBackgroundBrush = new SolidColorBrush(0xFF3B3B3B);
-        hoveredForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        hoveredBorderBrush = new SolidColorBrush(0xFF9E9E9E);
+        hoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF3B3B3B);
+        hoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        hoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF9E9E9E);
 
-        pressedBackgroundBrush = new SolidColorBrush(0xFF343434);
-        pressedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        pressedBorderBrush = new SolidColorBrush(0xFF877EC3);
+        pressedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF343434);
+        pressedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        pressedBorderBrush = BrushPool::GetSolidColorBrush(0xFF877EC3);
 
-        activeBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        activeForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeBorderBrush = new SolidColorBrush(0xFF7160E8);
+        activeBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        activeForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        focusedBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        focusedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        focusedBorderBrush = new SolidColorBrush(0xFF7160E8);
+        focusedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        focusedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        focusedBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        activeHoveredBackgroundBrush = new SolidColorBrush(0x1AFFFFFF);
-        activeHoveredForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeHoveredBorderBrush = new SolidColorBrush(0xFF7160E8);
+        activeHoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0x1AFFFFFF);
+        activeHoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeHoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        midiLearnBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        midiLearnForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        midiLearnBorderBrush = new SolidColorBrush(0x00424242);
+        midiLearnBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        midiLearnForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        midiLearnBorderBrush = BrushPool::GetSolidColorBrush(0x00424242);
 
-        errorBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        errorForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        errorBorderBrush = new SolidColorBrush(0xFFFF0000);
+        errorBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        errorForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        errorBorderBrush = BrushPool::GetSolidColorBrush(0xFFFF0000);
 
         visualStateGroup = new BrushVisualStateGroup("HeaderButton");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -333,41 +337,41 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        disabledBackgroundBrush = new SolidColorBrush(0x7F2B2B2B);
-        disabledForegroundBrush = new SolidColorBrush(0xFF808080);
-        disabledBorderBrush = new SolidColorBrush(0x5FCCCCCC);
+        disabledBackgroundBrush = BrushPool::GetSolidColorBrush(0x7F2B2B2B);
+        disabledForegroundBrush = BrushPool::GetSolidColorBrush(0xFF808080);
+        disabledBorderBrush = BrushPool::GetSolidColorBrush(0x5FCCCCCC);
 
-        normalBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        normalForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        normalBorderBrush = new SolidColorBrush(0xFF444444); // 0xFF424242
+        normalBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        normalForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        normalBorderBrush = BrushPool::GetSolidColorBrush(0xFF444444); // 0xFF424242
 
-        hoveredBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        hoveredForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        hoveredBorderBrush = new SolidColorBrush(0xFF9E9E9E);
+        hoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        hoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        hoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF9E9E9E);
 
-        pressedBackgroundBrush = new SolidColorBrush(0xFF343434);
-        pressedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        pressedBorderBrush = new SolidColorBrush(0x00424242);
+        pressedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF343434);
+        pressedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        pressedBorderBrush = BrushPool::GetSolidColorBrush(0x00424242);
 
-        activeBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        activeForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeBorderBrush = new SolidColorBrush(0xFF7160E8);
+        activeBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        activeForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        focusedBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        focusedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        focusedBorderBrush = new SolidColorBrush(0xFF7160E8);
+        focusedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        focusedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        focusedBorderBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
-        activeHoveredBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        activeHoveredForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeHoveredBorderBrush = new SolidColorBrush(0xFF8E8E8E);
+        activeHoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        activeHoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeHoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF8E8E8E);
 
-        midiLearnBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        midiLearnForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        midiLearnBorderBrush = new SolidColorBrush(0x00424242);
+        midiLearnBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        midiLearnForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        midiLearnBorderBrush = BrushPool::GetSolidColorBrush(0x00424242);
 
-        errorBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        errorForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        errorBorderBrush = new SolidColorBrush(0xFFFF0000);
+        errorBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        errorForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        errorBorderBrush = BrushPool::GetSolidColorBrush(0xFFFF0000);
 
         visualStateGroup = new BrushVisualStateGroup("TextBox");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -382,41 +386,41 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        disabledBackgroundBrush = new SolidColorBrush(0x3FCCCCCC);
-        disabledForegroundBrush = new SolidColorBrush(0xFF808080);
-        disabledBorderBrush = new SolidColorBrush(0x5FCCCCCC);
+        disabledBackgroundBrush = BrushPool::GetSolidColorBrush(0x3FCCCCCC);
+        disabledForegroundBrush = BrushPool::GetSolidColorBrush(0xFF808080);
+        disabledBorderBrush = BrushPool::GetSolidColorBrush(0x5FCCCCCC);
 
-        normalBackgroundBrush = new SolidColorBrush(0xFF161616);
-        normalForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        normalBorderBrush = new SolidColorBrush(0xFF3F3F3F);
+        normalBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF161616);
+        normalForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        normalBorderBrush = BrushPool::GetSolidColorBrush(0xFF3F3F3F);
 
-        hoveredBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        hoveredForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        hoveredBorderBrush = new SolidColorBrush(0xFF9E9E9E);
+        hoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        hoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        hoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF9E9E9E);
 
-        pressedBackgroundBrush = new SolidColorBrush(0xFF343434);
-        pressedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        pressedBorderBrush = new SolidColorBrush(0x00424242);
+        pressedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF343434);
+        pressedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        pressedBorderBrush = BrushPool::GetSolidColorBrush(0x00424242);
 
-        activeBackgroundBrush = new SolidColorBrush(0xFF494949);
-        activeForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeBorderBrush = new SolidColorBrush(0xFF494949);
+        activeBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF494949);
+        activeForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeBorderBrush = BrushPool::GetSolidColorBrush(0xFF494949);
 
-        focusedBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        focusedForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        focusedBorderBrush = new SolidColorBrush(0x00424242);
+        focusedBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        focusedForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        focusedBorderBrush = BrushPool::GetSolidColorBrush(0x00424242);
 
-        activeHoveredBackgroundBrush = new SolidColorBrush(0xFF494949);
-        activeHoveredForegroundBrush = new SolidColorBrush(0xFFFFFFFF);
-        activeHoveredBorderBrush = new SolidColorBrush(0xFF9E9E9E);
+        activeHoveredBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF494949);
+        activeHoveredForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFFFFFF);
+        activeHoveredBorderBrush = BrushPool::GetSolidColorBrush(0xFF9E9E9E);
 
-        midiLearnBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        midiLearnForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        midiLearnBorderBrush = new SolidColorBrush(0x00424242);
+        midiLearnBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        midiLearnForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        midiLearnBorderBrush = BrushPool::GetSolidColorBrush(0x00424242);
 
-        errorBackgroundBrush = new SolidColorBrush(0xFF2B2B2B);
-        errorForegroundBrush = new SolidColorBrush(0xFFFF0000);
-        errorBorderBrush = new SolidColorBrush(0xFFFF0000);
+        errorBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF2B2B2B);
+        errorForegroundBrush = BrushPool::GetSolidColorBrush(0xFFFF0000);
+        errorBorderBrush = BrushPool::GetSolidColorBrush(0xFFFF0000);
 
         visualStateGroup = new BrushVisualStateGroup("Container");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -440,9 +444,9 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        SolidColorBrush *cardBackgroundBrush = new SolidColorBrush(0x602B2B2B);
-        SolidColorBrush *cardForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        SolidColorBrush *cardBorderBrush = new SolidColorBrush(0xFF424242);
+        SolidColorBrush *cardBackgroundBrush = BrushPool::GetSolidColorBrush(0x602B2B2B);
+        SolidColorBrush *cardForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        SolidColorBrush *cardBorderBrush = BrushPool::GetSolidColorBrush(0xFF424242);
 
         visualStateGroup = new BrushVisualStateGroup("Page");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -498,9 +502,9 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        SolidColorBrush *mainMenuBackgroundBrush = new SolidColorBrush(0x102B2B2B);
-        SolidColorBrush *mainMenuForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        SolidColorBrush *mainMenuBorderBrush = new SolidColorBrush(0xFF424242);
+        SolidColorBrush *mainMenuBackgroundBrush = BrushPool::GetSolidColorBrush(0x102B2B2B);
+        SolidColorBrush *mainMenuForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        SolidColorBrush *mainMenuBorderBrush = BrushPool::GetSolidColorBrush(0xFF424242);
 
         visualStateGroup = new BrushVisualStateGroup("MainMenu");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -522,7 +526,7 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        activeBackgroundBrush = new SolidColorBrush(0xFF7160E8);
+        activeBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF7160E8);
 
         visualStateGroup = new BrushVisualStateGroup("ProgressBar");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -534,11 +538,11 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        activeBackgroundBrush = new SolidColorBrush(0xFF494949);
+        activeBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF494949);
 
-        normalBackgroundBrush = new SolidColorBrush(0x00FFFFFF);
-        normalForegroundBrush = new SolidColorBrush(0x70FFFFFF);
-        normalBorderBrush = new SolidColorBrush(0x00000000);
+        normalBackgroundBrush = BrushPool::GetSolidColorBrush(0x00FFFFFF);
+        normalForegroundBrush = BrushPool::GetSolidColorBrush(0x70FFFFFF);
+        normalBorderBrush = BrushPool::GetSolidColorBrush(0x00000000);
 
         visualStateGroup = new BrushVisualStateGroup("ScrollBar");
         visualStateGroup->AddState(new BrushVisualState("Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush));
@@ -572,9 +576,9 @@ namespace xit::Drawing
 
         //******************************************************************************
 
-        normalBackgroundBrush = new SolidColorBrush(0xFF161616);
-        normalForegroundBrush = new SolidColorBrush(0xFFF1F1F1);
-        normalBorderBrush = new SolidColorBrush(0xFF3F3F3F);
+        normalBackgroundBrush = BrushPool::GetSolidColorBrush(0xFF161616);
+        normalForegroundBrush = BrushPool::GetSolidColorBrush(0xFFF1F1F1);
+        normalBorderBrush = BrushPool::GetSolidColorBrush(0xFF3F3F3F);
 
         visualStateGroup = new BrushVisualStateGroup("ToolTip");
         visualStateGroup->AddState(new BrushVisualState("Normal", normalBackgroundBrush, normalForegroundBrush, normalBorderBrush));
