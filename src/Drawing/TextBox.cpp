@@ -152,9 +152,6 @@ namespace xit::Drawing
 
     TextBox::TextBox()
     {
-#ifdef DEBUG_TEXTBOX_MEMORY
-        std::cout << "[DEBUG] TextBox constructor called, this=" << this << std::endl;
-#endif
         SetBrushGroup("TextBox");
         SetLayoutGroup("TextBox");
 
@@ -245,9 +242,6 @@ namespace xit::Drawing
     }
     TextBox::~TextBox()
     {
-#ifdef DEBUG_TEXTBOX_MEMORY
-        std::cout << "[DEBUG] TextBox destructor called, this=" << this << std::endl;
-#endif
         caretTimer.Stop();
         
         // No need to clean up brushes - they're stack allocated now
@@ -391,10 +385,6 @@ namespace xit::Drawing
     }
     void TextBox::UpdateForeground()
     {
-#ifdef DEBUG_TEXTBOX_MEMORY
-        std::cout << "[DEBUG] UpdateForeground() called, this=" << this << std::endl;
-        std::cout << "[DEBUG] Current brush flags: selection=" << hasValidSelectionBrush << ", hint=" << hasValidHintBrush << std::endl;
-#endif
         const BrushBase *foreground = GetForeground();
         if (foreground)
         {
@@ -417,10 +407,6 @@ namespace xit::Drawing
                 hintTextForegroundBrush.SetOpacity(0.6);
                 textHintLabel.SetForeground(&hintTextForegroundBrush);
                 hasValidHintBrush = true;
-
-#ifdef DEBUG_TEXTBOX_MEMORY
-                std::cout << "[DEBUG] Updated brushes with new color" << std::endl;
-#endif
             }
             else
             {

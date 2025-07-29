@@ -8,12 +8,11 @@
 #include <Drawing/Container.h>
 #include <Drawing/Buttons/ButtonBase.h>
 #include <Drawing/Border.h>
+#include <Drawing/Brushes/SolidColorBrush.h>
 #include <Input/TextChangedEventArgs.h>
 
 namespace xit::Drawing
 {
-    class SolidColorBrush; // Forward declaration
-    
     class TextBox : public Container
     {
     private:
