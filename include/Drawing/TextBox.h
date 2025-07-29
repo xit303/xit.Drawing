@@ -51,8 +51,10 @@ namespace xit::Drawing
         size_t invalidCharactersLength;
 
         // Brushes for selection and hint text - owned by this class
-        SolidColorBrush *selectionBackgroundBrush;
-        SolidColorBrush *hintTextForegroundBrush;
+        SolidColorBrush selectionBackgroundBrush;
+        SolidColorBrush hintTextForegroundBrush;
+        bool hasValidSelectionBrush;
+        bool hasValidHintBrush;
 
     public:
         __always_inline bool GetIsEditEnabled() { return isEditEnabled; }

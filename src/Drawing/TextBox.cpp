@@ -1,6 +1,7 @@
 #include <Drawing/TextBox.h>
 #include <Drawing/TextInsertCommand.h>
 #include <Drawing/Brushes/SolidColorBrush.h>
+#include <glm.hpp>
 #include <Input/InputHandler.h>
 #include <Clipboard.h>
 #include <cstring>
@@ -151,6 +152,9 @@ namespace xit::Drawing
 
     TextBox::TextBox()
     {
+#ifdef DEBUG_TEXTBOX_MEMORY
+        std::cout << "[DEBUG] TextBox constructor called, this=" << this << std::endl;
+#endif
         SetBrushGroup("TextBox");
         SetLayoutGroup("TextBox");
 
@@ -178,9 +182,9 @@ namespace xit::Drawing
         totalSize = 0;
         invalidCharactersLength = 0;
 
-        // Initialize brush pointers
-        selectionBackgroundBrush = nullptr;
-        hintTextForegroundBrush = nullptr;
+        // Initialize brush flags
+        hasValidSelectionBrush = false;
+        hasValidHintBrush = false;
 
         isEditEnabled = true;
         internalText = "";
@@ -241,19 +245,12 @@ namespace xit::Drawing
     }
     TextBox::~TextBox()
     {
+#ifdef DEBUG_TEXTBOX_MEMORY
+        std::cout << "[DEBUG] TextBox destructor called, this=" << this << std::endl;
+#endif
         caretTimer.Stop();
         
-        // Clean up dynamically allocated brushes
-        if (selectionBackgroundBrush)
-        {
-            delete selectionBackgroundBrush;
-            selectionBackgroundBrush = nullptr;
-        }
-        if (hintTextForegroundBrush)
-        {
-            delete hintTextForegroundBrush;
-            hintTextForegroundBrush = nullptr;
-        }
+        // No need to clean up brushes - they're stack allocated now
     }
 
     //******************************************************************************
@@ -394,6 +391,10 @@ namespace xit::Drawing
     }
     void TextBox::UpdateForeground()
     {
+#ifdef DEBUG_TEXTBOX_MEMORY
+        std::cout << "[DEBUG] UpdateForeground() called, this=" << this << std::endl;
+        std::cout << "[DEBUG] Current brush flags: selection=" << hasValidSelectionBrush << ", hint=" << hasValidHintBrush << std::endl;
+#endif
         const BrushBase *foreground = GetForeground();
         if (foreground)
         {
@@ -402,28 +403,56 @@ namespace xit::Drawing
 
             if (tmp)
             {
-                // Clean up old brushes before creating new ones
-                if (selectionBackgroundBrush)
-                {
-                    delete selectionBackgroundBrush;
-                    selectionBackgroundBrush = nullptr;
-                }
-                if (hintTextForegroundBrush)
-                {
-                    delete hintTextForegroundBrush;
-                    hintTextForegroundBrush = nullptr;
-                }
+                // Get the color from the source brush and create new brushes with that color
+                glm::vec4 sourceColor = tmp->GetColor();
+                
+                // Update selection background brush
+                selectionBackgroundBrush.SetColor(sourceColor);
+                selectionBackgroundBrush.SetOpacity(0.15);
+                selectionBorder.SetBackground(&selectionBackgroundBrush);
+                hasValidSelectionBrush = true;
 
-                // Create new brushes and store them as member variables
-                selectionBackgroundBrush = new SolidColorBrush(tmp);
-                selectionBackgroundBrush->SetOpacity(0.15);
-                selectionBorder.SetBackground(selectionBackgroundBrush);
+                // Update hint text foreground brush
+                hintTextForegroundBrush.SetColor(sourceColor);
+                hintTextForegroundBrush.SetOpacity(0.6);
+                textHintLabel.SetForeground(&hintTextForegroundBrush);
+                hasValidHintBrush = true;
 
-                hintTextForegroundBrush = new SolidColorBrush(tmp);
-                hintTextForegroundBrush->SetOpacity(0.6);
-                textHintLabel.SetForeground(hintTextForegroundBrush);
+#ifdef DEBUG_TEXTBOX_MEMORY
+                std::cout << "[DEBUG] Updated brushes with new color" << std::endl;
+#endif
+            }
+            else
+            {
+                // If foreground is not a SolidColorBrush, clear our brushes
+                // and let the controls use the original foreground directly
+                if (hasValidSelectionBrush)
+                {
+                    selectionBorder.SetBackground(nullptr);
+                    hasValidSelectionBrush = false;
+                }
+                if (hasValidHintBrush)
+                {
+                    textHintLabel.SetForeground(foreground);
+                    hasValidHintBrush = false;
+                }
             }
             caret.SetBackground(foreground);
+        }
+        else
+        {
+            // If no foreground, clear our brushes
+            if (hasValidSelectionBrush)
+            {
+                selectionBorder.SetBackground(nullptr);
+                hasValidSelectionBrush = false;
+            }
+            if (hasValidHintBrush)
+            {
+                textHintLabel.SetForeground(nullptr);
+                hasValidHintBrush = false;
+            }
+            caret.SetBackground(nullptr);
         }
     }
 
