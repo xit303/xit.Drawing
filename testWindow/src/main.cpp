@@ -1,4 +1,5 @@
 #include <Application/App.h>
+#include <Drawing/Theme/ThemeManager.h>
 #include "MainWindow.h"
 
 using namespace xit;
@@ -31,6 +32,8 @@ int main(int argc, char **argv)
         }
     }
 
+    // Cleanup ThemeManager before App::Close() to prevent memory leaks
+    ThemeManager::Cleanup();
     App::Close();
 
     return 0;

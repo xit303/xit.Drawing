@@ -1060,6 +1060,8 @@ namespace xit::Drawing
             isDestroyed = true;
             CleanupFramebuffers();
             glfwDestroyWindow(window);
+
+            BrushPool::Clear();
         }
     }
 
