@@ -8,7 +8,8 @@ namespace xit::Drawing
 {
     TextProperty::TextProperty()
     {
-        SetTextWrapping(TextWrapping::NoWrap);
+        textWrapping = TextWrapping::NoWrap;
+        needMeasureText = true;
     }
 
     void TextProperty::SetText(const std::string &value)
