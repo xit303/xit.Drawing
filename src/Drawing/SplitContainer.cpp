@@ -5,16 +5,17 @@
 namespace xit::Drawing
 {
     SplitContainer::SplitContainer()
+        : panel1(nullptr)
+        , panel2(nullptr) 
+        , panel1Index(0)
+        , panel2Index(2)
+        , orientation(Orientation::Vertical)
+        , orientationDirection(OrientationDirection::Normal)
     {
         SetName("SplitContainer");
         SetInheritForeground(true);
 
         grid.SetChildren(&children);
-
-        panel1Index = 0;
-        panel2Index = 2;
-
-        orientation = Orientation::Vertical;
 
         UpdateOrientation();
     }

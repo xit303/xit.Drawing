@@ -151,6 +151,22 @@ namespace xit::Drawing
     //******************************************************************************
 
     TextBox::TextBox()
+        : textLength(0)
+        , caretLineNumber(0)
+        , numberOfLines(1)
+        , mouseSelectionStartIndex(0)
+        , labelLeft(0)
+        , isCaretVisible(false)
+        , isEditEnabled(true)
+        , isPassword(false)
+        , acceptsReturn(false)
+        , caretIndex(0)
+        , selectionStart(0)
+        , selectionLength(0)
+        , totalSize(0)
+        , invalidCharactersLength(0)
+        , hasValidSelectionBrush(false)
+        , hasValidHintBrush(false)
     {
         SetBrushGroup("TextBox");
         SetLayoutGroup("TextBox");
@@ -163,32 +179,8 @@ namespace xit::Drawing
         SetClipToBounds(true);
         SetUseOrientation(false);
 
-        textLength = 0;
-
-        mouseSelectionStartIndex = 0;
-        labelLeft = 0;
-
-        isCaretVisible = false;
-        isPassword = false;
-        acceptsReturn = false;
-
-        caretIndex = 0;
-        selectionStart = 0;
-        selectionLength = 0;
-
-        totalSize = 0;
-        invalidCharactersLength = 0;
-
-        // Initialize brush flags
-        hasValidSelectionBrush = false;
-        hasValidHintBrush = false;
-
-        isEditEnabled = true;
         internalText = "";
         viewText = "";
-
-        numberOfLines = 1;
-        caretLineNumber = 0;
 
         SetColumns("*");
         SetRows("*");

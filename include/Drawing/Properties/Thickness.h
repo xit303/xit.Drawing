@@ -106,21 +106,23 @@ namespace xit::Drawing
          * @param uniformLength The uniform length applied to all four sides of the bounding rectangle.
          */
         Thickness(int uniformLength)
+            : left(uniformLength),
+              top(uniformLength),
+              right(uniformLength),
+              bottom(uniformLength),
+              scaledLeft(0),
+              scaledTop(0),
+              scaledRight(0),
+              scaledBottom(0),
+              width(0),
+              height(0),
+              isZeroWidth(true),
+              isZeroHeight(true),
+              isZero(true),
+              isUniform(true),
+              scalingFactorX(1.0f),
+              scalingFactorY(1.0f)
         {
-            scaledLeft = 0;
-            scaledTop = 0;
-            scaledRight = 0;
-            scaledBottom = 0;
-
-            width = 0;
-            height = 0;
-
-            isZeroWidth = true;
-            isZeroHeight = true;
-            isZero = true;
-            isUniform = true;
-            scalingFactorX = 1;
-            scalingFactorY = 1;
             SetValues(uniformLength);
         }
 
@@ -133,9 +135,23 @@ namespace xit::Drawing
          * @param bottom The thickness for the lower side of the rectangle.
          */
         Thickness(int left, int top, int right, int bottom)
+            : left(left),
+              top(top),
+              right(right),
+              bottom(bottom),
+              scaledLeft(0),
+              scaledTop(0),
+              scaledRight(0),
+              scaledBottom(0),
+              width(0),
+              height(0),
+              isZeroWidth(true),
+              isZeroHeight(true),
+              isZero(true),
+              isUniform(false),
+              scalingFactorX(1.0f),
+              scalingFactorY(1.0f)
         {
-            scalingFactorX = 1;
-            scalingFactorY = 1;
             SetValues(left, top, right, bottom);
         }
 
@@ -146,9 +162,23 @@ namespace xit::Drawing
          * @param topBottom The Thickness for the Top and the Bottom side of the rectangle.
          */
         Thickness(int leftRight, int topBottom)
+            : left(leftRight),
+              top(topBottom),
+              right(leftRight),
+              bottom(topBottom),
+              scaledLeft(0),
+              scaledTop(0),
+              scaledRight(0),
+              scaledBottom(0),
+              width(0),
+              height(0),
+              isZeroWidth(true),
+              isZeroHeight(true),
+              isZero(true),
+              isUniform(leftRight == topBottom),
+              scalingFactorX(1.0f),
+              scalingFactorY(1.0f)
         {
-            scalingFactorX = 1;
-            scalingFactorY = 1;
             SetValues(leftRight, topBottom);
         }
 
@@ -157,10 +187,23 @@ namespace xit::Drawing
          * @param other The other Thickness instance to copy from.
          */
         Thickness(const Thickness &other)
+            : left(other.left),
+              top(other.top),
+              right(other.right),
+              bottom(other.bottom),
+              scaledLeft(other.scaledLeft),
+              scaledTop(other.scaledTop),
+              scaledRight(other.scaledRight),
+              scaledBottom(other.scaledBottom),
+              width(other.width),
+              height(other.height),
+              isZeroWidth(other.isZeroWidth),
+              isZeroHeight(other.isZeroHeight),
+              isZero(other.isZero),
+              isUniform(other.isUniform),
+              scalingFactorX(other.scalingFactorX),
+              scalingFactorY(other.scalingFactorY)
         {
-            scalingFactorX = other.scalingFactorX;
-            scalingFactorY = other.scalingFactorY;
-            SetValues(other.left, other.top, other.right, other.bottom);
         }
 
         /**
