@@ -120,6 +120,11 @@ namespace xit::Drawing
          * @brief Event triggered when the padding changes.
          */
         Event<PaddingProperty &, EventArgs &> PaddingChanged;
+
+        /**
+         * @brief Default constructor.
+         */
+        PaddingProperty() {}
     };
 }
 using namespace xit::Drawing;

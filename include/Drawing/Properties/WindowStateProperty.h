@@ -68,19 +68,19 @@ namespace xit::Drawing
         /**
          * @brief Default constructor.
          */
-        WindowStateProperty() : windowState(WindowState::Normal) {}
+        WindowStateProperty() : windowState(WindowState::Normal), lastWindowState(WindowState::Normal) {}
 
         /**
          * @brief Constructor with window state parameter.
          * @param windowState The initial window state value.
          */
-        WindowStateProperty(const WindowState windowState) : windowState(windowState) {}
+        WindowStateProperty(const WindowState windowState) : windowState(windowState), lastWindowState(windowState) {}
 
         /**
          * @brief Copy constructor.
          * @param other The other WindowStateProperty to copy from.
          */
-        WindowStateProperty(const WindowStateProperty &other) : windowState(other.windowState) {}
+        WindowStateProperty(const WindowStateProperty &other) : windowState(other.windowState), lastWindowState(other.lastWindowState) {}
 
         /**
          * @brief Destructor.

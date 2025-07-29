@@ -72,6 +72,11 @@ namespace xit::Drawing
          * @brief Event triggered when the corner radius changes.
          */
         Event<CornerRadiusProperty &, EventArgs &> CornerRadiusChanged;
+
+        /**
+         * @brief Default constructor.
+         */
+        CornerRadiusProperty() {}
     };
 }
 using namespace xit::Drawing;

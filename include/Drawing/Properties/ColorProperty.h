@@ -272,7 +272,7 @@ namespace xit::Drawing
         /**
          * @brief Default constructor.
          */
-        ColorProperty() : color(true) {}
+        ColorProperty() : color(0.0f, 0.0f, 0.0f, 1.0f) {}
 
         /**
          * @brief Constructor with color value.
