@@ -177,14 +177,14 @@ namespace xit::Drawing
         /**
          * @brief Default constructor.
          */
-        Location() : x(0), y(0), offsetX(0), offsetY(0) {}
+        Location() : x(0), y(0), offsetX(0), offsetY(0), isAbsolutePosition(false) {}
 
         /**
          * @brief Parameterized constructor.
          * @param x The x-coordinate.
          * @param y The y-coordinate.
          */
-        Location(int x, int y) : x(x), y(y), isAbsolutePosition(false) {}
+        Location(int x, int y) : x(x), y(y), offsetX(0), offsetY(0), isAbsolutePosition(false) {}
 
         /**
          * @brief Sets the position.
