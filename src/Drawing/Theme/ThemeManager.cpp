@@ -346,4 +346,31 @@ namespace xit::Drawing
         if (activeTheme)
             activeTheme->Save(userThemesPath);
     }
+
+    void ThemeManager::Cleanup()
+    {
+        std::lock_guard<std::mutex> lock(themesMutex);
+        
+        // Clear events to prevent further notifications
+        ThemeChanged.Clear();
+        Initialized.Clear();
+        
+        // Clear all themes except the default theme (which will be handled by its destructor)
+        for (Theme* theme : themes)
+        {
+            if (theme != &defaultTheme)
+            {
+                delete theme;
+            }
+        }
+        themes.clear();
+        themeNames.clear();
+        visualStateNames.clear();
+        
+        // Reset state
+        activeTheme = nullptr;
+        isInitialized = false;
+        isInitializing = false;
+        lastLoadedTheme.clear();
+    }
 }

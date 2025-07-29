@@ -81,5 +81,11 @@ namespace xit::Drawing
         static void LoadAll(const std::string &path, bool isSystemDirectory);
 
         static void Save();
+        
+        /// <summary>
+        /// Cleanup method to properly release resources before program exit.
+        /// Call this before main() returns to prevent memory leaks.
+        /// </summary>
+        static void Cleanup();
     };
 }
