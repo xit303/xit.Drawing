@@ -1,5 +1,6 @@
 #include <Drawing/TextBox.h>
 #include <Drawing/TextInsertCommand.h>
+#include <Drawing/Brushes/SolidColorBrush.h>
 #include <Input/InputHandler.h>
 #include <Clipboard.h>
 #include <cstring>
@@ -177,6 +178,10 @@ namespace xit::Drawing
         totalSize = 0;
         invalidCharactersLength = 0;
 
+        // Initialize brush pointers
+        selectionBackgroundBrush = nullptr;
+        hintTextForegroundBrush = nullptr;
+
         isEditEnabled = true;
         internalText = "";
         viewText = "";
@@ -237,6 +242,18 @@ namespace xit::Drawing
     TextBox::~TextBox()
     {
         caretTimer.Stop();
+        
+        // Clean up dynamically allocated brushes
+        if (selectionBackgroundBrush)
+        {
+            delete selectionBackgroundBrush;
+            selectionBackgroundBrush = nullptr;
+        }
+        if (hintTextForegroundBrush)
+        {
+            delete hintTextForegroundBrush;
+            hintTextForegroundBrush = nullptr;
+        }
     }
 
     //******************************************************************************
@@ -385,14 +402,26 @@ namespace xit::Drawing
 
             if (tmp)
             {
-                SolidColorBrush *background = new SolidColorBrush(tmp);
+                // Clean up old brushes before creating new ones
+                if (selectionBackgroundBrush)
+                {
+                    delete selectionBackgroundBrush;
+                    selectionBackgroundBrush = nullptr;
+                }
+                if (hintTextForegroundBrush)
+                {
+                    delete hintTextForegroundBrush;
+                    hintTextForegroundBrush = nullptr;
+                }
 
-                background->SetOpacity(0.15);
-                selectionBorder.SetBackground(background);
+                // Create new brushes and store them as member variables
+                selectionBackgroundBrush = new SolidColorBrush(tmp);
+                selectionBackgroundBrush->SetOpacity(0.15);
+                selectionBorder.SetBackground(selectionBackgroundBrush);
 
-                SolidColorBrush *background2 = new SolidColorBrush(tmp);
-                background2->SetOpacity(0.6);
-                textHintLabel.SetForeground(background2);
+                hintTextForegroundBrush = new SolidColorBrush(tmp);
+                hintTextForegroundBrush->SetOpacity(0.6);
+                textHintLabel.SetForeground(hintTextForegroundBrush);
             }
             caret.SetBackground(foreground);
         }

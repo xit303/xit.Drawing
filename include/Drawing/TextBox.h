@@ -12,6 +12,8 @@
 
 namespace xit::Drawing
 {
+    class SolidColorBrush; // Forward declaration
+    
     class TextBox : public Container
     {
     private:
@@ -47,6 +49,10 @@ namespace xit::Drawing
         Size totalSize;
         std::string invalidCharacters;
         size_t invalidCharactersLength;
+
+        // Brushes for selection and hint text - owned by this class
+        SolidColorBrush *selectionBackgroundBrush;
+        SolidColorBrush *hintTextForegroundBrush;
 
     public:
         __always_inline bool GetIsEditEnabled() { return isEditEnabled; }
