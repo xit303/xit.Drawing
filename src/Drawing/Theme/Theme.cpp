@@ -34,6 +34,23 @@ namespace xit::Drawing
     //     // }
     // }
 
+    Theme::~Theme()
+    {
+        // Clean up all brush visual state groups
+        for (BrushVisualStateGroup *group : brushVisualStateGroups)
+        {
+            delete group;
+        }
+        brushVisualStateGroups.clear();
+
+        // Clean up all layout visual state groups
+        for (LayoutVisualStateGroup *group : layoutVisualStateGroups)
+        {
+            delete group;
+        }
+        layoutVisualStateGroups.clear();
+    }
+
     void Theme::AddLayoutVisualStateGroup(LayoutVisualStateGroup *value)
     {
         layoutVisualStateGroups.push_back(value);
@@ -125,7 +142,7 @@ namespace xit::Drawing
         {
             std::string p1 = path + GetName() + "/Layout/" + visualStates->GetName() + ".json";
             // visualStates->SetFileName(p1);
-            //visualStates->Save();
+            // visualStates->Save();
         }
     }
 

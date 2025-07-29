@@ -19,6 +19,7 @@ namespace xit::Drawing
         Theme(const std::string &name);
         Theme(Theme &other);
         //Theme(const Theme &other);
+        ~Theme();
 
         // Theme* Clone();
 
