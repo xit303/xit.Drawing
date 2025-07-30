@@ -37,7 +37,7 @@ namespace xit::Drawing
     // Constructor
     //******************************************************************************
 
-    ButtonBase::ButtonBase()
+    ButtonBase::ButtonBase() : showImage(false), uniformImageSize(0)
     {
         SetName("ButtonBase");
         
@@ -56,9 +56,6 @@ namespace xit::Drawing
         AddChild(&image);
 
         SetFontName(UIDefaults::ButtonFont);
-
-        showImage = false;
-        uniformImageSize = 0;  // Initialize uniformImageSize
 
         UpdateSpacing();
         EventArgs e;
