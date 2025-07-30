@@ -12,7 +12,7 @@ namespace xit::Drawing
 
         void ContentContainer_ChildAdded(Visual &content, EventArgs &e)
         {
-            int row = contentContainer.GetChildCount() - 1;
+            size_t row = contentContainer.GetChildCount() - 1;
             content.SetRow(row);
 
             if (row == 0)

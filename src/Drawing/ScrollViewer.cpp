@@ -343,23 +343,23 @@ namespace xit::Drawing
         horizontalScrollBar.SetWidth(availableWidth);
         horizontalScrollBar.SetMaximum(static_cast<float>(GetExtentWidth()));
 
-        float horizontalFactor = (overshotWidth > 0) ? availableWidth / overshotWidth : 0.0f;
+        float horizontalFactor = (overshotWidth > 0) ? (float)availableWidth / overshotWidth : 0.0f;
 
         if (horizontalFactor == 0.0f)
             SetScrollMarginLeft(0);
 
-        horizontalScrollBar.SetValue(std::round(horizontalFactor * std::abs(GetScrollMarginLeft())));
+        horizontalScrollBar.SetValue(std::round(horizontalFactor * (float)std::abs(GetScrollMarginLeft())));
 
         // Update vertical scrollbar
         verticalScrollBar.SetHeight(availableHeight);
         verticalScrollBar.SetMaximum(static_cast<float>(GetExtentHeight()));
 
-        float verticalFactor = (overshotHeight > 0) ? availableHeight / overshotHeight : 0.0f;
+        float verticalFactor = (overshotHeight > 0) ? (float)availableHeight / overshotHeight : 0.0f;
 
         if (verticalFactor == 0.0f)
             SetScrollMarginTop(0);
 
-        verticalScrollBar.SetValue(std::round(verticalFactor * std::abs(GetScrollMarginTop())));
+        verticalScrollBar.SetValue(std::round(verticalFactor * (float)std::abs(GetScrollMarginTop())));
 
         // Update margins and bounds
         GetContentContainer().SetMargin(GetScrollMargin());
