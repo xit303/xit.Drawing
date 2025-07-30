@@ -86,7 +86,7 @@ namespace xit::Drawing
          * @param index Reference to store the index (row or column).
          * @param span Reference to store the span (row span or column span).
          */
-        virtual void GetIndexAndSpan(Visual *content, int &index, int &span) const = 0;
+        virtual void GetIndexAndSpan(Visual *content, size_t &index, size_t &span) const = 0;
 
         /**
          * @brief Gets the calculated sizes of the grid dimensions.

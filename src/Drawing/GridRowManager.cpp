@@ -58,7 +58,7 @@ namespace xit::Drawing
         return GetVerticalAlignment() != VerticalAlignment::Bottom;
     }
 
-    void GridRowManager::GetIndexAndSpan(Visual *content, int &index, int &span) const
+    void GridRowManager::GetIndexAndSpan(Visual *content, size_t &index, size_t &span) const
     {
         index = content->GetRow();
         span = content->GetRowSpan();

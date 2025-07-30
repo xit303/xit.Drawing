@@ -59,7 +59,7 @@ namespace xit::Drawing
          * @param measureDelegate A delegate for measuring the content size.
          * @param content A pointer to the content object.
          */
-        static void CheckAutoContent(size_t index, int span, std::vector<int> &sizes, std::vector<size_t> &autoValues, int availableSize, MeasureDelegate measureDelegate, Visual *content);
+        static void CheckAutoContent(size_t index, size_t span, std::vector<int> &sizes, std::vector<size_t> &autoValues, int availableSize, MeasureDelegate measureDelegate, Visual *content);
 
         /**
          * @brief Updates the sizes for star-sized grid cells.

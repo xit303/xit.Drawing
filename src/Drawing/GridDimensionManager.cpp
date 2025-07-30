@@ -63,7 +63,7 @@ namespace xit::Drawing
                 {
                     if (content->GetVisibility() != Visibility::Collapsed)
                     {
-                        int index, span;
+                        size_t index, span;
                         GetIndexAndSpan(content, index, span);
                         GridLayoutHelper::CheckAutoContent(index, span, sizes, autoValues, availableSize, measureDelegate, content);
                     }
@@ -145,7 +145,7 @@ namespace xit::Drawing
 
             if (boundsSize > 0)
             {
-                int rest = boundsSize - totalSpacing;
+                int rest = static_cast<int>(boundsSize) - static_cast<int>(totalSpacing);
 
                 rest -= fixedTotalSize;
                 rest = rest < 0 ? 0 : rest;
@@ -156,7 +156,7 @@ namespace xit::Drawing
 
                 UpdateStar(rest);
 
-                total = fixedTotalSize + autoTotalSize + starTotalSize + totalSpacing;
+                total = fixedTotalSize + autoTotalSize + starTotalSize + static_cast<int>(totalSpacing);
 
                 bool forward = GetStart(start, total);
                 GridLayoutHelper::UpdatePositions(sizes, positions, spacing, start, forward);

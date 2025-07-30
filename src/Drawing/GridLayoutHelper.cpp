@@ -128,7 +128,7 @@ namespace xit::Drawing
 
         for (std::pair<size_t, int> value : values)
         {
-            int index = value.first;
+            int index = static_cast<int>(value.first);
 
             sizes[index] = value.second > 0 ? value.second : 0;
 
@@ -138,7 +138,7 @@ namespace xit::Drawing
         return total;
     }
 
-    void GridLayoutHelper::CheckAutoContent(size_t index, int span, std::vector<int> &sizes, std::vector<size_t> &autoValues, int availableSize, MeasureDelegate measureDelegate, Visual *content)
+    void GridLayoutHelper::CheckAutoContent(size_t index, size_t span, std::vector<int> &sizes, std::vector<size_t> &autoValues, int availableSize, MeasureDelegate measureDelegate, Visual *content)
     {
         auto item = std::find(autoValues.begin(), autoValues.end(), index);
         if ((item != autoValues.end()) &&
@@ -165,7 +165,7 @@ namespace xit::Drawing
 
                 if (contentSize > autoSize)
                 {
-                    sizes[index] = contentSize;
+                    sizes[index] = static_cast<int>(contentSize);
                 }
             }
             else if (span > 1)
@@ -185,7 +185,7 @@ namespace xit::Drawing
                         size_t size = sizes[i];
 
                         if (size < minSingleSize)
-                            sizes[i] = minSingleSize;
+                            sizes[i] = static_cast<int>(minSingleSize);
                     }
                 }
             }
@@ -256,7 +256,7 @@ namespace xit::Drawing
         }
         else
         {
-            for (int i = size - 1; i >= 0; i--)
+            for (int i = static_cast<int>(size) - 1; i >= 0; i--)
             {
                 positions[i] = position - sizes[i];
 

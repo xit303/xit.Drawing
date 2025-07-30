@@ -41,7 +41,7 @@ namespace xit::Drawing
          * @param index Reference to the index to be set.
          * @param span Reference to the span to be set.
          */
-        virtual void GetIndexAndSpan(Visual *content, int &index, int &span) const override;
+        virtual void GetIndexAndSpan(Visual *content, size_t &index, size_t &span) const override;
 
     public:
         /**

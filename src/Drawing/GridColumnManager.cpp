@@ -58,7 +58,7 @@ namespace xit::Drawing
         return GetHorizontalAlignment() != HorizontalAlignment::Right;
     }
 
-    void GridColumnManager::GetIndexAndSpan(Visual *content, int &index, int &span) const
+    void GridColumnManager::GetIndexAndSpan(Visual *content, size_t &index, size_t &span) const
     {
         index = content->GetColumn();
         span = content->GetColumnSpan();
