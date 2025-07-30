@@ -11,10 +11,10 @@ namespace xit::Drawing
     {
     private:
         Grid grid;
-        int panel1Index;
-        int panel2Index;
         Visual* panel1;
         Visual* panel2;
+        int panel1Index;
+        int panel2Index;
         
         Rectangle clientBounds;
 
