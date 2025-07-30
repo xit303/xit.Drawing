@@ -1,0 +1,17 @@
+Common patterns to fix manually:
+
+1. Event members:
+   OLD: EventName() {}
+   NEW: EventName() : EventName() {}
+
+2. Multiple members:
+   OLD: Constructor() { a = 1; b = 2; }
+   NEW: Constructor() : a(1), b(2) {}
+
+3. Base class + members:
+   OLD: Derived(const Derived& other) : member(other.member) {}
+   NEW: Derived(const Derived& other) : BaseClass(other), member(other.member) {}
+
+4. Unused parameters:
+   OLD: virtual void OnSomething(EventArgs &e) {}
+   NEW: virtual void OnSomething(EventArgs &e) { (void)e; }
