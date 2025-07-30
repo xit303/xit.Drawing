@@ -115,7 +115,7 @@ namespace xit::OpenGL
             character.Bearing.X = face->glyph->bitmap_left;
             character.Bearing.Y = face->glyph->bitmap_top;
 
-            character.Advance = face->glyph->advance.x >> 6;
+            character.Advance = static_cast<int>(face->glyph->advance.x >> 6);
 
             int charHeight = character.GlyphSize.GetHeight();
             fontHeight = charHeight > fontHeight ? charHeight : fontHeight;

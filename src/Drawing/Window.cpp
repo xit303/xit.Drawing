@@ -83,7 +83,7 @@ static void KeyboardCallback(GLFWwindow *window, int key, int scancode, int acti
     {
         xit::Clipboard::Clipboard::SetWindow(window);
 
-        char keyChar = key;
+        char keyChar = static_cast<char>(key);
         CKey c = (CKey)key;
 
         if (c == CKey::KpEnter)
@@ -118,7 +118,7 @@ static void KeyboardCallback(GLFWwindow *window, int key, int scancode, int acti
 
         if (!InputHandler::IsShift() && c >= CKey::A && c <= CKey::Z)
         {
-            keyChar = 'a' + ((int)c - (int)CKey::A);
+            keyChar = static_cast<char>('a' + ((int)c - (int)CKey::A));
         }
         KeyEventArgs e(c, keyChar, modifierKeys);
 

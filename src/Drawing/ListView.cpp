@@ -15,7 +15,7 @@ namespace xit::Drawing
             auto it = std::find(items->begin(), items->end(), value);
             if (it != items->end())
             {
-                int index = std::distance(items->begin(), it);
+                int index = static_cast<int>(std::distance(items->begin(), it));
                 selectedIndex = index;
                 selectedValue = value;
                 SingleSelect(selectedIndex);
@@ -236,7 +236,7 @@ namespace xit::Drawing
                 if (i == (size_t)selectedIndex)
                 {
                     selectedValue = item;
-                    SingleSelect(i);
+                    SingleSelect(static_cast<int>(i));
                 }
 
                 threads.push_back(std::thread([this, listItem]
@@ -264,7 +264,7 @@ namespace xit::Drawing
 
             if (selectedIndex >= (int)items->size())
             {
-                int index = selectedIndex = items->size() - 1;
+                int index = selectedIndex = static_cast<int>(items->size()) - 1;
                 selectedValue = index == -1 ? std::string() : *std::next(items->begin(), index);
                 SingleSelect(index);
             }
@@ -491,18 +491,18 @@ namespace xit::Drawing
 
         if (it != visibleItems.end())
         {
-            int index = std::distance(visibleItems.begin(), it);
+            int index = static_cast<int>(std::distance(visibleItems.begin(), it));
             double itemHeight = GetChildAt(0)->GetActualHeight();
             double itemTop = (itemHeight * index) + (GetRowSpacing() * index);
             double itemBottom = itemTop + itemHeight;
 
             if (itemTop < GetVerticalOffset())
             {
-                ScrollToVerticalOffset(itemTop);
+                ScrollToVerticalOffset(static_cast<int>(itemTop));
             }
             else if (itemBottom > (GetVerticalOffset() + GetActualHeight()))
             {
-                ScrollToVerticalOffset(itemBottom - GetActualHeight() + GetBorderThickness().GetHeight() + GetPadding().GetHeight());
+                ScrollToVerticalOffset(static_cast<int>(itemBottom) - GetActualHeight() + GetBorderThickness().GetHeight() + GetPadding().GetHeight());
             }
         }
         Invalidate();

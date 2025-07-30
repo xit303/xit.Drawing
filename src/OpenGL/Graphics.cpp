@@ -144,7 +144,7 @@ namespace xit::OpenGL
             if (backgroundTexture && backgroundTexture->GetIsCreated())
             {
                 shaderProgram->SetUniform1("iIsTexture", 1);
-                shaderProgram->SetUniform1("iTextureChannels", backgroundTexture->GetChannels());
+                shaderProgram->SetUniform1("iTextureChannels", static_cast<float>(backgroundTexture->GetChannels()));
                 backgroundTexture->Bind();
             }
             else if (backgroundBrush)
@@ -171,7 +171,7 @@ namespace xit::OpenGL
         if (borderTexture && borderTexture->GetIsCreated())
         {
             shaderProgram->SetUniform1("iIsBorderTexture", 1);
-            shaderProgram->SetUniform1("iBorderTextureChannels", borderTexture->GetChannels());
+            shaderProgram->SetUniform1("iBorderTextureChannels", static_cast<float>(borderTexture->GetChannels()));
             borderTexture->Bind();
         }
         else if (borderBrush && borderBrush != OpenGLExtensions::TransparentBrush)

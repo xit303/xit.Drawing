@@ -91,7 +91,7 @@ namespace xit::Drawing
 
             for (size_t i = index; i < length; i++)
             {
-                data[i] = std::tolower(data[i]);
+                data[i] = static_cast<char>(std::tolower(data[i]));
             }
 
             uint rgb = 0; // atoi(data);
@@ -258,10 +258,10 @@ namespace xit::Drawing
                 {
                     throw InvalidDataException();
                 }
-                return glm::vec4(value);
+                return glm::vec4(static_cast<float>(value));
             }
 
-            return glm::vec4(rgb);
+            return glm::vec4(static_cast<float>(rgb));
         }
 
         /**
@@ -284,7 +284,7 @@ namespace xit::Drawing
          * @brief Constructor with hex color value.
          * @param hexColor The initial hex color value.
          */
-        ColorProperty(unsigned int hexColor) : color(((hexColor >> 16) & 0xFF) / 255.0f, ((hexColor >> 8) & 0xFF) / 255.0f, (hexColor & 0xFF) / 255.0f, ((hexColor >> 24) & 0xFF) / 255.0f) {}
+        ColorProperty(unsigned int hexColor) : color(static_cast<float>((hexColor >> 16) & 0xFF) / 255.0f, static_cast<float>((hexColor >> 8) & 0xFF) / 255.0f, static_cast<float>(hexColor & 0xFF) / 255.0f, static_cast<float>((hexColor >> 24) & 0xFF) / 255.0f) {}
 
         /**
          * @brief Copy constructor.

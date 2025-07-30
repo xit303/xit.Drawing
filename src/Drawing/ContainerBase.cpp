@@ -179,7 +179,7 @@ namespace xit::Drawing
         if (it == children.end())
             return -1;
 
-        return std::distance(children.begin(), it);
+        return static_cast<int>(std::distance(children.begin(), it));
     }
 
     size_t ContainerBase::GetChildCount()
@@ -528,8 +528,8 @@ namespace xit::Drawing
     {
         InputContent::SetDPIScale(scaleX, scaleY);
 
-        grid.SetColumnSpacing((int)std::round(GetColumnSpacing() * GetScaleX()));
-        grid.SetRowSpacing((int)std::round(GetRowSpacing() * GetScaleY()));
+        grid.SetColumnSpacing((int)std::round(static_cast<float>(GetColumnSpacing()) * GetScaleX()));
+        grid.SetRowSpacing((int)std::round(static_cast<float>(GetRowSpacing()) * GetScaleY()));
 
         for (Visual *content : children)
         {

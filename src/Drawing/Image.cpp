@@ -8,24 +8,24 @@ namespace xit::Drawing
 
     static Size ScaleImage(const Size &availableSize, float scaleFactor, const OpenGL::Texture *texture)
     {
-        float scaledWidth = texture->Width * scaleFactor;
-        float scaledHeight = texture->Height * scaleFactor;
+        float scaledWidth = static_cast<float>(texture->Width) * scaleFactor;
+        float scaledHeight = static_cast<float>(texture->Height) * scaleFactor;
 
-        if (scaledWidth > availableSize.GetWidth())
+        if (scaledWidth > static_cast<float>(availableSize.GetWidth()))
         {
-            scaleFactor = availableSize.GetWidth() / texture->Width;
-            scaledWidth = texture->Width * scaleFactor;
-            scaledHeight = texture->Height * scaleFactor;
+            scaleFactor = static_cast<float>(availableSize.GetWidth()) / static_cast<float>(texture->Width);
+            scaledWidth = static_cast<float>(texture->Width) * scaleFactor;
+            scaledHeight = static_cast<float>(texture->Height) * scaleFactor;
         }
 
-        if (scaledHeight > availableSize.GetHeight())
+        if (scaledHeight > static_cast<float>(availableSize.GetHeight()))
         {
-            scaleFactor = availableSize.GetHeight() / texture->Height;
-            scaledWidth = texture->Width * scaleFactor;
-            scaledHeight = texture->Height * scaleFactor;
+            scaleFactor = static_cast<float>(availableSize.GetHeight()) / static_cast<float>(texture->Height);
+            scaledWidth = static_cast<float>(texture->Width) * scaleFactor;
+            scaledHeight = static_cast<float>(texture->Height) * scaleFactor;
         }
 
-        return Size(scaledWidth, scaledHeight);
+        return Size(static_cast<int>(scaledWidth), static_cast<int>(scaledHeight));
     }
 
     Image::Image()
@@ -92,7 +92,7 @@ namespace xit::Drawing
             switch (stretch)
             {
             case Stretch::None:
-                return Size(backgroundTexture->Width * GetScaleX(), backgroundTexture->Height * GetScaleY());
+                return Size(static_cast<int>(static_cast<float>(backgroundTexture->Width) * GetScaleX()), static_cast<int>(static_cast<float>(backgroundTexture->Height) * GetScaleY()));
 
             case Stretch::Fill:
                 return Size(availableSize.GetWidth(), availableSize.GetHeight());
@@ -103,7 +103,7 @@ namespace xit::Drawing
                     (backgroundTexture->Height < availableSize.GetHeight()))
                 {
                     // image is smaller than the area
-                    return Size(backgroundTexture->Width * GetScaleX(), backgroundTexture->Height * GetScaleY());
+                    return Size(static_cast<int>(static_cast<float>(backgroundTexture->Width) * GetScaleX()), static_cast<int>(static_cast<float>(backgroundTexture->Height) * GetScaleY()));
                 }
 
                 scaleFactor = std::min(widthFactor, heightFactor);
@@ -138,7 +138,7 @@ namespace xit::Drawing
             else if (GetHeight() != -1)
                 return GetHeight();
             else if (backgroundTexture)
-                return backgroundTexture->Width * GetScaleX();
+                return static_cast<int>(static_cast<float>(backgroundTexture->Width) * GetScaleX());
 
             // no width and height set and no background texture.
             // do not occupy any space
@@ -169,7 +169,7 @@ namespace xit::Drawing
             else if (GetWidth() != -1)
                 return GetWidth();
             else if (backgroundTexture)
-                return backgroundTexture->Height * GetScaleY();
+                return static_cast<int>(static_cast<float>(backgroundTexture->Height) * GetScaleY());
 
             // no width and height set and no background texture.
             // do not occupy any space

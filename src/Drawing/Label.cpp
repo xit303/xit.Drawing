@@ -66,7 +66,7 @@ namespace xit::Drawing
         color = solidColorBrush
                     ? solidColorBrush->GetColor()
                     : vec4(1, 0, 0, 1);
-        color.a = solidColorBrush ? solidColorBrush->GetOpacity() : 1.0f;
+        color.a = solidColorBrush ? static_cast<float>(solidColorBrush->GetOpacity()) : 1.0f;
     }
 
     int Label::OnMeasureWidth(int available)

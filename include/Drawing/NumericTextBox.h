@@ -38,13 +38,13 @@ namespace xit::Drawing
         {
             if (e.Key == CKey::Up)
             {
-                SetValue(GetValue() + step);
+                SetValue(GetValue() + static_cast<float>(step));
 
                 e.Handled = true;
             }
             else if (e.Key == CKey::Down)
             {
-                SetValue(GetValue() - step);
+                SetValue(GetValue() - static_cast<float>(step));
 
                 e.Handled = true;
             }
@@ -93,7 +93,7 @@ namespace xit::Drawing
         {
             if (GetIsFocused())
             {
-                SetValue(e.WheelDelta > 0 ? GetValue() + step : GetValue() - step);
+                SetValue(e.WheelDelta > 0 ? GetValue() + static_cast<float>(step) : GetValue() - static_cast<float>(step));
 
                 e.Handled = true;
             }

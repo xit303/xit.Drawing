@@ -167,7 +167,7 @@ namespace xit::OpenGL
                 {
                     // For encrypted files, we still need to decrypt first
                     std::vector<char> bytes = Security::Cryptography::DecryptFromFile(fileName, App::GetPassword());
-                    pixelData = stbi_load_from_memory((unsigned char *)bytes.data(), bytes.size(), &imageWidth, &imageHeight, &nrChannels, 0);
+                    pixelData = stbi_load_from_memory((unsigned char *)bytes.data(), static_cast<int>(bytes.size()), &imageWidth, &imageHeight, &nrChannels, 0);
                 }
                 else
                 {
