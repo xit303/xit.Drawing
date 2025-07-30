@@ -30,7 +30,7 @@ namespace xit
          * 
          * @param e Event arguments.
          */
-        virtual void OnCanDeactivateChanged(EventArgs &e) {}
+        virtual void OnCanDeactivateChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

@@ -105,6 +105,7 @@ namespace xit::Drawing::Pages
         canPreload = true;
         forcePassword = true;
         isEmailAccount = false;
+        isLoginSuccess = false;  // Initialize isLoginSuccess
 
         SetZIndex(1);
 

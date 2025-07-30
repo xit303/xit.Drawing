@@ -218,18 +218,18 @@ namespace xit::Drawing
          * @brief Called when the left position changes.
          * @param e The event arguments.
          */
-        virtual void OnLeftChanged(EventArgs &e) {}
+        virtual void OnLeftChanged(EventArgs &e) { (void)e; }
 
         /**
          * @brief Called when the top position changes.
          * @param e The event arguments.
          */
-        virtual void OnTopChanged(EventArgs &e) {}
+        virtual void OnTopChanged(EventArgs &e) { (void)e; }
 
         /**
          * @brief Called when the location changes.
          * @param e The event arguments.
          */
-        virtual void OnLocationChanged(EventArgs &e) {}
+        virtual void OnLocationChanged(EventArgs &e) { (void)e; }
     };
 }

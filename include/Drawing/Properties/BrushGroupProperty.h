@@ -56,7 +56,7 @@ namespace xit
          * 
          * @param e Event arguments.
          */
-        virtual void OnBrushGroupChanged(EventArgs &e) {}
+        virtual void OnBrushGroupChanged(EventArgs &e) { (void)e; }
 
     public:
         /**
@@ -121,19 +121,19 @@ namespace xit
         /**
          * @brief Default constructor.
          */
-        BrushGroupProperty() {}
+        BrushGroupProperty() : brushGroup(), BrushGroupChanged() {}
 
         /**
          * @brief Constructor with brush group value.
          * @param brushGroup The initial brush group value.
          */
-        BrushGroupProperty(std::string brushGroup) : brushGroup(brushGroup) {}
+        BrushGroupProperty(std::string brushGroup) : brushGroup(brushGroup), BrushGroupChanged() {}
 
         /**
          * @brief Copy constructor.
          * @param other The other BrushGroupProperty to copy from.
          */
-        BrushGroupProperty(const BrushGroupProperty &other) : brushGroup(other.brushGroup) {}
+        BrushGroupProperty(const BrushGroupProperty &other) : brushGroup(other.brushGroup), BrushGroupChanged() {}
 
         /**
          * @brief Destructor.

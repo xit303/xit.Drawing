@@ -31,7 +31,7 @@ namespace xit::Drawing
          * 
          * @param e The event arguments.
          */
-        virtual void OnVerticalAlignmentChanged(EventArgs &e) {}
+        virtual void OnVerticalAlignmentChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

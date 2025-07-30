@@ -31,7 +31,7 @@ namespace xit::Drawing
          * 
          * @param e The event arguments.
          */
-        virtual void OnRotationChanged(EventArgs &e) {}
+        virtual void OnRotationChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

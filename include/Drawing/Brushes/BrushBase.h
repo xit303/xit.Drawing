@@ -31,30 +31,23 @@ namespace xit::Drawing
         bool HasBrushChanged;
 
         BrushBase()
+            : NameProperty(), opacity(1.0), HasBrushChanged(true)
         {
-            HasBrushChanged = true;
-            opacity = 1;
         }
 
         BrushBase(const std::string &name, double opacity)
-            : NameProperty(name)
+            : NameProperty(name), opacity(opacity), HasBrushChanged(false)
         {
-            HasBrushChanged = false;
-            this->opacity = opacity;
         }
 
         BrushBase(BrushBase &other)
-            : NameProperty(other)
+            : NameProperty(other), opacity(other.opacity), HasBrushChanged(false)
         {
-            HasBrushChanged = false;
-            this->opacity = other.opacity;
         }
 
         BrushBase(const BrushBase &other)
-            : NameProperty(other)
+            : NameProperty(other), opacity(other.opacity), HasBrushChanged(false)
         {
-            HasBrushChanged = false;
-            this->opacity = other.opacity;
         }
 
         virtual ~BrushBase() {}

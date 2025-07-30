@@ -19,7 +19,7 @@ namespace xit::Drawing
         }
 
     protected:
-        virtual void OnScaleChanged(EventArgs &e) {}
+        virtual void OnScaleChanged(EventArgs &e) { (void)e; }
 
     public:
         virtual void SetDPIScale(float scaleX, float scaleY)

@@ -338,16 +338,16 @@ namespace xit::Drawing
         }
 
     protected:
-        virtual void OnWidthChanged(EventArgs &e) {}
-        virtual void OnHeightChanged(EventArgs &e) {}
+        virtual void OnWidthChanged(EventArgs &e) { (void)e; }
+        virtual void OnHeightChanged(EventArgs &e) { (void)e; }
 
-        virtual void OnMinWidthChanged(EventArgs &e) {}
-        virtual void OnMinHeightChanged(EventArgs &e) {}
+        virtual void OnMinWidthChanged(EventArgs &e) { (void)e; }
+        virtual void OnMinHeightChanged(EventArgs &e) { (void)e; }
 
-        virtual void OnMaxWidthChanged(EventArgs &e) {}
-        virtual void OnMaxHeightChanged(EventArgs &e) {}
+        virtual void OnMaxWidthChanged(EventArgs &e) { (void)e; }
+        virtual void OnMaxHeightChanged(EventArgs &e) { (void)e; }
 
-        virtual void OnSizeChanged(EventArgs &e) {}
+        virtual void OnSizeChanged(EventArgs &e) { (void)e; }
     };
 }
 

@@ -42,10 +42,10 @@ namespace xit::Drawing
         }
 
     protected:
-        virtual void OnColumnsChanged(EventArgs &e) {}
-        virtual void OnColumnSpacingChanged(EventArgs &e) {}
-        virtual void OnRowsChanged(EventArgs &e) {}
-        virtual void OnRowSpacingChanged(EventArgs &e) {}
+        virtual void OnColumnsChanged(EventArgs &e) { (void)e; }
+        virtual void OnColumnSpacingChanged(EventArgs &e) { (void)e; }
+        virtual void OnRowsChanged(EventArgs &e) { (void)e; }
+        virtual void OnRowSpacingChanged(EventArgs &e) { (void)e; }
 
         void SetNumberOfColumns(size_t value)
         {

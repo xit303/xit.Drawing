@@ -36,7 +36,7 @@ namespace xit::Drawing
          * 
          * @param e Event arguments.
          */
-        virtual void OnColorChanged(EventArgs &e) {}
+        virtual void OnColorChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

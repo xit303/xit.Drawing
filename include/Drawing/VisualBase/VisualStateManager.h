@@ -9,7 +9,7 @@ namespace xit::Drawing::VisualBase
     protected:
         std::string visualState;
 
-        virtual void OnVisualStateChanged(EventArgs &e) {}
+        virtual void OnVisualStateChanged(EventArgs &e) { (void)e; }
 
     public:
         VisualStateManager()

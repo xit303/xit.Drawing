@@ -32,7 +32,7 @@ namespace xit::Drawing
          *
          * @param e The event arguments.
          */
-        virtual void OnBorderThicknessChanged(EventArgs &e) {}
+        virtual void OnBorderThicknessChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

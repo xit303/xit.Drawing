@@ -76,7 +76,7 @@ namespace xit::Drawing
         virtual void OnVisibilityChanged(EventArgs &e) override;
         virtual void OnEnabledChanged(EventArgs &e) override;
 
-        virtual void OnInputEnter(EventArgs &e) {}
+        virtual void OnInputEnter(EventArgs &e) { (void)e; }
         virtual void OnInputLeave(MouseEventArgs &e) {}
 
         virtual void OnInputPressed(MouseEventArgs &e) {}
@@ -88,8 +88,8 @@ namespace xit::Drawing
         virtual void OnKeyDown(KeyEventArgs &e) {}
         virtual void OnKeyUp(KeyEventArgs &e) {}
 
-        virtual void OnGotKeyboardFocus(EventArgs &e) {}
-        virtual void OnLostKeyboardFocus(EventArgs &e) {}
+        virtual void OnGotKeyboardFocus(EventArgs &e) { (void)e; }
+        virtual void OnLostKeyboardFocus(EventArgs &e) { (void)e; }
 
         void OnParentChanged(EventArgs &e) override;
 

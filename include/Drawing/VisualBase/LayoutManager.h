@@ -50,7 +50,7 @@ namespace xit::Drawing::VisualBase
 
         Rectangle bounds;
 
-        virtual void OnInvalidated(EventArgs &e) {}
+        virtual void OnInvalidated(EventArgs &e) { (void)e; }
 
         virtual void OnHorizontalAlignmentChanged(EventArgs &e) override;
         virtual void OnVerticalAlignmentChanged(EventArgs &e) override;
@@ -121,8 +121,8 @@ namespace xit::Drawing::VisualBase
         __always_inline bool GetNeedTopRecalculation() const { return needTopRecalculation; }
         __always_inline bool GetInvalidated() const { return invalidated; }
 
-        virtual void OnBackgroundChanged(EventArgs &e) {}
-        virtual void OnForegroundChanged(EventArgs &e) {}
-        virtual void OnBorderBrushChanged(EventArgs &e) {}
+        virtual void OnBackgroundChanged(EventArgs &e) { (void)e; }
+        virtual void OnForegroundChanged(EventArgs &e) { (void)e; }
+        virtual void OnBorderBrushChanged(EventArgs &e) { (void)e; }
     };
 } // namespace xit::Drawing::VisualBase

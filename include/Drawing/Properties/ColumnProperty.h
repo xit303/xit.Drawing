@@ -30,7 +30,7 @@ namespace xit::Drawing
          * 
          * @param e Event arguments.
          */
-        virtual void OnColumnChanged(EventArgs &e) {}
+        virtual void OnColumnChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

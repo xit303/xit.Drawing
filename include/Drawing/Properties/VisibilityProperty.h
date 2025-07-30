@@ -31,7 +31,7 @@ namespace xit::Drawing
          * 
          * @param e The event arguments.
          */
-        virtual void OnVisibilityChanged(EventArgs &e) {}
+        virtual void OnVisibilityChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

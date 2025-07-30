@@ -43,7 +43,7 @@ namespace xit::Drawing
          * 
          * @param e Event arguments.
          */
-        virtual void OnForegroundChanged(EventArgs &e) {}
+        virtual void OnForegroundChanged(EventArgs &e) { (void)e; }
 
         /**
          * @brief Called when the inherit foreground property changes.
@@ -52,7 +52,7 @@ namespace xit::Drawing
          * 
          * @param e Event arguments.
          */
-        virtual void OnInheritForegroundChanged(EventArgs &e) {}
+        virtual void OnInheritForegroundChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

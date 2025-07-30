@@ -32,7 +32,7 @@ namespace xit::Drawing
          * 
          * @param e The event arguments.
          */
-        virtual void OnBorderBrushChanged(EventArgs &e) {}
+        virtual void OnBorderBrushChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

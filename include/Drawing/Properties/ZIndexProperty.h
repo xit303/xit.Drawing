@@ -30,7 +30,7 @@ namespace xit::Drawing
          * 
          * @param e The event arguments.
          */
-        virtual void OnZIndexChanged(EventArgs &e) {}
+        virtual void OnZIndexChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

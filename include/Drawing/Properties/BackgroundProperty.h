@@ -32,7 +32,7 @@ namespace xit::Drawing
          * 
          * @param e The event arguments.
          */
-        virtual void OnBackgroundChanged(EventArgs &e) {}
+        virtual void OnBackgroundChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

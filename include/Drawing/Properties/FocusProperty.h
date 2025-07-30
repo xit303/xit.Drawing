@@ -43,7 +43,7 @@ namespace xit
          * 
          * @param e Event arguments.
          */
-        virtual void OnCanFocusChanged(EventArgs &e) {}
+        virtual void OnCanFocusChanged(EventArgs &e) { (void)e; }
 
         /**
          * @brief Called when the is focused property changes.
@@ -52,7 +52,7 @@ namespace xit
          * 
          * @param e Event arguments.
          */
-        virtual void OnIsFocusedChanged(EventArgs &e) {}
+        virtual void OnIsFocusedChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

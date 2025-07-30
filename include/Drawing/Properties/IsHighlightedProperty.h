@@ -30,7 +30,7 @@ namespace xit
          * 
          * @param e The event arguments.
          */
-        virtual void OnIsHighlightedChanged(EventArgs &e) {}
+        virtual void OnIsHighlightedChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

@@ -46,7 +46,7 @@ namespace xit::Drawing
          * 
          * @param e The event arguments.
          */
-        virtual void OnOrientationChanged(EventArgs &e) {}
+        virtual void OnOrientationChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

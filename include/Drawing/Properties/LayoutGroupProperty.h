@@ -31,7 +31,7 @@ namespace xit
          * 
          * @param e The event arguments.
          */
-        virtual void OnLayoutGroupChanged(EventArgs &e) {}
+        virtual void OnLayoutGroupChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

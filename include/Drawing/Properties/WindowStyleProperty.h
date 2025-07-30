@@ -31,7 +31,7 @@ namespace xit::Drawing
          * 
          * @param e The event arguments.
          */
-        virtual void OnWindowStyleChanged(EventArgs &e) {}
+        virtual void OnWindowStyleChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

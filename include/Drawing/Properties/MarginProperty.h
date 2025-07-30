@@ -31,7 +31,7 @@ namespace xit::Drawing
          *
          * @param e The event arguments.
          */
-        virtual void OnMarginChanged(EventArgs &e) {}
+        virtual void OnMarginChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

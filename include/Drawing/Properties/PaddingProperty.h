@@ -31,7 +31,7 @@ namespace xit::Drawing
          *
          * @param e The event arguments.
          */
-        virtual void OnPaddingChanged(EventArgs &e) {}
+        virtual void OnPaddingChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

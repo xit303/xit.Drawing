@@ -32,7 +32,7 @@ namespace xit::Drawing
          * 
          * @param e Event arguments.
          */
-        virtual void OnCornerRadiusChanged(EventArgs &e) {}
+        virtual void OnCornerRadiusChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

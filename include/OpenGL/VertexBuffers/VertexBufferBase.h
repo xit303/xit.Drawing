@@ -23,7 +23,7 @@ namespace xit::OpenGL
             return id != 0;
         }
 
-        VertexBufferBase() { id = 0; }
+        VertexBufferBase() : id(0) {}
 
         /// <summary>
         /// 

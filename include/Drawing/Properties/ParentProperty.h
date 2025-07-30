@@ -17,7 +17,7 @@ namespace xit::Drawing::VisualBase
         }
 
     protected:
-        virtual void OnParentChanged(EventArgs &e) {}
+        virtual void OnParentChanged(EventArgs &e) { (void)e; }
 
 
     public:

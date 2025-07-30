@@ -28,12 +28,10 @@ namespace xit::OpenGL
         /// <param name="attributeIndex">The index (or layout location) of the attribute in the shader program. This would be "0" if shader code contains -> layout(location = 0) in_Position;</param>
         /// <exception cref="ArgumentNullException"></exception>
         AttributeBuffer(const std::string& attributeName, uint attributeIndex)
+            : attributeName(attributeName), vertexBuffer(), attributeIndex(attributeIndex)
         {
             if (attributeName.empty())
                 throw ArgumentNullException("attributeName");
-
-            this->attributeName = attributeName;
-            this->attributeIndex = attributeIndex;
 
             vertexBuffer.Create();
         }

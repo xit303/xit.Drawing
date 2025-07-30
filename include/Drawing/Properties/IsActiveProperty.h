@@ -30,7 +30,7 @@ namespace xit
          * 
          * @param e The event arguments.
          */
-        virtual void OnIsActiveChanged(EventArgs &e) {}
+        virtual void OnIsActiveChanged(EventArgs &e) { (void)e; }
 
     public:
         /**

@@ -58,6 +58,7 @@ namespace xit::Drawing
         SetFontName(UIDefaults::ButtonFont);
 
         showImage = false;
+        uniformImageSize = 0;  // Initialize uniformImageSize
 
         UpdateSpacing();
         EventArgs e;

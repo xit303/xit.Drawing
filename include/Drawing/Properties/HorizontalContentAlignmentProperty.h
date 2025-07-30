@@ -29,7 +29,7 @@ namespace xit::Drawing
          * @brief Called when the horizontal content alignment changes.
          * @param e Event arguments.
          */
-        virtual void OnHorizontalContentAlignmentChanged(EventArgs &e) {}
+        virtual void OnHorizontalContentAlignmentChanged(EventArgs &e) { (void)e; }
 
     public:
         /**
