@@ -1454,7 +1454,6 @@ namespace xit::Drawing
         std::cout << "=== Window::DoRender END ===\n"
                   << std::endl;
 #endif
-        Invalidate();
     }
 
     //******************************************************************************
