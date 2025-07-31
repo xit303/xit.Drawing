@@ -17,7 +17,7 @@
             "archiver": "ar",
             "archiver_flags": "rcs",
             "c_flags": "-std=c++23 -Wall -Wextra -pedantic -fPIC",
-            "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -MMD -fPIC -O0",
+            "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -Wuninitialized -Wmaybe-uninitialized -Wconversion -Wnull-dereference -Wdouble-promotion -MMD -fPIC -Og",
             "linker_flags": "-lm -lstdc++",
             "defines": [
                 "DEBUG",
@@ -89,7 +89,7 @@
             "archiver": "ar",
             "archiver_flags": "rcs",
             "c_flags": "-std=c++23 -Wall -Wextra -pedantic -fPIC",
-            "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -MMD -fPIC -O0",
+            "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -Wuninitialized -Wmaybe-uninitialized -Wshadow -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -MMD -fPIC -O0",
             "linker_flags": "-lm -lstdc++",
             "defines": [],
             "include_paths": [
