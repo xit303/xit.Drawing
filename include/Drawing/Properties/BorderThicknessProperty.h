@@ -144,19 +144,27 @@ namespace xit::Drawing
         /**
          * @brief Default constructor.
          */
-        BorderThicknessProperty() {}
+        BorderThicknessProperty()
+        {
+        }
 
         /**
          * @brief Parameterized constructor.
          * @param borderThickness Initial value of the border thickness.
          */
-        BorderThicknessProperty(Thickness borderThickness) : borderThickness(borderThickness) {}
+        explicit BorderThicknessProperty(const Thickness &borderThickness)
+            : borderThickness(borderThickness)
+        {
+        }
 
         /**
          * @brief Copy constructor.
          * @param other The object to copy from.
          */
-        BorderThicknessProperty(const BorderThicknessProperty &other) : borderThickness(other.borderThickness) {}
+        BorderThicknessProperty(const BorderThicknessProperty &other)
+            : borderThickness(other.borderThickness)
+        {
+        }
 
         /**
          * @brief Destructor.

@@ -149,13 +149,19 @@ namespace xit::Drawing
          * @brief Constructor with margin parameter.
          * @param margin The initial margin value.
          */
-        MarginProperty(Thickness margin) : margin(margin) {}
+        explicit MarginProperty(const Thickness &margin)
+            : margin(margin)
+        {
+        }
 
         /**
          * @brief Copy constructor.
          * @param other The other MarginProperty to copy from.
          */
-        MarginProperty(const MarginProperty &other) : margin(other.margin) {}
+        MarginProperty(const MarginProperty &other)
+            : margin(other.margin)
+        {
+        }
 
         /**
          * @brief Destructor.

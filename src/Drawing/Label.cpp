@@ -13,6 +13,7 @@
 namespace xit::Drawing
 {
     Label::Label(int column, int row, int columnSpan, int rowSpan)
+        : textTop(0)
     {
         SetInheritForeground(true);
         SetClipToBounds(false);

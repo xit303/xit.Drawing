@@ -1,0 +1,1 @@
+cppcheck --enable=warning,performance,portability,information --std=c++17 --platform=unix64 --suppress=missingIncludeSystem --suppress=*:include/OpenGL/stb_image.h --suppress=*:include/OpenGL/stb_image_resize.h --suppress=*:include/OpenGL/stb_image_resize2.h --force -I include/ src/ include/ --quiet 2>&1 | tee cppcheck_output.txt

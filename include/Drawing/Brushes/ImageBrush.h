@@ -37,7 +37,7 @@ namespace xit::Drawing
         void SetHeight(int value) { height = value; }
 
         ImageBrush();
-        ImageBrush(const std::string &fileName);
+        explicit ImageBrush(const std::string &fileName);
         ImageBrush(ImageBrush &other);
         virtual ~ImageBrush();
 

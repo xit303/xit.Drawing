@@ -26,9 +26,9 @@ namespace xit
     protected:
         /**
          * @brief Called when the layout group changes.
-         * 
+         *
          * You can override this method to add custom logic when the layout group changes.
-         * 
+         *
          * @param e The event arguments.
          */
         virtual void OnLayoutGroupChanged(EventArgs &e) { (void)e; }
@@ -67,13 +67,19 @@ namespace xit
          * @brief Constructor with layout group parameter.
          * @param layoutGroup The initial layout group value.
          */
-        LayoutGroupProperty(std::string layoutGroup) : layoutGroup(layoutGroup) {}
+        explicit LayoutGroupProperty(const std::string &layoutGroup)
+            : layoutGroup(layoutGroup)
+        {
+        }
 
         /**
          * @brief Copy constructor.
          * @param other The other LayoutGroupProperty to copy from.
          */
-        LayoutGroupProperty(const LayoutGroupProperty &other) : layoutGroup(other.layoutGroup) {}
+        LayoutGroupProperty(const LayoutGroupProperty &other)
+            : layoutGroup(other.layoutGroup)
+        {
+        }
 
         /**
          * @brief Destructor.

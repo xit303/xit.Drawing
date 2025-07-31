@@ -7,7 +7,7 @@
 
 namespace xit::Drawing
 {
-    class GridContainerBase : public HorizontalContentAlignmentProperty, 
+    class GridContainerBase : public HorizontalContentAlignmentProperty,
                               public VerticalContentAlignmentProperty
     {
     private:
@@ -49,14 +49,14 @@ namespace xit::Drawing
 
         void SetNumberOfColumns(size_t value)
         {
-            if (numberOfColumns != value)
+            // if (numberOfColumns != value)
             {
                 numberOfColumns = value;
             }
         }
         void SetNumberOfRows(size_t value)
         {
-            if (numberOfRows != value)
+            // if (numberOfRows != value)
             {
                 numberOfRows = value;
             }
@@ -109,12 +109,13 @@ namespace xit::Drawing
         // TODO ?? how ?? const Rectangle& ClientBounds = clientBounds;
 
         GridContainerBase()
+            : columns("*"),
+              columnSpacing(0),
+              rows("*"),
+              rowSpacing(0),
+              numberOfColumns(0),
+              numberOfRows(0)
         {
-            columns = "*";
-            rows = "*";
-
-            columnSpacing = rowSpacing = 0;
-            numberOfColumns = numberOfRows = 0;
         }
     };
 }

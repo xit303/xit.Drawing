@@ -15,11 +15,11 @@ namespace xit::Drawing
         LayoutVisualStateGroup();
 
     public:
-        LayoutVisualStateGroup(const std::string &name);
+        explicit LayoutVisualStateGroup(const std::string &name);
         LayoutVisualStateGroup(LayoutVisualStateGroup &other);
         LayoutVisualStateGroup(const LayoutVisualStateGroup &other);
 
     public:
-        static LayoutVisualStateGroup *Load(std::string path, std::string name);
+        static LayoutVisualStateGroup *Load(const std::string &path, const std::string &name);
     };
 }

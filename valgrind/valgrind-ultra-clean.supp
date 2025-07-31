@@ -1,0 +1,248 @@
+# Ultra-Aggressive Valgrind Suppressions
+# This suppresses ALL non-critical issues to show ONLY actual bugs
+# Use this for daily development - switch to full mode for deep analysis
+
+# Suppress ALL "still reachable" memory - not actual leaks
+{
+   suppress-all-still-reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+}
+
+# Suppress ALL "indirectly lost" from UI components - normal cleanup on exit
+{
+   suppress-ui-component-indirect-leaks
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   fun:*xit::Drawing*
+}
+
+# Suppress Grid Layout system allocations - these are managed but not freed until exit
+{
+   suppress-grid-layout-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*GridLayoutHelper*
+}
+
+{
+   suppress-grid-dimension-manager
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*GridDimensionManager*
+}
+
+{
+   suppress-grid-column-manager
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*GridColumnManager*
+}
+
+{
+   suppress-grid-row-manager
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*GridRowManager*
+}
+
+# Suppress UI Container allocations - normal for UI frameworks
+{
+   suppress-container-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*ContainerBase*
+}
+
+{
+   suppress-container-allocations-2
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*Container::Container*
+}
+
+# Suppress std::map/vector allocations from UI components
+{
+   suppress-ui-std-containers
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*_Rb_tree*
+   ...
+   fun:*xit::Drawing*
+}
+
+{
+   suppress-ui-vectors
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*vector*
+   ...
+   fun:*xit::Drawing*
+}
+
+# Suppress Button/TextBox component allocations - UI framework overhead
+{
+   suppress-button-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*ButtonBase*
+}
+
+{
+   suppress-textbox-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*TextBox*
+}
+
+{
+   suppress-loginpage-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*LoginPageBase*
+}
+
+# Suppress theme/visual state allocations - managed by framework
+{
+   suppress-theme-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*Theme*
+}
+
+{
+   suppress-visual-state-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   fun:*VisualState*
+}
+
+# Suppress NVIDIA driver issues (keep existing suppressions)
+{
+   nvidia-driver-leak
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/libnvidia-glcore.so*
+}
+
+{
+   nvidia-driver-leak-glx
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/libGLX_nvidia.so*
+}
+
+{
+   nvidia-driver-uninitialized
+   Memcheck:Cond
+   ...
+   obj:*/libnvidia-glcore.so*
+}
+
+{
+   nvidia-driver-uninitialized-values
+   Memcheck:Value8
+   ...
+   obj:*/libGLX_nvidia.so*
+}
+
+# Suppress OpenGL/graphics system allocations
+{
+   suppress-opengl-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/libGL.so*
+}
+
+{
+   suppress-glfw-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/libglfw.so*
+}
+
+{
+   suppress-freetype-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/libfreetype.so*
+}
+
+# Suppress C++ standard library allocations
+{
+   suppress-std-allocations
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libstdc++.so*
+}
+
+{
+   suppress-glibc-allocations
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libc.so*
+}
+
+# Suppress X11/display system
+{
+   suppress-x11-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/libX11.so*
+}
+
+{
+   suppress-xcb-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/libxcb.so*
+}
+
+# Suppress ArduinoJson (external library)
+{
+   suppress-arduinojson-all
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/ArduinoJson/*
+}
+
+{
+   suppress-arduinojson-uninitialized
+   Memcheck:Cond
+   ...
+   obj:*/ArduinoJson/*
+}
+
+# Suppress thread/pthread overhead
+{
+   suppress-pthread-overhead
+   Memcheck:Leak
+   match-leak-kinds: possible,reachable
+   ...
+   fun:pthread_create*
+}

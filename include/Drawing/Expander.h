@@ -24,28 +24,25 @@ namespace xit::Drawing
         {
             if (isExpanded != value)
             {
-                if (isExpanded != value)
-                {
-                    isExpanded = value;
-                    expanderHeaderButton.SetIsActive(value);
+                isExpanded = value;
+                expanderHeaderButton.SetIsActive(value);
 
-                    // if (isExpandedSetting != nullptr)
-                    // {
-                    //     if (isExpandable && isExpandedSetting->Value() != value)
-                    //         isExpandedSetting->SetValue(value);
-                    // }
+                // if (isExpandedSetting != nullptr)
+                // {
+                //     if (isExpandable && isExpandedSetting->Value() != value)
+                //         isExpandedSetting->SetValue(value);
+                // }
 
-                    // needLeftRecalculation = true;
-                    // needTopRecalculation = true;
-                    // needWidthRecalculation = true;
-                    // needHeightRecalculation = true;
+                // needLeftRecalculation = true;
+                // needTopRecalculation = true;
+                // needWidthRecalculation = true;
+                // needHeightRecalculation = true;
 
-                    SetContentContainerVisibility(isExpanded ? Visibility::Visible : Visibility::Collapsed);
+                SetContentContainerVisibility(isExpanded ? Visibility::Visible : Visibility::Collapsed);
 
-                    HandleExpandedChanged();
+                HandleExpandedChanged();
 
-                    Invalidate();
-                }
+                Invalidate();
             }
         }
             

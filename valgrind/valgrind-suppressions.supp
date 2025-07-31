@@ -1,0 +1,196 @@
+# Valgrind Suppression File for xit.Drawing
+# Usage: valgrind --suppressions=valgrind-suppressions.supp ./your_program
+
+# Suppress NVIDIA driver false positives - these are not real bugs in your code
+{
+   nvidia-driver-memory-leaks
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible
+   ...
+   obj:*/libnvidia-glcore.so*
+}
+
+{
+   nvidia-driver-uninitialized-conditionals
+   Memcheck:Cond
+   ...
+   obj:*/libnvidia-glcore.so*
+}
+
+{
+   nvidia-driver-uninitialized-values
+   Memcheck:Value8
+   ...
+   obj:*/libGLX_nvidia.so*
+}
+
+{
+   nvidia-driver-uninitialized-values-4byte
+   Memcheck:Value4
+   ...
+   obj:*/libGLX_nvidia.so*
+}
+
+{
+   nvidia-glx-context-creation
+   Memcheck:Leak
+   ...
+   fun:glXCreateContextAttribsARB
+}
+
+# Suppress std::string issues during program termination
+# These often happen during static object destruction
+{
+   string-termination-double-free
+   Memcheck:Free
+   fun:_ZdlPvm
+   ...
+   fun:__cxa_finalize
+}
+
+{
+   string-static-destruction
+   Memcheck:Free
+   ...
+   fun:__run_exit_handlers
+}
+
+# Suppress pthread/thread creation overhead (not real leaks)
+{
+   pthread-creation-overhead
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:pthread_create*
+}
+
+{
+   thread-local-storage
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:_dl_allocate_tls
+}
+
+# Suppress C++ standard library internal allocations
+{
+   std-library-still-reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libstdc++.so*
+}
+
+{
+   std-string-allocations
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:*basic_string*
+}
+
+{
+   std-map-allocations
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:*_Rb_tree*
+}
+
+{
+   std-vector-allocations
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:*vector*
+}
+
+# Suppress OpenGL/graphics driver allocations (not real leaks)
+{
+   opengl-driver-leaks
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/libGL.so*
+}
+
+{
+   glfw-allocations
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libglfw.so*
+}
+
+{
+   freetype-allocations
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libfreetype.so*
+}
+
+# Suppress glibc internal allocations
+{
+   glibc-dl-init
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dl_init
+}
+
+{
+   glibc-getpwuid
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:getpwuid*
+}
+
+{
+   glibc-locale
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:*locale*
+}
+
+# Suppress X11/display server allocations
+{
+   x11-allocations
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libX11.so*
+}
+
+{
+   xcb-allocations
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:*/libxcb.so*
+}
+
+# Suppress ArduinoJson library issues (external library)
+{
+   arduinojson-allocations
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect,possible,reachable
+   ...
+   obj:*/ArduinoJson/*
+}
+
+{
+   arduinojson-uninitialized
+   Memcheck:Cond
+   ...
+   obj:*/ArduinoJson/*
+}
+
+{
+   arduinojson-uninitialized-values
+   Memcheck:Value8
+   ...
+   obj:*/ArduinoJson/*
+}

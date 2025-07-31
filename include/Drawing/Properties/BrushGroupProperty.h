@@ -38,11 +38,11 @@ namespace xit
             auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
             auto eventDuration = std::chrono::duration_cast<std::chrono::microseconds>(afterEvent - start);
             auto onChangedDuration = std::chrono::duration_cast<std::chrono::microseconds>(end - afterEvent);
-            
+
             if (totalDuration.count() > 100 || callCount <= 5) // Log first 5 calls or any > 100μs
             {
-                std::cout << ">>> BRUSH GROUP PROPERTY #" << callCount << ": Total=" 
-                          << totalDuration.count() << "μs, Event=" << eventDuration.count() 
+                std::cout << ">>> BRUSH GROUP PROPERTY #" << callCount << ": Total="
+                          << totalDuration.count() << "μs, Event=" << eventDuration.count()
                           << "μs, OnChanged=" << onChangedDuration.count() << "μs <<<" << std::endl;
             }
 #endif
@@ -51,9 +51,9 @@ namespace xit
     protected:
         /**
          * @brief Called when the brush group is changed.
-         * 
+         *
          * You can override this method in a derived class to handle the change in the brush group.
-         * 
+         *
          * @param e Event arguments.
          */
         virtual void OnBrushGroupChanged(EventArgs &e) { (void)e; }
@@ -90,13 +90,13 @@ namespace xit
 #ifdef DEBUG_INITIALIZATION
                 auto afterHandle = std::chrono::steady_clock::now();
                 std::cout << ">>> DEBUG: HandleBrushGroupChanged() completed <<<" << std::endl;
-                
+
                 auto assignmentDuration = std::chrono::duration_cast<std::chrono::microseconds>(afterAssignment - beforeChange);
                 auto handleDuration = std::chrono::duration_cast<std::chrono::microseconds>(afterHandle - afterAssignment);
                 auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(afterHandle - start);
-                
-                std::cout << ">>> SETBRUSHGROUP TIMING for '" << value << "': Total=" << totalDuration.count() 
-                          << "μs, Assignment=" << assignmentDuration.count() 
+
+                std::cout << ">>> SETBRUSHGROUP TIMING for '" << value << "': Total=" << totalDuration.count()
+                          << "μs, Assignment=" << assignmentDuration.count()
                           << "μs, Handle=" << handleDuration.count() << "μs <<<" << std::endl;
 #endif
             }
@@ -121,19 +121,31 @@ namespace xit
         /**
          * @brief Default constructor.
          */
-        BrushGroupProperty() : brushGroup(), BrushGroupChanged() {}
+        BrushGroupProperty()
+            : brushGroup(),
+              BrushGroupChanged()
+        {
+        }
 
         /**
          * @brief Constructor with brush group value.
          * @param brushGroup The initial brush group value.
          */
-        BrushGroupProperty(std::string brushGroup) : brushGroup(brushGroup), BrushGroupChanged() {}
+        explicit BrushGroupProperty(const std::string &brushGroup)
+            : brushGroup(brushGroup),
+              BrushGroupChanged()
+        {
+        }
 
         /**
          * @brief Copy constructor.
          * @param other The other BrushGroupProperty to copy from.
          */
-        BrushGroupProperty(const BrushGroupProperty &other) : brushGroup(other.brushGroup), BrushGroupChanged() {}
+        BrushGroupProperty(const BrushGroupProperty &other)
+            : brushGroup(other.brushGroup),
+              BrushGroupChanged()
+        {
+        }
 
         /**
          * @brief Destructor.

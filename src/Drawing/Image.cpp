@@ -29,7 +29,8 @@ namespace xit::Drawing
     }
 
     Image::Image()
-        : stretch(Stretch::Uniform)
+        : stretch(Stretch::Uniform),
+          scale(1.0f)
     {
         SetClipToBounds(true);
 

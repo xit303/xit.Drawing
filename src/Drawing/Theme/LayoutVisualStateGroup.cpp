@@ -22,7 +22,7 @@ namespace xit::Drawing
         }
     }
 
-    LayoutVisualStateGroup *LayoutVisualStateGroup::Load(std::string path, std::string name)
+    LayoutVisualStateGroup *LayoutVisualStateGroup::Load(const std::string &path, const std::string &name)
     {
         std::string fileName = path + "/" + name + ".json";
 

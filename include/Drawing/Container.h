@@ -67,7 +67,7 @@ namespace xit::Drawing
         __always_inline bool GetUseOrientation() const { return useOrientation; }
         void SetUseOrientation(bool value)
         {
-            if (useOrientation != value)
+            // if (useOrientation != value)
             {
                 useOrientation = value;
             }

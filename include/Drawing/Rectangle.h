@@ -36,7 +36,7 @@ namespace xit::Drawing
             X = x;
             Y = y;
         }
-        void SetLocation(Point &value)
+        void SetLocation(const Point &value)
         {
             X = value.X;
             Y = value.Y;
@@ -107,11 +107,11 @@ namespace xit::Drawing
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Drawing.Rectangle" /> class with the location and size of 0.</summary>
         Rectangle()
+            : X(0),
+              Y(0),
+              width(0),
+              height(0)
         {
-            this->X = 0;
-            this->Y = 0;
-            this->width = 0;
-            this->height = 0;
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Drawing.Rectangle" /> class with the specified location and size.</summary>
@@ -120,38 +120,38 @@ namespace xit::Drawing
         /// <param name="width">The width of the rectangle. </param>
         /// <param name="height">The height of the rectangle. </param>
         Rectangle(int x, int y, int width, int height)
+            : X(x),
+              Y(y),
+              width(width),
+              height(height)
         {
-            this->X = x;
-            this->Y = y;
-            this->width = width;
-            this->height = height;
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Drawing.Rectangle" /> class with the specified location and size.</summary>
         /// <param name="location">A <see cref="T:System.Drawing.Point" /> that represents the upper-left corner of the rectangular region. </param>
         /// <param name="size">A <see cref="T:System.Drawing.Size" /> that represents the width and height of the rectangular region. </param>
         Rectangle(Point &location, const Drawing::Size &size)
+            : X(location.X),
+              Y(location.Y),
+              width(size.GetWidth()),
+              height(size.GetHeight())
         {
-            this->X = location.X;
-            this->Y = location.Y;
-            this->width = size.GetWidth();
-            this->height = size.GetHeight();
         }
 
         Rectangle(Rectangle &other)
+            : X(other.X),
+              Y(other.Y),
+              width(other.width),
+              height(other.height)
         {
-            this->X = other.X;
-            this->Y = other.Y;
-            this->width = other.width;
-            this->height = other.height;
         }
 
         Rectangle(const Rectangle &other)
+            : X(other.X),
+              Y(other.Y),
+              width(other.width),
+              height(other.height)
         {
-            this->X = other.X;
-            this->Y = other.Y;
-            this->width = other.width;
-            this->height = other.height;
         }
 
         /// <summary>Creates a <see cref="T:System.Drawing.Rectangle" /> structure with the specified edge locations.</summary>
@@ -242,7 +242,7 @@ namespace xit::Drawing
         /// <summary>Determines if the specified point is contained within this <see cref="T:System.Drawing.Rectangle" /> structure.</summary>
         /// <returns>This method returns true if the point represented by <paramref name="pt" /> is contained within this <see cref="T:System.Drawing.Rectangle" /> structure; otherwise false.</returns>
         /// <param name="pt">The <see cref="T:System.Drawing.Point" /> to test. </param>
-        bool Contains(Point &pt)
+        bool Contains(const Point &pt)
         {
             return this->Contains(pt.X, pt.Y);
         }
@@ -278,7 +278,7 @@ namespace xit::Drawing
         /// <param name="rect">The <see cref="T:System.Drawing.Rectangle" /> with which to start. This rectangle is not modified. </param>
         /// <param name="x">The amount to inflate this <see cref="T:System.Drawing.Rectangle" /> horizontally. </param>
         /// <param name="y">The amount to inflate this <see cref="T:System.Drawing.Rectangle" /> vertically. </param>
-        static Rectangle Inflate(Rectangle rect, int x, int y)
+        static Rectangle Inflate(const Rectangle &rect, int x, int y)
         {
             Rectangle result = rect;
             result.Inflate(x, y);
@@ -337,7 +337,7 @@ namespace xit::Drawing
 
         /// <summary>Adjusts the location of this rectangle by the specified amount.</summary>
         /// <param name="pos">Amount to offset the location. </param>
-        void Offset(Point &pos)
+        void Offset(const Point &pos)
         {
             Offset(pos.X, pos.Y);
         }

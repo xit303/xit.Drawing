@@ -16,7 +16,12 @@ namespace xit::Drawing
         const BrushBase *GetBorderBrush() const { return borderBrush; }
 
         BrushVisualState() {}
-        BrushVisualState(const std::string &name) : NameProperty(name) {}
+        explicit BrushVisualState(const std::string &name)
+            : NameProperty(name), background(nullptr),
+              foreground(nullptr),
+              borderBrush(nullptr)
+        {
+        }
         BrushVisualState(const std::string &name, BrushBase *background, BrushBase *foreground, BrushBase *borderBrush)
             : BrushVisualState(name)
         {

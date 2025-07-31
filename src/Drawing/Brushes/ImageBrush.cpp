@@ -21,7 +21,7 @@ namespace xit::Drawing
 
     void ImageBrush::SetStretch(const Stretch &value)
     {
-        if (stretch != value)
+        //if (stretch != value)
         {
             stretch = value;
             // NotifyPropertyChanged();
@@ -29,29 +29,28 @@ namespace xit::Drawing
     }
 
     ImageBrush::ImageBrush()
+        : stretch(Stretch::Uniform),
+          isSystemFile(false),
+          width(0),
+          height(0)
     {
-        // fileNameObject.PropertyChanged += OnPropertyChanged;
-        isSystemFile = false;
-        stretch = Stretch::Uniform;
     }
 
     ImageBrush::ImageBrush(const std::string &fileName)
+        : ImageBrush()
     {
         // fileNameObject.PropertyChanged += OnPropertyChanged;
-        isSystemFile = false;
         SetFileName(fileName);
-        stretch = Stretch::Uniform;
     }
 
     ImageBrush::ImageBrush(ImageBrush &other)
         : BrushBase(other)
     {
-        isSystemFile = other.isSystemFile;
-
-        if (!other.GetFileName().empty())
-            SetFileName(other.GetFileName());
-
         stretch = other.stretch;
+        isSystemFile = other.isSystemFile;
+        width = other.width;
+        height = other.height;
+        SetFileName(other.GetFileName());
     }
 
     ImageBrush::~ImageBrush()

@@ -8,7 +8,7 @@
 #include <Drawing/Size.h>
 
 #include <ft2build.h>
-#include FT_FREETYPE_H  
+#include FT_FREETYPE_H
 
 #ifdef DEBUG_FONT_PERFORMANCE
 #include <chrono>
@@ -29,11 +29,22 @@ namespace xit::OpenGL
 
     public:
         CharacterList()
-            :fontHeight(12), initialized(false)
+            : fontHeight(12),
+              fontName(""),
+              fontSize(12),
+              library(nullptr),
+              face(nullptr),
+              initialized(false)
         {
         }
 
-        CharacterList(const CharacterList& other)
+        CharacterList(const CharacterList &other)
+            : std::map<char, Character>(other),
+              fontName(other.fontName),
+              fontSize(other.fontSize),
+              library(other.library),
+              face(other.face),
+              initialized(other.initialized)
         {
             fontHeight = other.fontHeight;
 
@@ -47,12 +58,15 @@ namespace xit::OpenGL
         {
             if (initialized)
             {
-                FT_Done_Face(face);
-                FT_Done_FreeType(library);
+                if (face)
+                    FT_Done_Face(face);
+
+                if (library)
+                    FT_Done_FreeType(library);
             }
         }
 
-        CharacterList& operator=(const CharacterList& other)
+        CharacterList &operator=(const CharacterList &other)
         {
             fontHeight = other.fontHeight;
 
@@ -78,7 +92,7 @@ namespace xit::OpenGL
 #endif
 
             FT_Error result;
-            // load character glyph 
+            // load character glyph
             if ((result = FT_Load_Char(face, c, FT_LOAD_RENDER)) != FT_Err_Ok)
             {
                 Logger::Log(LogLevel::Error, "CharacterList.LoadSingleCharacter", "Failed to load Glyph %c", c);
@@ -98,8 +112,7 @@ namespace xit::OpenGL
                 0,
                 GL_RED,
                 GL_UNSIGNED_BYTE,
-                face->glyph->bitmap.buffer
-            );
+                face->glyph->bitmap.buffer);
             // set texture options
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (int)GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (int)GL_CLAMP_TO_EDGE);
@@ -131,7 +144,7 @@ namespace xit::OpenGL
 #endif
         }
 
-        void Measure(const std::string& text, Size& target)
+        void Measure(const std::string &text, Size &target)
         {
 #ifdef DEBUG_FONT_PERFORMANCE
             auto start = std::chrono::high_resolution_clock::now();
@@ -144,9 +157,9 @@ namespace xit::OpenGL
                 return;
             }
 
-            //SizeF size = new SizeF(0, FontHeight);
+            // SizeF size = new SizeF(0, FontHeight);
             int width = 0;
-            //float height = 0;
+            // float height = 0;
 
             size_t len = text.length();
 
@@ -159,7 +172,7 @@ namespace xit::OpenGL
                 try
                 {
                     char c = text[i];
-                    
+
                     // Lazy loading: only create character if it doesn't exist
                     if (find(c) == end())
                     {
@@ -168,9 +181,9 @@ namespace xit::OpenGL
 #endif
                         LoadSingleCharacter(c);
                     }
-                    
+
                     Character ch = operator[](c);
-                    //if (TryGetValue(text[i], ch))
+                    // if (TryGetValue(text[i], ch))
                     {
                         if (text[i] == '\n')
                         {
@@ -182,18 +195,18 @@ namespace xit::OpenGL
 
                         rowWidth += ch.Advance;
 
-                        //float tmp = ch->GlyphSize.GetHeight() - (ch->GlyphSize.GetHeight() - ch->Bearing.Y);
+                        // float tmp = ch->GlyphSize.GetHeight() - (ch->GlyphSize.GetHeight() - ch->Bearing.Y);
 
-              /*          if (tmp > height)
-                        {
-                            height = tmp;
-                        }*/
+                        /*          if (tmp > height)
+                                  {
+                                      height = tmp;
+                                  }*/
 
-                        //if (i < text.Length - 1)
-                        //    size.GetWidth() += (ch.Advance - size.GetWidth());
+                        // if (i < text.Length - 1)
+                        //     size.GetWidth() += (ch.Advance - size.GetWidth());
                     }
                 }
-                catch(...)
+                catch (...)
                 {
                     Logger::Log(LogLevel::Error, "CharacterList", "Could not find character [%s] in character list", text[i]);
                 }
@@ -207,12 +220,12 @@ namespace xit::OpenGL
 #ifdef DEBUG_FONT_PERFORMANCE
             auto end = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            std::cout << "CharacterList::Measure - Text '" << text << "' measured in " << duration.count() 
+            std::cout << "CharacterList::Measure - Text '" << text << "' measured in " << duration.count()
                       << "μs, result: " << target.GetWidth() << "x" << target.GetHeight() << std::endl;
 #endif
         }
 
-        static void Create(const std::string& fontName, int fontSize, CharacterList &destination)
+        static void Create(const std::string &fontName, int fontSize, CharacterList &destination)
         {
 #ifdef DEBUG_FONT_PERFORMANCE
             auto totalStart = std::chrono::high_resolution_clock::now();
@@ -232,9 +245,9 @@ namespace xit::OpenGL
 #endif
 
             FT_Error result;
-            if ((result = FT_New_Face(destination.library, fontName.c_str(), 0, &destination.face) != FT_Err_Ok))
+            if (((result = FT_New_Face(destination.library, fontName.c_str(), 0, &destination.face)) != FT_Err_Ok))
             {
-                Logger::Log(LogLevel::Error, "CharacterList.Create", "Failed to load font");
+                Logger::Log(LogLevel::Error, "CharacterList.Create", "Failed to load font. Error code: %d", result);
                 FT_Done_FreeType(destination.library);
                 return;
             }
@@ -260,7 +273,7 @@ namespace xit::OpenGL
 #ifdef DEBUG_FONT_PERFORMANCE
             auto totalEnd = std::chrono::high_resolution_clock::now();
             auto totalDuration = std::chrono::duration_cast<std::chrono::microseconds>(totalEnd - totalStart);
-            std::cout << "CharacterList::Create - Font initialization completed in " << totalDuration.count() 
+            std::cout << "CharacterList::Create - Font initialization completed in " << totalDuration.count()
                       << "μs (characters will be loaded on-demand)" << std::endl;
 #endif
         }

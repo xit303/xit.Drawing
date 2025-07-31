@@ -33,9 +33,6 @@ namespace xit::Drawing
         __always_inline void SetTag(const std::any &value) { tag = value; }
 
         Window* GetWindow();
-        const Window* GetWindow() const;
-
-        Event<Visual &, EventArgs &> BrushGroupChanged;
 
         Visual();
         virtual ~Visual() = default; // Ensure proper cleanup of derived classes

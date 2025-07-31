@@ -17,22 +17,22 @@ namespace xit::Drawing
         void UniformImageSizeChanged();
 
     protected:
-        void OnChildAdded(Visual &content, EventArgs &e) override;
-        void OnUpdateLayout(LayoutVisualState *value) override;
+        virtual void OnChildAdded(Visual &content, EventArgs &e) override;
+        virtual void OnUpdateLayout(LayoutVisualState *value) override;
 
-        void OnOrientationChanged(EventArgs &e) override;
+        virtual void OnOrientationChanged(EventArgs &e) override;
 
-        void OnHorizontalContentAlignmentChanged(EventArgs &e) override;
-        void OnVerticalContentAlignmentChanged(EventArgs &e) override;
+        virtual void OnHorizontalContentAlignmentChanged(EventArgs &e) override;
+        virtual void OnVerticalContentAlignmentChanged(EventArgs &e) override;
 
-        void OnVisibilityChanged(EventArgs &e) override;
+        virtual void OnVisibilityChanged(EventArgs &e) override;
 
         __always_inline Image &GetImage() { return image; }
 
 #ifdef DEBUG
-        int OnMeasureWidth(int available) override;
-        int OnMeasureHeight(int available) override;
-        void OnRender() override;
+        virtual int OnMeasureWidth(int available) override;
+        virtual int OnMeasureHeight(int available) override;
+        virtual void OnRender() override;
 #endif
 
         virtual void OnShowLabelChanged() override;

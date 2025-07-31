@@ -18,8 +18,8 @@ namespace xit::Drawing
     //******************************************************************************
 
     Visual::Visual()
+        : tag(nullptr)
     {
-        tag = nullptr;
     }
 
     Window *Visual::GetWindow()

@@ -62,7 +62,7 @@ namespace xit::Drawing
         void OnRowsChanged(EventArgs &e) override
         {
             contentContainer.SetRows(GetRows());
-            SetNumberOfRows(contentContainer.GetNumberOfColumns());
+            SetNumberOfRows(contentContainer.GetNumberOfRows());
         }
         void OnRowSpacingChanged(EventArgs &e) override
         {
@@ -183,9 +183,6 @@ namespace xit::Drawing
         }
 
     public:
-        Event<Visual &, EventArgs &> ChildAdded;
-        Event<Visual &, EventArgs &> ChildRemoved;
-        
         ContentContainer()
         {
             contentContainer.SetInheritForeground(true);

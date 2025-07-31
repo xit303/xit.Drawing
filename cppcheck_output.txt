@@ -1,0 +1,44 @@
+include/Drawing/Buttons/ButtonBase.h:23:22: style: Virtual function 'OnOrientationChanged' is called from constructor 'ButtonBase()' at line 62. Dynamic binding is not used. [virtualCallInConstructor]
+        virtual void OnOrientationChanged(EventArgs &e) override;
+                     ^
+src/Drawing/Buttons/ButtonBase.cpp:62:9: note: Calling OnOrientationChanged
+        OnOrientationChanged(e);
+        ^
+include/Drawing/Buttons/ButtonBase.h:23:22: note: OnOrientationChanged is a virtual function
+        virtual void OnOrientationChanged(EventArgs &e) override;
+                     ^
+include/Drawing/Bar.h:58:14: style: Virtual function 'OnOrientationChanged' is called from constructor 'Bar()' at line 32. Dynamic binding is not used. [virtualCallInConstructor]
+        void OnOrientationChanged(EventArgs& e) override
+             ^
+include/Drawing/Bar.h:32:13: note: Calling OnOrientationChanged
+            OnOrientationChanged(e);
+            ^
+include/Drawing/Bar.h:58:14: note: OnOrientationChanged is a virtual function
+        void OnOrientationChanged(EventArgs& e) override
+             ^
+include/Drawing/Container.h:52:22: style: Virtual function 'UpdateState' is called from constructor 'Container()' at line 18. Dynamic binding is not used. [virtualCallInConstructor]
+        virtual void UpdateState() override;
+                     ^
+src/Drawing/Container.cpp:18:9: note: Calling UpdateState
+        UpdateState();
+        ^
+include/Drawing/Container.h:52:22: note: UpdateState is a virtual function
+        virtual void UpdateState() override;
+                     ^
+include/Drawing/SplitContainer.h:107:22: style: Virtual function 'OnOrientationChanged' is called from constructor 'SplitContainer()' at line 20. Dynamic binding is not used. [virtualCallInConstructor]
+        virtual void OnOrientationChanged();
+                     ^
+src/Drawing/SplitContainer.cpp:20:9: note: Calling UpdateOrientation
+        UpdateOrientation();
+        ^
+src/Drawing/SplitContainer.cpp:73:9: note: Calling OnOrientationChanged
+        OnOrientationChanged();
+        ^
+include/Drawing/SplitContainer.h:107:22: note: OnOrientationChanged is a virtual function
+        virtual void OnOrientationChanged();
+                     ^
+src/Drawing/Window.cpp:359:9: performance: Variable 'constructionStartTime' is assigned in constructor body. Consider performing initialization in initialization list. [useInitializationList]
+        constructionStartTime = std::chrono::steady_clock::now();
+        ^
+nofile:0:0: information: Cppcheck cannot find all the include files (use --check-config for details) [missingInclude]
+

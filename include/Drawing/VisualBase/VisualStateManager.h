@@ -13,8 +13,8 @@ namespace xit::Drawing::VisualBase
 
     public:
         VisualStateManager()
+            : visualState("Normal")
         {
-            visualState = "Normal";
         }
 
         virtual void SetVisualState(const std::string &value)

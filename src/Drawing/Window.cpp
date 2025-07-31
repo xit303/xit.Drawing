@@ -337,9 +337,9 @@ namespace xit::Drawing
     void Window::InvalidateRegion(Visual *visual, Rectangle bounds)
     {
 #ifdef DEBUG_WINDOW2
-        std::cout << "InvalidateRegion: Adding region for visual '" 
+        std::cout << "InvalidateRegion: Adding region for visual '"
                   << (visual ? visual->GetName() : "null") << "' bounds("
-                  << bounds.GetLeft() << "," << bounds.GetTop() 
+                  << bounds.GetLeft() << "," << bounds.GetTop()
                   << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
 #endif
         {
@@ -354,13 +354,14 @@ namespace xit::Drawing
 
     Window::Window()
     {
+#ifdef DEBUG_WINDOW
         // Record construction start time for debugging
         constructionStartTime = std::chrono::steady_clock::now();
-
-#ifdef DEBUG_WINDOW
-        std::cout << "\n>>> WINDOW CONSTRUCTION TIMING: Constructor started at " 
+        std::cout << "\n>>> WINDOW CONSTRUCTION TIMING: Constructor started at "
                   << std::chrono::duration_cast<std::chrono::microseconds>(
-                       constructionStartTime.time_since_epoch()).count() << "μs <<<" << std::endl;
+                         constructionStartTime.time_since_epoch())
+                         .count()
+                  << "μs <<<" << std::endl;
 #endif
 
         window = nullptr;
@@ -375,7 +376,6 @@ namespace xit::Drawing
         isMouseOver = false;
         isDestroyed = false;
 
-        
 #ifdef DEBUG_INITIALIZATION
         auto appSettingsStart = std::chrono::steady_clock::now();
 #endif
@@ -385,7 +385,7 @@ namespace xit::Drawing
         auto appSettingsEnd = std::chrono::steady_clock::now();
         auto appSettingsDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             appSettingsEnd - appSettingsStart);
-        std::cout << ">>> INITIALIZATION: App::Settings() calls took " 
+        std::cout << ">>> INITIALIZATION: App::Settings() calls took "
                   << appSettingsDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -404,7 +404,7 @@ namespace xit::Drawing
         firstFrameCompleted = false;
 
 #ifdef DEBUG_INITIALIZATION
-        std::cout << ">>> INITIALIZATION: BrushPool has " << BrushPool::GetPoolSize() 
+        std::cout << ">>> INITIALIZATION: BrushPool has " << BrushPool::GetPoolSize()
                   << " unique colors before SetBrushGroup() <<<" << std::endl;
         auto setBrushGroupStart = std::chrono::steady_clock::now();
         std::cout << ">>> DEBUG: About to call SetBrushGroup('Window') <<<" << std::endl;
@@ -415,9 +415,9 @@ namespace xit::Drawing
         auto setBrushGroupEnd = std::chrono::steady_clock::now();
         auto setBrushGroupDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             setBrushGroupEnd - setBrushGroupStart);
-        std::cout << ">>> INITIALIZATION: SetBrushGroup() took " 
+        std::cout << ">>> INITIALIZATION: SetBrushGroup() took "
                   << setBrushGroupDuration.count() << "μs <<<" << std::endl;
-        std::cout << ">>> INITIALIZATION: BrushPool now has " << BrushPool::GetPoolSize() 
+        std::cout << ">>> INITIALIZATION: BrushPool now has " << BrushPool::GetPoolSize()
                   << " unique colors after SetBrushGroup() <<<" << std::endl;
 #endif
 
@@ -429,7 +429,7 @@ namespace xit::Drawing
         auto setNameEnd = std::chrono::steady_clock::now();
         auto setNameDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             setNameEnd - setNameStart);
-        std::cout << ">>> INITIALIZATION: SetName() took " 
+        std::cout << ">>> INITIALIZATION: SetName() took "
                   << setNameDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -445,7 +445,7 @@ namespace xit::Drawing
         auto glfwInitEnd = std::chrono::steady_clock::now();
         auto glfwInitDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             glfwInitEnd - glfwInitStart);
-        std::cout << ">>> INITIALIZATION: glfwInit() took " 
+        std::cout << ">>> INITIALIZATION: glfwInit() took "
                   << glfwInitDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -459,7 +459,7 @@ namespace xit::Drawing
         auto glfwHintsEnd = std::chrono::steady_clock::now();
         auto glfwHintsDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             glfwHintsEnd - glfwHintsStart);
-        std::cout << ">>> INITIALIZATION: GLFW window hints took " 
+        std::cout << ">>> INITIALIZATION: GLFW window hints took "
                   << glfwHintsDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -471,7 +471,7 @@ namespace xit::Drawing
         auto dispatcherEnd = std::chrono::steady_clock::now();
         auto dispatcherDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             dispatcherEnd - dispatcherStart);
-        std::cout << ">>> INITIALIZATION: Dispatcher::SetMainThreadId() took " 
+        std::cout << ">>> INITIALIZATION: Dispatcher::SetMainThreadId() took "
                   << dispatcherDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -754,7 +754,7 @@ namespace xit::Drawing
 #ifdef DEBUG_WINDOW
         auto constructionDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             initializeStartTime - constructionStartTime);
-        std::cout << "\n>>> WINDOW CONSTRUCTION TIMING: Initialize() started after " 
+        std::cout << "\n>>> WINDOW CONSTRUCTION TIMING: Initialize() started after "
                   << constructionDuration.count() << "μs from construction <<<" << std::endl;
 #endif
 
@@ -773,7 +773,7 @@ namespace xit::Drawing
         auto windowCreateEnd = std::chrono::steady_clock::now();
         auto windowCreateDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             windowCreateEnd - windowCreateStart);
-        std::cout << ">>> WINDOW CONSTRUCTION TIMING: GLFW window creation took " 
+        std::cout << ">>> WINDOW CONSTRUCTION TIMING: GLFW window creation took "
                   << windowCreateDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -795,11 +795,11 @@ namespace xit::Drawing
             contextSetupEnd - contextSetupStart);
 #endif
 #ifdef DEBUG_INITIALIZATION
-        std::cout << ">>> INITIALIZATION: OpenGL context setup took " 
+        std::cout << ">>> INITIALIZATION: OpenGL context setup took "
                   << contextSetupDuration.count() << "μs <<<" << std::endl;
 #endif
 #ifdef DEBUG_WINDOW
-        std::cout << ">>> WINDOW CONSTRUCTION TIMING: OpenGL context setup took " 
+        std::cout << ">>> WINDOW CONSTRUCTION TIMING: OpenGL context setup took "
                   << contextSetupDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -811,7 +811,7 @@ namespace xit::Drawing
         auto windowListEnd = std::chrono::steady_clock::now();
         auto windowListDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             windowListEnd - windowListStart);
-        std::cout << ">>> INITIALIZATION: Window list registration took " 
+        std::cout << ">>> INITIALIZATION: Window list registration took "
                   << windowListDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -833,7 +833,7 @@ namespace xit::Drawing
         auto callbacksEnd = std::chrono::steady_clock::now();
         auto callbacksDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             callbacksEnd - callbacksStart);
-        std::cout << ">>> INITIALIZATION: GLFW callback setup took " 
+        std::cout << ">>> INITIALIZATION: GLFW callback setup took "
                   << callbacksDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -846,7 +846,7 @@ namespace xit::Drawing
         auto sceneSetupEnd = std::chrono::steady_clock::now();
         auto sceneSetupDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             sceneSetupEnd - sceneSetupStart);
-        std::cout << ">>> INITIALIZATION: Scene2D setup took " 
+        std::cout << ">>> INITIALIZATION: Scene2D setup took "
                   << sceneSetupDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -866,7 +866,7 @@ namespace xit::Drawing
         auto appClosingEnd = std::chrono::steady_clock::now();
         auto appClosingDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             appClosingEnd - appClosingStart);
-        std::cout << ">>> INITIALIZATION: App::Closing event registration took " 
+        std::cout << ">>> INITIALIZATION: App::Closing event registration took "
                   << appClosingDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -880,7 +880,7 @@ namespace xit::Drawing
         auto dpiDetectionEnd = std::chrono::steady_clock::now();
         auto dpiDetectionDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             dpiDetectionEnd - dpiDetectionStart);
-        std::cout << ">>> INITIALIZATION: DPI scale detection took " 
+        std::cout << ">>> INITIALIZATION: DPI scale detection took "
                   << dpiDetectionDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -893,7 +893,7 @@ namespace xit::Drawing
         auto setDPIScaleEnd = std::chrono::steady_clock::now();
         auto setDPIScaleDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             setDPIScaleEnd - setDPIScaleStart);
-        std::cout << ">>> INITIALIZATION: SetDPIScale() took " 
+        std::cout << ">>> INITIALIZATION: SetDPIScale() took "
                   << setDPIScaleDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -908,11 +908,11 @@ namespace xit::Drawing
             framebufferInitEnd - framebufferInitStart);
 #endif
 #ifdef DEBUG_INITIALIZATION
-        std::cout << ">>> INITIALIZATION: Framebuffer initialization took " 
+        std::cout << ">>> INITIALIZATION: Framebuffer initialization took "
                   << framebufferDuration.count() << "μs <<<" << std::endl;
 #endif
 #ifdef DEBUG_WINDOW
-        std::cout << ">>> WINDOW CONSTRUCTION TIMING: Framebuffer initialization took " 
+        std::cout << ">>> WINDOW CONSTRUCTION TIMING: Framebuffer initialization took "
                   << framebufferDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -924,7 +924,7 @@ namespace xit::Drawing
         auto onInitializeComponentEnd = std::chrono::steady_clock::now();
         auto onInitializeComponentDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             onInitializeComponentEnd - onInitializeComponentStart);
-        std::cout << ">>> INITIALIZATION: OnInitializeComponent() took " 
+        std::cout << ">>> INITIALIZATION: OnInitializeComponent() took "
                   << onInitializeComponentDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -934,8 +934,8 @@ namespace xit::Drawing
             initializeEndTime - initializeStartTime);
         auto totalFromConstruction = std::chrono::duration_cast<std::chrono::microseconds>(
             initializeEndTime - constructionStartTime);
-        std::cout << "\n>>> WINDOW CONSTRUCTION TIMING: Initialize() completed in " 
-                  << initializeDuration.count() << "μs (total from construction: " 
+        std::cout << "\n>>> WINDOW CONSTRUCTION TIMING: Initialize() completed in "
+                  << initializeDuration.count() << "μs (total from construction: "
                   << totalFromConstruction.count() << "μs) <<<" << std::endl;
 #endif
 
@@ -945,14 +945,15 @@ namespace xit::Drawing
             initializeEndTimeInit - initializeStartTime);
         auto totalFromConstructionInit = std::chrono::duration_cast<std::chrono::microseconds>(
             initializeEndTimeInit - constructionStartTime);
-        
+
         std::cout << "\n================================================" << std::endl;
         std::cout << ">>> INITIALIZATION SUMMARY <<<" << std::endl;
-        std::cout << "Total Initialize() time: " << initializeDurationInit.count() << "μs (" 
+        std::cout << "Total Initialize() time: " << initializeDurationInit.count() << "μs ("
                   << (initializeDurationInit.count() / 1000.0) << "ms)" << std::endl;
-        std::cout << "Total from construction: " << totalFromConstructionInit.count() << "μs (" 
+        std::cout << "Total from construction: " << totalFromConstructionInit.count() << "μs ("
                   << (totalFromConstructionInit.count() / 1000.0) << "ms)" << std::endl;
-        std::cout << "================================================\n" << std::endl;
+        std::cout << "================================================\n"
+                  << std::endl;
 #endif
 
         return true;
@@ -965,7 +966,7 @@ namespace xit::Drawing
 #ifdef DEBUG_WINDOW
         auto showDelay = std::chrono::duration_cast<std::chrono::microseconds>(
             showStartTime - constructionStartTime);
-        std::cout << "\n>>> WINDOW CONSTRUCTION TIMING: Show() started " 
+        std::cout << "\n>>> WINDOW CONSTRUCTION TIMING: Show() started "
                   << showDelay.count() << "μs after construction <<<" << std::endl;
 #endif
 
@@ -975,7 +976,7 @@ namespace xit::Drawing
         }
 
         activeInstance = this;
-        
+
 #ifdef DEBUG_INITIALIZATION
         auto openGLExtensionsStart = std::chrono::steady_clock::now();
 #endif
@@ -984,7 +985,7 @@ namespace xit::Drawing
         auto openGLExtensionsEnd = std::chrono::steady_clock::now();
         auto openGLExtensionsDuration = std::chrono::duration_cast<std::chrono::microseconds>(
             openGLExtensionsEnd - openGLExtensionsStart);
-        std::cout << ">>> INITIALIZATION: OpenGLExtensions::Initialize2D() took " 
+        std::cout << ">>> INITIALIZATION: OpenGLExtensions::Initialize2D() took "
                   << openGLExtensionsDuration.count() << "μs <<<" << std::endl;
 #endif
 
@@ -1004,19 +1005,20 @@ namespace xit::Drawing
             static int frameCount = 0;
             static auto lastFpsReport = currentTime;
             frameCount++;
-            
+
             auto timeSinceLastFpsReport = std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastFpsReport);
             if (timeSinceLastFpsReport.count() >= 5) // Report FPS every 5 seconds
             {
                 double fps = frameCount / 5.0;
-                std::cout << "\n>>> PERFORMANCE REPORT: " << fps << " FPS (avg frame time: " 
-                          << (5000.0 / frameCount) << "ms) <<<\n" << std::endl;
+                std::cout << "\n>>> PERFORMANCE REPORT: " << fps << " FPS (avg frame time: "
+                          << (5000.0 / frameCount) << "ms) <<<\n"
+                          << std::endl;
                 frameCount = 0;
                 lastFpsReport = currentTime;
             }
 #endif
 
-            if (canRender && mainLoopSemaphore.try_acquire_for(1ms))
+            if (canRender && mainLoopSemaphore.try_acquire_for(std::chrono::milliseconds(1)))
             {
 #ifdef DEBUG_WINDOW2
                 if (timeSinceLastRender.count() > 20) // Log if frame took longer than expected
@@ -1182,16 +1184,17 @@ namespace xit::Drawing
                         firstFrameCompleteTime - constructionStartTime);
                     auto showToFirstFrame = std::chrono::duration_cast<std::chrono::microseconds>(
                         firstFrameCompleteTime - showStartTime);
-                    
+
                     std::cout << "\n========================================" << std::endl;
                     std::cout << ">>> FIRST FRAME COMPLETED! (FALLBACK) <<<" << std::endl;
-                    std::cout << "Total time from construction to first frame: " 
-                              << totalConstructionTime.count() << "μs (" 
+                    std::cout << "Total time from construction to first frame: "
+                              << totalConstructionTime.count() << "μs ("
                               << (totalConstructionTime.count() / 1000.0) << "ms)" << std::endl;
-                    std::cout << "Time from Show() to first frame: " 
-                              << showToFirstFrame.count() << "μs (" 
+                    std::cout << "Time from Show() to first frame: "
+                              << showToFirstFrame.count() << "μs ("
                               << (showToFirstFrame.count() / 1000.0) << "ms)" << std::endl;
-                    std::cout << "========================================\n" << std::endl;
+                    std::cout << "========================================\n"
+                              << std::endl;
 #endif
                 }
             }
@@ -1199,7 +1202,8 @@ namespace xit::Drawing
             auto renderEndTime = std::chrono::high_resolution_clock::now();
             auto renderDuration = std::chrono::duration_cast<std::chrono::microseconds>(renderEndTime - renderStartTime);
             std::cout << "DoRender: Fallback rendering completed in " << renderDuration.count() << "μs" << std::endl;
-            std::cout << "=== Window::DoRender END ===\n" << std::endl;
+            std::cout << "=== Window::DoRender END ===\n"
+                      << std::endl;
 #endif
             return;
         }
@@ -1244,12 +1248,12 @@ namespace xit::Drawing
             glViewport(0, 0, scene.GetWidth(), scene.GetHeight());
 
             bool hasInvalidRegions = !regionsToProcess.empty();
-            bool needsFullRedraw = GetInvalidated() || GetNeedWidthRecalculation() || 
-                                   GetNeedHeightRecalculation() || GetNeedLeftRecalculation() || 
+            bool needsFullRedraw = GetInvalidated() || GetNeedWidthRecalculation() ||
+                                   GetNeedHeightRecalculation() || GetNeedLeftRecalculation() ||
                                    GetNeedTopRecalculation();
 
 #ifdef DEBUG_WINDOW2
-            std::cout << "DoRender: Rendering strategy - hasInvalidRegions=" << hasInvalidRegions 
+            std::cout << "DoRender: Rendering strategy - hasInvalidRegions=" << hasInvalidRegions
                       << " needsFullRedraw=" << needsFullRedraw << std::endl;
             if (needsFullRedraw)
             {
@@ -1284,7 +1288,7 @@ namespace xit::Drawing
                 auto partialRedrawStart = std::chrono::high_resolution_clock::now();
 #endif
                 // Partial redraw - copy unchanged regions from front buffer and render only invalid regions
-                
+
                 // First, copy the entire front buffer to back buffer
 #ifdef DEBUG_WINDOW2
                 auto copyStart = std::chrono::high_resolution_clock::now();
@@ -1292,18 +1296,18 @@ namespace xit::Drawing
                 glBindFramebuffer(GL_READ_FRAMEBUFFER, frontFramebuffer);
                 glBindFramebuffer(GL_DRAW_FRAMEBUFFER, backFramebuffer);
                 glBlitFramebuffer(0, 0, scene.GetWidth(), scene.GetHeight(),
-                                 0, 0, scene.GetWidth(), scene.GetHeight(),
-                                 GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+                                  0, 0, scene.GetWidth(), scene.GetHeight(),
+                                  GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 #ifdef DEBUG_WINDOW2
                 auto copyEnd = std::chrono::high_resolution_clock::now();
                 auto copyDuration = std::chrono::duration_cast<std::chrono::microseconds>(copyEnd - copyStart);
-                std::cout << "DoRender: Buffer copy (" << scene.GetWidth() << "x" << scene.GetHeight() 
+                std::cout << "DoRender: Buffer copy (" << scene.GetWidth() << "x" << scene.GetHeight()
                           << ") took " << copyDuration.count() << "μs" << std::endl;
 #endif
 
                 // Now render only the invalidated regions
                 glBindFramebuffer(GL_FRAMEBUFFER, backFramebuffer);
-                
+
 #ifdef DEBUG_WINDOW2
                 int regionIndex = 0;
 #endif
@@ -1314,7 +1318,7 @@ namespace xit::Drawing
 
 #ifdef DEBUG_WINDOW2
                     std::cout << "DoRender: Processing region " << regionIndex++ << " - bounds("
-                              << bounds.GetLeft() << "," << bounds.GetTop() 
+                              << bounds.GetLeft() << "," << bounds.GetTop()
                               << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")"
                               << " visual=" << (visual ? visual->GetName() : "null") << std::endl;
                     auto regionRenderStart = std::chrono::high_resolution_clock::now();
@@ -1324,14 +1328,14 @@ namespace xit::Drawing
                     {
                         // Set scissor test to limit rendering to the invalid region
                         glEnable(GL_SCISSOR_TEST);
-                        
+
                         // Convert coordinates (OpenGL uses bottom-left origin)
                         int scissorY = scene.GetHeight() - bounds.GetTop() - bounds.GetHeight();
                         glScissor(bounds.GetLeft(), scissorY, bounds.GetWidth(), bounds.GetHeight());
 
 #ifdef DEBUG_WINDOW2
-                        std::cout << "DoRender: Scissor region set to (" 
-                                  << bounds.GetLeft() << "," << scissorY 
+                        std::cout << "DoRender: Scissor region set to ("
+                                  << bounds.GetLeft() << "," << scissorY
                                   << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
 #endif
 
@@ -1341,7 +1345,7 @@ namespace xit::Drawing
 
                         // Render the visual
                         visual->Render();
-                        
+
                         glDisable(GL_SCISSOR_TEST);
 
 #ifdef DEBUG_WINDOW2
@@ -1353,7 +1357,7 @@ namespace xit::Drawing
 #ifdef DEBUG_WINDOW2
                     else
                     {
-                        std::cout << "DoRender: WARNING - Null visual for region " << (regionIndex-1) << std::endl;
+                        std::cout << "DoRender: WARNING - Null visual for region " << (regionIndex - 1) << std::endl;
                     }
 #endif
                 }
@@ -1373,8 +1377,8 @@ namespace xit::Drawing
                 glBindFramebuffer(GL_READ_FRAMEBUFFER, frontFramebuffer);
                 glBindFramebuffer(GL_DRAW_FRAMEBUFFER, backFramebuffer);
                 glBlitFramebuffer(0, 0, scene.GetWidth(), scene.GetHeight(),
-                                 0, 0, scene.GetWidth(), scene.GetHeight(),
-                                 GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+                                  0, 0, scene.GetWidth(), scene.GetHeight(),
+                                  GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 #ifdef DEBUG_WINDOW2
                 auto noCopyEnd = std::chrono::high_resolution_clock::now();
                 auto noCopyDuration = std::chrono::duration_cast<std::chrono::microseconds>(noCopyEnd - noCopyStart);
@@ -1405,8 +1409,8 @@ namespace xit::Drawing
             glBindFramebuffer(GL_READ_FRAMEBUFFER, frontFramebuffer);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
             glBlitFramebuffer(0, 0, scene.GetWidth(), scene.GetHeight(),
-                             0, 0, scene.GetWidth(), scene.GetHeight(),
-                             GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                              0, 0, scene.GetWidth(), scene.GetHeight(),
+                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
             glfwSwapBuffers(window);
 
@@ -1427,16 +1431,17 @@ namespace xit::Drawing
                     firstFrameCompleteTime - constructionStartTime);
                 auto showToFirstFrame = std::chrono::duration_cast<std::chrono::microseconds>(
                     firstFrameCompleteTime - showStartTime);
-                
+
                 std::cout << "\n========================================" << std::endl;
                 std::cout << ">>> FIRST FRAME COMPLETED! <<<" << std::endl;
-                std::cout << "Total time from construction to first frame: " 
-                          << totalConstructionTime.count() << "μs (" 
+                std::cout << "Total time from construction to first frame: "
+                          << totalConstructionTime.count() << "μs ("
                           << (totalConstructionTime.count() / 1000.0) << "ms)" << std::endl;
-                std::cout << "Time from Show() to first frame: " 
-                          << showToFirstFrame.count() << "μs (" 
+                std::cout << "Time from Show() to first frame: "
+                          << showToFirstFrame.count() << "μs ("
                           << (showToFirstFrame.count() / 1000.0) << "ms)" << std::endl;
-                std::cout << "========================================\n" << std::endl;
+                std::cout << "========================================\n"
+                          << std::endl;
 #endif
             }
         }
@@ -1444,9 +1449,10 @@ namespace xit::Drawing
 #ifdef DEBUG_WINDOW2
         auto renderEndTime = std::chrono::high_resolution_clock::now();
         auto totalRenderDuration = std::chrono::duration_cast<std::chrono::microseconds>(renderEndTime - renderStartTime);
-        std::cout << "DoRender: TOTAL RENDER TIME: " << totalRenderDuration.count() << "μs (" 
+        std::cout << "DoRender: TOTAL RENDER TIME: " << totalRenderDuration.count() << "μs ("
                   << (totalRenderDuration.count() / 1000.0) << "ms)" << std::endl;
-        std::cout << "=== Window::DoRender END ===\n" << std::endl;
+        std::cout << "=== Window::DoRender END ===\n"
+                  << std::endl;
 #endif
         Invalidate();
     }
@@ -1519,7 +1525,7 @@ namespace xit::Drawing
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
 #ifdef DEBUG_WINDOW2
-            std::cout << "InitializeFramebuffers: ERROR - Front framebuffer is not complete! Status: " 
+            std::cout << "InitializeFramebuffers: ERROR - Front framebuffer is not complete! Status: "
                       << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
 #endif
             ERROR("Front framebuffer is not complete!");
@@ -1555,7 +1561,7 @@ namespace xit::Drawing
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
 #ifdef DEBUG_WINDOW2
-            std::cout << "InitializeFramebuffers: ERROR - Back framebuffer is not complete! Status: " 
+            std::cout << "InitializeFramebuffers: ERROR - Back framebuffer is not complete! Status: "
                       << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
 #endif
             ERROR("Back framebuffer is not complete!");
@@ -1584,13 +1590,13 @@ namespace xit::Drawing
 #ifdef DEBUG_WINDOW2
         auto initEnd = std::chrono::high_resolution_clock::now();
         auto initDuration = std::chrono::duration_cast<std::chrono::microseconds>(initEnd - initStart);
-        std::cout << "Window::InitializeFramebuffers - Framebuffers initialized with size " 
+        std::cout << "Window::InitializeFramebuffers - Framebuffers initialized with size "
                   << width << "x" << height << " in " << initDuration.count() << "μs" << std::endl;
-        
+
         // Report texture memory usage
         size_t totalMemory = width * height * 4 * 4; // 4 textures (2 color + 2 depth), 4 bytes per pixel for color
-        totalMemory += width * height * 4 * 2; // depth textures use 4 bytes per pixel
-        std::cout << "InitializeFramebuffers: Estimated GPU memory usage: " 
+        totalMemory += width * height * 4 * 2;       // depth textures use 4 bytes per pixel
+        std::cout << "InitializeFramebuffers: Estimated GPU memory usage: "
                   << (totalMemory / 1024.0 / 1024.0) << " MB" << std::endl;
 #endif
     }
@@ -1662,12 +1668,12 @@ namespace xit::Drawing
         auto swapEnd = std::chrono::high_resolution_clock::now();
         auto swapDuration = std::chrono::duration_cast<std::chrono::nanoseconds>(swapEnd - swapStart);
         std::cout << "Window::SwapFramebuffers - Framebuffers swapped in " << swapDuration.count() << "ns" << std::endl;
-        std::cout << "SwapFramebuffers: Front " << oldFront << " -> " << frontFramebuffer 
+        std::cout << "SwapFramebuffers: Front " << oldFront << " -> " << frontFramebuffer
                   << ", Back " << oldBack << " -> " << backFramebuffer << std::endl;
 #endif
     }
 
-    void Window::CopyRegionBetweenFramebuffers(const Rectangle& region)
+    void Window::CopyRegionBetweenFramebuffers(const Rectangle &region)
     {
         // Convert region coordinates for OpenGL (bottom-left origin)
         int sourceY = scene.GetHeight() - region.GetTop() - region.GetHeight();
@@ -1677,17 +1683,16 @@ namespace xit::Drawing
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, backFramebuffer);
 
         glBlitFramebuffer(
-            region.GetLeft(), sourceY, 
+            region.GetLeft(), sourceY,
             region.GetLeft() + region.GetWidth(), sourceY + region.GetHeight(),
             region.GetLeft(), destY,
             region.GetLeft() + region.GetWidth(), destY + region.GetHeight(),
-            GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 
-            GL_NEAREST
-        );
+            GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+            GL_NEAREST);
 
 #ifdef DEBUG_WINDOW2
-        std::cout << "Window::CopyRegionBetweenFramebuffers - Copied region (" 
-                  << region.GetLeft() << "," << region.GetTop() 
+        std::cout << "Window::CopyRegionBetweenFramebuffers - Copied region ("
+                  << region.GetLeft() << "," << region.GetTop()
                   << "," << region.GetWidth() << "," << region.GetHeight() << ")" << std::endl;
 #endif
     }

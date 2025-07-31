@@ -4,10 +4,10 @@
 namespace xit::Drawing
 {
     FontProperty::FontProperty()
+        : fontName(UIDefaults::DefaultFont),
+          fontSize(0),
+          needMeasureFont(true)
     {
-        fontSize = 0;  // Initialize fontSize before calling SetFontSize
-        needMeasureFont = true;
-        fontName = UIDefaults::DefaultFont;
         SetFontSize(UIDefaults::DefaultFontSize);
     }
 
