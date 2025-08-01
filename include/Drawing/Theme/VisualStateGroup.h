@@ -12,42 +12,46 @@ namespace xit::Drawing
         std::vector<T *> visualStates;
 
         VisualStateGroup() {}
-        
+
         // Copy constructor - deep copy the visual states
-        VisualStateGroup(const VisualStateGroup& other) : NameProperty(other)
+        VisualStateGroup(const VisualStateGroup &other) : NameProperty(other)
         {
-            for (T* state : other.visualStates)
-            {
-                visualStates.push_back(new T(*state));
-            }
+            visualStates.reserve(other.visualStates.size());
+            std::transform(
+                other.visualStates.begin(), other.visualStates.end(),
+                std::back_inserter(visualStates),
+                [](T *state)
+                { return new T(*state); });
         }
-        
+
         // Copy assignment operator
-        VisualStateGroup& operator=(const VisualStateGroup& other)
+        VisualStateGroup &operator=(const VisualStateGroup &other)
         {
             if (this != &other)
             {
                 // Clean up existing states
-                for (T* state : visualStates)
+                for (T *state : visualStates)
                 {
                     delete state;
                 }
                 visualStates.clear();
-                
+
                 // Copy name
                 NameProperty::operator=(other);
-                
+
                 // Deep copy visual states
-                for (T* state : other.visualStates)
-                {
-                    visualStates.push_back(new T(*state));
-                }
+                visualStates.reserve(other.visualStates.size());
+                std::transform(
+                    other.visualStates.begin(), other.visualStates.end(),
+                    std::back_inserter(visualStates),
+                    [](T *state)
+                    { return new T(*state); });
             }
             return *this;
         }
 
     public:
-        VisualStateGroup(const std::string &name) : NameProperty(name) {}
+        explicit VisualStateGroup(const std::string &name) : NameProperty(name) {}
 
         // Add virtual destructor to properly clean up visual states
         virtual ~VisualStateGroup()
@@ -69,12 +73,10 @@ namespace xit::Drawing
 
         T *GetVisualState(const std::string &name)
         {
-            for (T *state : visualStates)
-            {
-                if (state->GetName() == name)
-                    return state;
-            }
-            return nullptr;
+            auto it = std::find_if(visualStates.begin(), visualStates.end(),
+                                   [&name](T *state)
+                                   { return state->GetName() == name; });
+            return it != visualStates.end() ? *it : nullptr;
         }
     };
 }
