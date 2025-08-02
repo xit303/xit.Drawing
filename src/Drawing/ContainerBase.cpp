@@ -405,8 +405,6 @@ namespace xit::Drawing
                 else
                 {
                     size_t max = grid.GetColumnPositions().size() - 1;
-                    max = max < 0 ? 0 : max;
-
                     size_t column = content->GetColumn();
                     size_t columnSpan = content->GetColumnSpan();
                     size_t end = column + columnSpan;
@@ -443,8 +441,6 @@ namespace xit::Drawing
                 else
                 {
                     size_t max = grid.GetRowPositions().size() - 1;
-                    max = max < 0 ? 0 : max;
-
                     size_t row = content->GetRow();
                     size_t rowSpan = content->GetRowSpan();
                     size_t end = row + rowSpan;
