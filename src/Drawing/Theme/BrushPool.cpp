@@ -2,30 +2,37 @@
 
 namespace xit::Drawing
 {
-    std::unordered_map<uint32_t, SolidColorBrush*> BrushPool::solidColorBrushes;
-    
-    SolidColorBrush* BrushPool::GetSolidColorBrush(uint32_t color)
+    // Use Meyer's singleton pattern to avoid static destruction order issues
+    std::unordered_map<uint32_t, SolidColorBrush *> &BrushPool::GetSolidColorBrushesMap()
     {
-        auto it = solidColorBrushes.find(color);
-        if (it != solidColorBrushes.end()) {
+        static std::unordered_map<uint32_t, SolidColorBrush *> solidColorBrushes;
+        return solidColorBrushes;
+    }
+
+    SolidColorBrush *BrushPool::GetSolidColorBrush(uint32_t color)
+    {
+        auto it = GetSolidColorBrushesMap().find(color);
+        if (it != GetSolidColorBrushesMap().end())
+        {
             return it->second;
         }
-        
+
         auto brush = new SolidColorBrush(color);
-        solidColorBrushes[color] = brush;
+        GetSolidColorBrushesMap()[color] = brush;
         return brush;
     }
-    
+
     void BrushPool::Clear()
     {
-        for (auto& pair : solidColorBrushes) {
+        for (const auto &pair : GetSolidColorBrushesMap())
+        {
             delete pair.second;
         }
-        solidColorBrushes.clear();
+        GetSolidColorBrushesMap().clear();
     }
-    
+
     size_t BrushPool::GetPoolSize()
     {
-        return solidColorBrushes.size();
+        return GetSolidColorBrushesMap().size();
     }
 }

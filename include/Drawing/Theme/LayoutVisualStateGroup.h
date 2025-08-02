@@ -10,7 +10,7 @@ namespace xit::Drawing
     class LayoutVisualStateGroup : public VisualStateGroup<LayoutVisualState>
     {
     private:
-        static std::map<std::string, LayoutVisualStateGroup *> loadedGroups;
+        static std::map<std::string, LayoutVisualStateGroup *>& GetLoadedGroupsMap();
 
         LayoutVisualStateGroup();
 

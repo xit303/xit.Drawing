@@ -20,10 +20,11 @@ namespace xit::OpenGL
     class Texture : public OpenGL::Asset
     {
     private:
-        static std::map<std::string, Texture> textures;
-        static std::list<std::string> failedImages;
         static int textureMaxSize;
-        
+
+        static std::map<std::string, Texture> &GetTexturesMap();
+        static std::list<std::string> &GetFailedImagesList();
+
         bool created = false;
         bool done = false;
         int numberOfChannels = 0;
@@ -33,7 +34,7 @@ namespace xit::OpenGL
          * @brief This is an array of bytes (r, g, b, a) that represent the pixels in this
          * texture object.
          */
-        unsigned char* pixelData = nullptr;
+        unsigned char *pixelData = nullptr;
 
         /**
          * @brief The width of the texture image.
@@ -54,8 +55,8 @@ namespace xit::OpenGL
         void CreateFromFileAsync();
 
     public:
-        const int& Width = width;
-        const int& Height = height;
+        const int &Width = width;
+        const int &Height = height;
 
         /**
          * @brief Gets the name of the texture.
@@ -102,7 +103,7 @@ namespace xit::OpenGL
          * @param nrChannels The number of channels in the image.
          * @return True if the texture was successfully loaded.
          */
-        virtual bool Create(unsigned char* data, int width, int height, int nrChannels);
+        virtual bool Create(unsigned char *data, int width, int height, int nrChannels);
 
         /**
          * @brief This function creates the texture from an image file.
@@ -111,7 +112,7 @@ namespace xit::OpenGL
          * @param height The height of the image.
          * @return True if the texture was successfully loaded.
          */
-        virtual bool Create(const std::string& path, int width, int height);
+        virtual bool Create(const std::string &path, int width, int height);
 
         /**
          * @brief This function destroys the OpenGL object that is a representation of this texture.
@@ -123,7 +124,7 @@ namespace xit::OpenGL
          * the byte array is a managed type makes it slightly more complicated.
          * @return The texture object as a Bitmap.
          */
-        //virtual Bitmap ToBitmap();
+        // virtual Bitmap ToBitmap();
 
     public:
         /**
@@ -133,6 +134,6 @@ namespace xit::OpenGL
          * @param height The height of the image.
          * @return The texture object.
          */
-        static const Texture* FindOrCreateTexture(const std::string& file, int width, int height);
+        static const Texture *FindOrCreateTexture(const std::string &file, int width, int height);
     };
 }

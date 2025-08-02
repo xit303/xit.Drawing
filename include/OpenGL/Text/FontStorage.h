@@ -19,7 +19,7 @@ namespace xit::OpenGL
             bool operator==(const FontSizeCharacterList& other) const = default;
         };
 
-        static std::map<std::string, FontSizeCharacterList> fontStorage;
+        static std::map<std::string, FontSizeCharacterList>& GetFontStorageMap();
 
     public:
         static CharacterList& FindOrCreate(const std::string& fontName, int fontSize);

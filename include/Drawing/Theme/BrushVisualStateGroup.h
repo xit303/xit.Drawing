@@ -10,12 +10,12 @@ namespace xit::Drawing
     class BrushVisualStateGroup : public VisualStateGroup<BrushVisualState>
     {
     private:
-        static std::map<std::string, BrushVisualStateGroup *> loadedGroups;
+        static std::map<std::string, BrushVisualStateGroup *>& GetLoadedGroupsMap();
 
         BrushVisualStateGroup();
 
     public:
-        BrushVisualStateGroup(const std::string &name);
+        explicit BrushVisualStateGroup(const std::string &name);
         BrushVisualStateGroup(BrushVisualStateGroup &other);
         BrushVisualStateGroup(const BrushVisualStateGroup &other);
 

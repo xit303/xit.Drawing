@@ -2,7 +2,12 @@
 
 namespace xit::Drawing
 {
-    std::map<std::string, BrushVisualStateGroup *> BrushVisualStateGroup::loadedGroups;
+    // Use Meyer's singleton pattern to avoid static destruction order issues
+    std::map<std::string, BrushVisualStateGroup *> &BrushVisualStateGroup::GetLoadedGroupsMap()
+    {
+        static std::map<std::string, BrushVisualStateGroup *> loadedGroups;
+        return loadedGroups;
+    }
 
     BrushVisualStateGroup::BrushVisualStateGroup() {}
     BrushVisualStateGroup::BrushVisualStateGroup(const std::string &name) : VisualStateGroup(name) {}
@@ -26,10 +31,10 @@ namespace xit::Drawing
     {
         const std::string fileName = path + "/" + name + ".json";
 
-        if (loadedGroups.contains(fileName))
-            return loadedGroups[fileName];
+        if (GetLoadedGroupsMap().contains(fileName))
+            return GetLoadedGroupsMap()[fileName];
 
-        BrushVisualStateGroup *data = loadedGroups[fileName];
+        BrushVisualStateGroup *data = GetLoadedGroupsMap()[fileName];
         // XmlFile *xmlFile = XmlFile::Load(fileName);
 
         // // std::string text = File::ReadAllText(fileName);

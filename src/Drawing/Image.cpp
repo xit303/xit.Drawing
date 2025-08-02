@@ -3,9 +3,6 @@
 
 namespace xit::Drawing
 {
-    std::map<std::string, ImageBrush> Image::imageBrushes;
-    std::vector<std::string> Image::failedImages;
-
     static Size ScaleImage(const Size &availableSize, float scaleFactor, const OpenGL::Texture *texture)
     {
         float scaledWidth = static_cast<float>(texture->Width) * scaleFactor;
@@ -26,6 +23,19 @@ namespace xit::Drawing
         }
 
         return Size(static_cast<int>(scaledWidth), static_cast<int>(scaledHeight));
+    }
+
+    // Use Meyer's singleton pattern to avoid static destruction order issues
+    std::map<std::string, ImageBrush> &Image::GetImageBrushesMap()
+    {
+        static std::map<std::string, ImageBrush> imageBrushes;
+        return imageBrushes;
+    }
+
+    std::vector<std::string> &Image::GetFailedImagesList()
+    {
+        static std::vector<std::string> failedImages;
+        return failedImages;
     }
 
     Image::Image()
@@ -58,7 +68,7 @@ namespace xit::Drawing
 
     void Image::SetStretch(const Stretch value)
     {
-        if (stretch != value)
+        // if (stretch != value)
         {
             stretch = value;
         }
@@ -190,7 +200,7 @@ namespace xit::Drawing
         {
             if (File::Exists(imageSource))
             {
-                ImageBrush &imageBrush = imageBrushes[imageSource];
+                ImageBrush &imageBrush = GetImageBrushesMap()[imageSource];
                 imageBrush.SetWidth(GetWidth());
                 imageBrush.SetHeight(GetHeight());
                 imageBrush.SetFileName(imageSource);
@@ -200,7 +210,7 @@ namespace xit::Drawing
             else
             {
                 Logger::Log(LogLevel::Error, "Image", "Image source " + imageSource + " not found");
-                failedImages.push_back(imageSource);
+                GetFailedImagesList().push_back(imageSource);
             }
         }
     }

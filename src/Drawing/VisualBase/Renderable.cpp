@@ -38,7 +38,7 @@ namespace xit::Drawing::VisualBase
 
     void Renderable::SetClipToBounds(bool value)
     {
-        if (clipToBounds != value)
+        // if (clipToBounds != value)
         {
             clipToBounds = value;
         }
@@ -370,7 +370,7 @@ namespace xit::Drawing::VisualBase
 
         isBrushGroupChanging = true;
 
-        if (brushVisualStateGroup != nullptr)
+        // if (brushVisualStateGroup != nullptr)
         {
             // TODO brushVisualStateGroup->PropertyChanged -= BrushVisualStateGroup_PropertyChanged;
             brushVisualStateGroup = nullptr;

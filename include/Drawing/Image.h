@@ -11,12 +11,12 @@ namespace xit::Drawing
     class Image : public Visual
     {
     private:
-        static std::map<std::string, ImageBrush> imageBrushes;
-        static std::vector<std::string> failedImages;
-
         std::string imageSource;
         Stretch stretch;
         float scale;
+
+        static std::map<std::string, ImageBrush>& GetImageBrushesMap();
+        static std::vector<std::string>& GetFailedImagesList();
 
         void ImageSourceChanged();
 

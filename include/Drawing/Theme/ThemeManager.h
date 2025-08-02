@@ -24,9 +24,10 @@ namespace xit::Drawing
         static Theme defaultTheme;
 
         static std::mutex themesMutex;
-        static std::vector<Theme *> themes;
-        static std::vector<std::string> themeNames;
-        static std::vector<std::string> visualStateNames;
+
+        static std::vector<Theme *>& GetThemesVector();
+        static std::vector<std::string>& GetThemeNamesVector();
+        static std::vector<std::string>& GetVisualStateNamesVector();
 
         static std::string lastLoadedTheme;
 

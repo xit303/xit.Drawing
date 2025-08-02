@@ -25,18 +25,23 @@ namespace xit::OpenGL
         return *this;
     }
 
-    std::map<std::string, FontStorage::FontSizeCharacterList> FontStorage::fontStorage;
+    // Use Meyer's singleton pattern to avoid static destruction order issues
+    std::map<std::string, FontStorage::FontSizeCharacterList> &FontStorage::GetFontStorageMap()
+    {
+        static std::map<std::string, FontStorage::FontSizeCharacterList> fontStorage;
+        return fontStorage;
+    }
 
     CharacterList &FontStorage::FindOrCreate(const std::string &fontName, int fontSize)
     {
 #ifdef DEBUG_FONT_PERFORMANCE
         auto start = std::chrono::high_resolution_clock::now();
-        std::cout << "FontStorage::FindOrCreate - Looking for font '" << fontName 
+        std::cout << "FontStorage::FindOrCreate - Looking for font '" << fontName
                   << "' size " << fontSize << std::endl;
 #endif
 
-        FontSizeCharacterList &fontSizeCharacterList = fontStorage[fontName];
-        CharacterList& characterList = fontSizeCharacterList[fontSize];
+        FontSizeCharacterList &fontSizeCharacterList = GetFontStorageMap()[fontName];
+        CharacterList &characterList = fontSizeCharacterList[fontSize];
 
         if (characterList.empty())
         {
@@ -50,7 +55,7 @@ namespace xit::OpenGL
 #ifdef DEBUG_FONT_PERFORMANCE
             auto createEnd = std::chrono::high_resolution_clock::now();
             auto createDuration = std::chrono::duration_cast<std::chrono::microseconds>(createEnd - createStart);
-            std::cout << "FontStorage::FindOrCreate - CharacterList::Create() took " << createDuration.count() 
+            std::cout << "FontStorage::FindOrCreate - CharacterList::Create() took " << createDuration.count()
                       << "μs" << std::endl;
 #endif
         }
@@ -72,6 +77,6 @@ namespace xit::OpenGL
 
     void FontStorage::Clear()
     {
-        fontStorage.clear();
+        GetFontStorageMap().clear();
     }
 }

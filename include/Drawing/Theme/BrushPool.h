@@ -9,7 +9,7 @@ namespace xit::Drawing
     class BrushPool
     {
     private:
-        static std::unordered_map<uint32_t, SolidColorBrush*> solidColorBrushes;
+        static std::unordered_map<uint32_t, SolidColorBrush*>& GetSolidColorBrushesMap();
         
     public:
         static SolidColorBrush* GetSolidColorBrush(uint32_t color);

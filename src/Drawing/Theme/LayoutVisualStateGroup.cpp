@@ -2,7 +2,11 @@
 
 namespace xit::Drawing
 {
-    std::map<std::string, LayoutVisualStateGroup *> LayoutVisualStateGroup::loadedGroups;
+    std::map<std::string, LayoutVisualStateGroup *> &LayoutVisualStateGroup::GetLoadedGroupsMap()
+    {
+        static std::map<std::string, LayoutVisualStateGroup *> loadedGroups;
+        return loadedGroups;
+    }
 
     LayoutVisualStateGroup::LayoutVisualStateGroup() {}
     LayoutVisualStateGroup::LayoutVisualStateGroup(const std::string &name) : VisualStateGroup(name) {}
@@ -26,10 +30,10 @@ namespace xit::Drawing
     {
         std::string fileName = path + "/" + name + ".json";
 
-        if (loadedGroups.contains(fileName))
-            return loadedGroups[fileName];
+        if (GetLoadedGroupsMap().contains(fileName))
+            return GetLoadedGroupsMap()[fileName];
 
-        LayoutVisualStateGroup *data = loadedGroups[fileName]; // XmlFile<LayoutVisualStateGroup>::Load(xmlFileName);
+        LayoutVisualStateGroup *data = GetLoadedGroupsMap()[fileName]; // XmlFile<LayoutVisualStateGroup>::Load(xmlFileName);
 
         // if (data != nullptr)
         // {

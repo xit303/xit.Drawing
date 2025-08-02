@@ -17,14 +17,11 @@ namespace xit::Drawing
     Theme &ThemeManager::Default = ThemeManager::defaultTheme;
 
     std::mutex ThemeManager::themesMutex;
-    std::vector<Theme *> ThemeManager::themes;
-    std::vector<Theme *> &ThemeManager::Themes = themes;
+    std::vector<Theme *> &ThemeManager::Themes = GetThemesVector();
 
-    std::vector<std::string> ThemeManager::themeNames;
-    std::vector<std::string> &ThemeManager::ThemeNames = themeNames;
+    std::vector<std::string> &ThemeManager::ThemeNames = GetThemeNamesVector();
 
-    std::vector<std::string> ThemeManager::visualStateNames;
-    std::vector<std::string> &ThemeManager::VisualStateNames = visualStateNames;
+    std::vector<std::string> &ThemeManager::VisualStateNames = GetVisualStateNamesVector();
 
     std::string ThemeManager::lastLoadedTheme;
 
@@ -46,31 +43,50 @@ namespace xit::Drawing
     Event<EventArgs &> ThemeManager::ThemeChanged;
     Event<EventArgs &> ThemeManager::Initialized;
 
+    // Use Meyer's singleton pattern to avoid static destruction order issues
+    std::vector<Theme *> &ThemeManager::GetThemesVector()
+    {
+        static std::vector<Theme *> themes;
+        return themes;
+    }
+
+    std::vector<std::string> &ThemeManager::GetThemeNamesVector()
+    {
+        static std::vector<std::string> themeNames;
+        return themeNames;
+    }
+
+    std::vector<std::string> &ThemeManager::GetVisualStateNamesVector()
+    {
+        static std::vector<std::string> visualStateNames;
+        return visualStateNames;
+    }
+
     void ThemeManager::AddSorted(Theme *theme)
     {
         bool found = false;
 
-        for (size_t i = 0; i < themes.size(); i++)
+        for (size_t i = 0; i < GetThemesVector().size(); i++)
         {
-            Theme &existing = *themes[i];
+            Theme &existing = *GetThemesVector()[i];
 
             if (existing.GetName().compare(theme->GetName()) > 0)
             {
-                auto it = themes.begin();
+                auto it = GetThemesVector().begin();
                 std::advance(it, i);
-                themes.insert(it, theme);
+                GetThemesVector().insert(it, theme);
 
-                auto it2 = themeNames.begin();
+                auto it2 = GetThemeNamesVector().begin();
                 std::advance(it2, i);
-                themeNames.insert(it2, theme->GetName());
+                GetThemeNamesVector().insert(it2, theme->GetName());
                 found = true;
                 break;
             }
         }
         if (!found)
         {
-            themes.push_back(theme);
-            themeNames.push_back(theme->GetName());
+            GetThemesVector().push_back(theme);
+            GetThemeNamesVector().push_back(theme->GetName());
         }
     }
 
@@ -93,7 +109,7 @@ namespace xit::Drawing
                 return;
             }
 
-            for (Theme *availableTheme : themes)
+            for (Theme *availableTheme : GetThemesVector())
             {
                 if (availableTheme->GetName() == theme->GetName())
                 {
@@ -149,7 +165,7 @@ namespace xit::Drawing
 
         themesMutex.lock();
         {
-            if (std::find(themes.begin(), themes.end(), &defaultTheme) == themes.end())
+            if (std::find(GetThemesVector().begin(), GetThemesVector().end(), &defaultTheme) == GetThemesVector().end())
             {
                 AddSorted(&defaultTheme);
             }
@@ -246,18 +262,18 @@ namespace xit::Drawing
 
             themesMutex.lock();
             {
-                for (Theme *theme : themes)
+                auto it = std::find_if(GetThemesVector().begin(), GetThemesVector().end(),
+                                       [&name](Theme *theme)
+                                       { return theme->GetName() == name; });
+
+                if (it != GetThemesVector().end())
                 {
-                    if (theme->GetName() == name)
-                    {
-                        // call SetActive because it also saves the active theme if it has changes
-                        SetActive(theme);
+                    // call SetActive because it also saves the active theme if it has changes
+                    SetActive(*it);
 
-                        found = true;
+                    found = true;
 
-                        Logger::Log(LogLevel::Info, "ThemeManager.SetActive", "Changed theme to %s", name);
-                        break;
-                    }
+                    Logger::Log(LogLevel::Info, "ThemeManager.SetActive", "Changed theme to %s", name);
                 }
             }
             themesMutex.unlock();
@@ -350,23 +366,23 @@ namespace xit::Drawing
     void ThemeManager::Cleanup()
     {
         std::lock_guard<std::mutex> lock(themesMutex);
-        
+
         // Clear events to prevent further notifications
         ThemeChanged.Clear();
         Initialized.Clear();
-        
+
         // Clear all themes except the default theme (which will be handled by its destructor)
-        for (Theme* theme : themes)
+        for (Theme *theme : GetThemesVector())
         {
             if (theme != &defaultTheme)
             {
                 delete theme;
             }
         }
-        themes.clear();
-        themeNames.clear();
-        visualStateNames.clear();
-        
+        GetThemesVector().clear();
+        GetThemeNamesVector().clear();
+        GetVisualStateNamesVector().clear();
+
         // Reset state
         activeTheme = nullptr;
         isInitialized = false;
