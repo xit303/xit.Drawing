@@ -15,6 +15,7 @@
             "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -Wuninitialized -Wmaybe-uninitialized -Wconversion -Wnull-dereference -Wdouble-promotion -MMD -fPIC -Og",
             "linker_flags": "-lm -lstdc++",
             "defines": [
+                "DEBUG",
                 "USE_AI_SUGGESTED_FIX"
             ],
             "include_paths": [
