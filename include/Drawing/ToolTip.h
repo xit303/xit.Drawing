@@ -11,10 +11,10 @@ namespace xit::Drawing
 	private:
 		Label textLabel;
 
-		static ToolTip *instance;
 		static Timer startTimer;
 		static Timer stopTimer;
 
+		static ToolTip &GetInstance();
 		ToolTip();
 
 	protected:

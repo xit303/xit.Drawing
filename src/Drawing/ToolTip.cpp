@@ -2,9 +2,14 @@
 
 namespace xit::Drawing
 {
-    ToolTip *ToolTip::instance = nullptr;
     Timer ToolTip::startTimer;
     Timer ToolTip::stopTimer;
+
+    ToolTip &ToolTip::GetInstance()
+    {
+        static ToolTip instance;
+        return instance;
+    }
 
     ToolTip::ToolTip()
     {
@@ -23,7 +28,7 @@ namespace xit::Drawing
 		SetVerticalContentAlignment(VerticalAlignment::Center);
 
         startTimer.Elapsed.Add([&]( EventArgs &e) {
-            instance->SetVisibility(Visibility::Collapsed);
+            GetInstance().SetVisibility(Visibility::Collapsed);
             startTimer.Stop();
         });
 
@@ -67,23 +72,16 @@ namespace xit::Drawing
 
     void ToolTip::SetDPI(float scaleX, float scaleY)
     {
-        if (!instance)
-            instance = new ToolTip();
-
-        instance->SetDPIScale(scaleX, scaleY);
+        GetInstance().SetDPIScale(scaleX, scaleY);
     }
 
     void ToolTip::DoUpdate(Rectangle &bounds)
     {
-        if (!instance)
-            instance = new ToolTip();
-
-        instance->Update(bounds);
+        GetInstance().Update(bounds);
     }
     void ToolTip::DoRender()
     {
-        if (instance)
-            instance->Render();
+        GetInstance().Render();
     }
 
     void ToolTip::Show(const std::string &text, int x, int y, int duration)
@@ -91,16 +89,15 @@ namespace xit::Drawing
         if (text.empty())
             return;
 
-        if (!instance)
-            instance = new ToolTip();
+        ToolTip &instance = GetInstance();
 
-        if (!instance->GetIsVisible())
+        if (!instance.GetIsVisible())
         {
-            instance->SetVisibility(Visibility::Visible);
+            instance.SetVisibility(Visibility::Visible);
 
-            instance->SetPosition(x, y);
-            instance->textLabel.SetText(text);
-            instance->Invalidate();
+            instance.textLabel.SetText(text);
+            instance.SetPosition(x, y);
+            instance.Invalidate();
         }
 
         if (duration > 0)
@@ -112,7 +109,6 @@ namespace xit::Drawing
 
     void ToolTip::Hide()
     {
-        if (instance)
-            instance->SetVisibility(Visibility::Collapsed);
+        GetInstance().SetVisibility(Visibility::Collapsed);
     }
 }
