@@ -1,9 +1,4 @@
 {
-    "name": "xmakefile",
-    "version": "1.0.0",
-    "description": "A simple xmakefile for building a C++ project",
-    "author": "xit",
-    "license": "MIT",
     "configurations": [
         {
             "name": "Debug",
@@ -20,7 +15,6 @@
             "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -Wuninitialized -Wmaybe-uninitialized -Wconversion -Wnull-dereference -Wdouble-promotion -MMD -fPIC -Og",
             "linker_flags": "-lm -lstdc++",
             "defines": [
-                "DEBUG",
                 "USE_AI_SUGGESTED_FIX"
             ],
             "include_paths": [
@@ -89,9 +83,12 @@
             "archiver": "ar",
             "archiver_flags": "rcs",
             "c_flags": "-std=c++23 -Wall -Wextra -pedantic -fPIC",
-            "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -Wuninitialized -Wmaybe-uninitialized -Wshadow -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -MMD -fPIC -O0",
+            "cxx_flags": "-g -std=c++23 -Wall -pedantic -ffunction-sections -fdata-sections -Wuninitialized -Wmaybe-uninitialized -Wconversion -Wnull-dereference -Wdouble-promotion -MMD -fPIC -Og",
             "linker_flags": "-lm -lstdc++",
-            "defines": [],
+            "defines": [
+                "DEBUG",
+                "USE_AI_SUGGESTED_FIX"
+            ],
             "include_paths": [
                 "include",
                 "lib/ArduinoJson/src",
@@ -115,7 +112,16 @@
             "exclude_paths": [],
             "exclude_files": [],
             "library_paths": [],
-            "libraries": [],
+            "libraries": [
+                "glfw",
+                "../xit.Application/.bin/Release/libxit.Application.so",
+                "../xit.Threading/.bin/Release/libxit.Threading.so",
+                "../xit.Timers/.bin/Release/libxit.Timers.so",
+                "../xit.Input/.bin/Release/libxit.Input.so",
+                "../xit.IO/.bin/Release/libxit.IO.so",
+                "../xit.Clipboard/.bin/Release/libxit.Clipboard.so",
+                "../xit/.bin/Release/libxit.so"
+            ],
             "pre_build_commands": [],
             "post_build_commands": [],
             "pre_run_commands": [
@@ -137,5 +143,6 @@
                 "rm -rf ${build_dir}"
             ]
         }
+
     ]
 }
