@@ -354,8 +354,8 @@ namespace xit::Drawing::VisualBase
             return 0; // Or some default value
         }
 
-        // TODO needWidthRecalculation still does not work correctly for ToolTip and MainMenuButtons.
-        // if (needWidthRecalculation)
+        // TODO needWidthRecalculation still does not work correctly for MainMenuButtons.
+        if (needWidthRecalculation)
         {
             if (this->GetWidth() > -1)
             {
@@ -365,7 +365,6 @@ namespace xit::Drawing::VisualBase
             }
             else if ((GetMinWidth() != -1) && (availableSize < GetMinWidth()))
             {
-                // TODO is this correct to use min width? What about child elements?
                 newSize = GetMinWidth();
             }
             else
@@ -404,13 +403,12 @@ namespace xit::Drawing::VisualBase
             }
 
             desiredSize.SetWidth(newSize);
-            // Don't set actualWidth here - it should be set in OnUpdate after bounds are finalized
             needWidthRecalculation = false;
         }
-        // else
-        // {
-        //     newSize = actualWidth;
-        // }
+        else
+        {
+            newSize = desiredSize.GetWidth();
+        }
 
         return newSize;
     }
@@ -433,7 +431,7 @@ namespace xit::Drawing::VisualBase
         }
 
         // TODO needHeightRecalculation still does not work correctly for ToolTip and MainMenuButtons.
-        // if (needHeightRecalculation)
+        if (needHeightRecalculation)
         {
             if (this->GetHeight() > -1)
             {
@@ -443,7 +441,6 @@ namespace xit::Drawing::VisualBase
             }
             else if ((GetMinHeight() != -1) && (availableSize < GetMinHeight()))
             {
-                // TODO is this correct to use min height? What about child elements?
                 newSize = GetMinHeight();
             }
             else
@@ -480,13 +477,12 @@ namespace xit::Drawing::VisualBase
             }
 
             desiredSize.SetHeight(newSize);
-            // Remove premature actualHeight assignment - it should be set in OnUpdate
             needHeightRecalculation = false;
         }
-        // else
-        // {
-        //     newSize = actualHeight;
-        // }
+        else
+        {
+            newSize = desiredSize.GetHeight();
+        }
 
         return newSize;
     }
