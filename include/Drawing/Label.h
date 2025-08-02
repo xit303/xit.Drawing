@@ -40,7 +40,7 @@ namespace xit::Drawing
         virtual int OnMeasureHeight(int available) override;
 
         // void OnUpdate(const Rectangle &bounds) override;
-        virtual void OnLayoutCompleted(const Rectangle &bounds) override;
+        virtual void OnLayoutChanged(const Rectangle &bounds) override;
         virtual void OnRender() override;
 
     public:

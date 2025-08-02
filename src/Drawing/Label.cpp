@@ -82,26 +82,23 @@ namespace xit::Drawing
         return textSize.GetHeight();
     }
 
-    void Label::OnLayoutCompleted(const Rectangle &bounds)
+    void Label::OnLayoutChanged(const Rectangle &bounds)
     {
-        Visual::OnLayoutCompleted(bounds);
-
-        if (GetNeedLeftRecalculation() || GetNeedTopRecalculation())
-        {
-#ifdef DEBUG_LABEL
-            int oldTextTop = textTop;
-#endif
-            // Update textTop based on the current layout and scene height
-            // This ensures the text is positioned correctly within the label
-            textTop = Scene2D::CurrentScene().GetHeight() - GetTop() - textSize.GetHeight();
+        Visual::OnLayoutChanged(bounds);
 
 #ifdef DEBUG_LABEL
-            std::cout << "[DEBUG] Label::OnLayoutCompleted '" << GetName() << "': bounds=" << bounds.GetLeft() << "," << bounds.GetTop() << "," << bounds.GetWidth() << "x" << bounds.GetHeight()
-                      << ", GetTop()=" << GetTop() << ", textSize.height=" << textSize.GetHeight()
-                      << ", Scene height=" << Scene2D::CurrentScene().GetHeight()
-                      << ", textTop changed from " << oldTextTop << " to " << textTop << std::endl;
+        int oldTextTop = textTop;
 #endif
-        }
+        // Update textTop based on the current layout and scene height
+        // This ensures the text is positioned correctly within the label
+        textTop = Scene2D::CurrentScene().GetHeight() - GetTop() - textSize.GetHeight();
+
+#ifdef DEBUG_LABEL
+        std::cout << "[DEBUG] Label::OnLayoutChanged '" << GetName() << "': bounds=" << bounds.GetLeft() << "," << bounds.GetTop() << "," << bounds.GetWidth() << "x" << bounds.GetHeight()
+                  << ", GetTop()=" << GetTop() << ", textSize.height=" << textSize.GetHeight()
+                  << ", Scene height=" << Scene2D::CurrentScene().GetHeight()
+                  << ", textTop changed from " << oldTextTop << " to " << textTop << std::endl;
+#endif
     }
 
     void Label::OnRender()
@@ -151,7 +148,7 @@ namespace xit::Drawing
         {
 #ifdef DEBUG_FONT_PERFORMANCE
             auto start = std::chrono::high_resolution_clock::now();
-            std::cout << "Label::MeasureText - Starting measurement for '" << GetName() 
+            std::cout << "Label::MeasureText - Starting measurement for '" << GetName()
                       << "' text='" << GetText() << "'" << std::endl;
 #endif
 
@@ -171,7 +168,7 @@ namespace xit::Drawing
 #ifdef DEBUG_FONT_PERFORMANCE
             auto end = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            std::cout << "Label::MeasureText - '" << GetName() << "' completed in " << duration.count() 
+            std::cout << "Label::MeasureText - '" << GetName() << "' completed in " << duration.count()
                       << "μs, result: " << textSize.GetWidth() << "x" << textSize.GetHeight() << std::endl;
 #endif
 
@@ -194,7 +191,7 @@ namespace xit::Drawing
     {
 #ifdef DEBUG_FONT_PERFORMANCE
         auto start = std::chrono::high_resolution_clock::now();
-        std::cout << "Label::MeasureText(static) - FontStorage::FindOrCreate('" << fontName 
+        std::cout << "Label::MeasureText(static) - FontStorage::FindOrCreate('" << fontName
                   << "', " << fontSize << ") for text '" << text << "'" << std::endl;
 #endif
 
@@ -203,7 +200,7 @@ namespace xit::Drawing
 #ifdef DEBUG_FONT_PERFORMANCE
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-        std::cout << "Label::MeasureText(static) - FontStorage operation completed in " << duration.count() 
+        std::cout << "Label::MeasureText(static) - FontStorage operation completed in " << duration.count()
                   << "μs, result: " << target.GetWidth() << "x" << target.GetHeight() << std::endl;
 #endif
     }
