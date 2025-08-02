@@ -77,12 +77,22 @@ namespace xit::Drawing::VisualBase
 
         virtual void OnUpdate(const Rectangle &bounds);
 
-        // Core layout calculation method - performs the actual layout work
-        virtual void PerformLayout(const Rectangle &bounds);
+        /*!
+         * @brief Core layout calculation method - performs the actual layout work.
+         *        This method is responsible for calculating the position and size of the visual element
+         *        based on its properties and the provided bounds.
+         *        It handles recalculating dimensions, positions, and client bounds
+         *        while respecting the layout flags and invalidation state.
+         *
+         * @param bounds The bounds within which the visual element should be laid out.
+         *
+         * @return True if the layout has changed, false if it was skipped (e.g., due to visibility being collapsed).
+         */
+        virtual bool PerformLayout(const Rectangle &bounds);
 
         // Called after layout is complete but before flags are reset
         // Override this for additional calculations that need the recalculation flags
-        virtual void OnLayoutCompleted(const Rectangle &bounds);
+        virtual void OnLayoutChanged(const Rectangle &bounds);
 
         // Parent notification methods for background buffer support
         virtual void NotifyWindowOfInvalidation();

@@ -490,17 +490,18 @@ namespace xit::Drawing::VisualBase
     void LayoutManager::OnUpdate(const Rectangle &bounds)
     {
         // Perform the core layout calculations
-        PerformLayout(bounds);
-
-        // Allow derived classes to do additional work while flags are still available
-        OnLayoutCompleted(bounds);
+        if (PerformLayout(bounds))
+        {
+            // Allow derived classes to do additional work while flags are still available
+            OnLayoutChanged(bounds);
+        }
 
         // Reset invalidated flag after successful update - this must be done here
         // so the Update() function can use it in its return value
         invalidated = false;
     }
 
-    void LayoutManager::PerformLayout(const Rectangle &bounds)
+    bool LayoutManager::PerformLayout(const Rectangle &bounds)
     {
         static thread_local bool isUpdating = false; // Make thread-local to avoid conflicts
         if (isUpdating)
@@ -508,7 +509,7 @@ namespace xit::Drawing::VisualBase
 #ifdef DEBUG_LAYOUT_MANAGER
             std::cout << "WARNING: Recursive update prevented for: " << GetName() << std::endl;
 #endif
-            return; // Prevent recursive updates
+            return false; // Prevent recursive updates
         }
 
         isUpdating = true;
@@ -517,12 +518,14 @@ namespace xit::Drawing::VisualBase
         struct UpdateGuard
         {
             bool &flag;
-            UpdateGuard(bool &f) : flag(f) { flag = true; }
+            explicit UpdateGuard(bool &f) : flag(f) { flag = true; }
             ~UpdateGuard() { flag = false; }
         } guard(isUpdating);
 
         /*if (cancelInvalidate)
             return;*/
+
+        bool layoutChanged = false;
 
         // store for later update of buffers
         bool updateLocation = needLeftRecalculation || needTopRecalculation || GetIsAbsolutePosition() || invalidated;
@@ -538,35 +541,31 @@ namespace xit::Drawing::VisualBase
             bool contentSizeChanged = (oldDesiredSize.GetWidth() != desiredSize.GetWidth() ||
                                        oldDesiredSize.GetHeight() != desiredSize.GetHeight());
 
-            // Recalculate actual dimensions if layout flags are set OR if content size changed
-            if (needWidthRecalculation || needHeightRecalculation || contentSizeChanged)
-            {
-                // Calculate actualWidth
-                if (GetWidth() > -1)
-                    actualWidth = GetWidth(); // Use explicitly set width
-                else if (desiredSize.GetWidth() <= bounds.GetWidth())
-                    actualWidth = desiredSize.GetWidth(); // Use desired size if it fits
-                else if (GetMinWidth() > 0 && GetMinWidth() <= bounds.GetWidth())
-                    actualWidth = GetMinWidth(); // Use minimum width if it fits
-                else
-                    actualWidth = std::max(0, bounds.GetWidth()); // Use available width as fallback
+            // Calculate actualWidth
+            if (GetWidth() > -1)
+                actualWidth = GetWidth(); // Use explicitly set width
+            else if (desiredSize.GetWidth() <= bounds.GetWidth())
+                actualWidth = desiredSize.GetWidth(); // Use desired size if it fits
+            else if (GetMinWidth() > 0 && GetMinWidth() <= bounds.GetWidth())
+                actualWidth = GetMinWidth(); // Use minimum width if it fits
+            else
+                actualWidth = std::max(0, bounds.GetWidth()); // Use available width as fallback
 
-                // Calculate actualHeight
-                if (GetHeight() > -1)
-                    actualHeight = GetHeight(); // Use explicitly set height
-                else if (desiredSize.GetHeight() <= bounds.GetHeight())
-                    actualHeight = desiredSize.GetHeight(); // Use desired size if it fits
-                else if (GetMinHeight() > 0 && GetMinHeight() <= bounds.GetHeight())
-                    actualHeight = GetMinHeight(); // Use minimum height if it fits
-                else
-                    actualHeight = std::max(0, bounds.GetHeight()); // Use available height as fallback
+            // Calculate actualHeight
+            if (GetHeight() > -1)
+                actualHeight = GetHeight(); // Use explicitly set height
+            else if (desiredSize.GetHeight() <= bounds.GetHeight())
+                actualHeight = desiredSize.GetHeight(); // Use desired size if it fits
+            else if (GetMinHeight() > 0 && GetMinHeight() <= bounds.GetHeight())
+                actualHeight = GetMinHeight(); // Use minimum height if it fits
+            else
+                actualHeight = std::max(0, bounds.GetHeight()); // Use available height as fallback
 
-                // If content size changed, we may need to update location too
-                if (contentSizeChanged)
-                    updateLocation = true;
-            }
-            // If only visual invalidated without content size change, keep existing actualWidth/actualHeight
-            // but still call Measure() to update content (like text rendering)
+            layoutChanged = true; // Layout changed due to size recalculation
+
+            // If content size changed, we may need to update location too
+            if (contentSizeChanged)
+                updateLocation = true;
         }
 
         if (!GetIsAbsolutePosition() && needLeftRecalculation)
@@ -584,6 +583,7 @@ namespace xit::Drawing::VisualBase
                 SetLeft(bounds.GetRight() - actualWidth - GetMargin().GetRight());
             }
 
+            layoutChanged = true;          // Position changed, so layout is affected
             needLeftRecalculation = false; // Reset after setting position
         }
 
@@ -602,6 +602,7 @@ namespace xit::Drawing::VisualBase
                 SetTop(bounds.GetBottom() - actualHeight - GetMargin().GetBottom());
             }
 
+            layoutChanged = true;         // Position changed, so layout is affected
             needTopRecalculation = false; // Reset after setting position
         }
 
@@ -629,12 +630,13 @@ namespace xit::Drawing::VisualBase
                   << " from GetLeft()=" << GetLeft() << " GetTop()=" << GetTop()
                   << " actualWidth=" << actualWidth << " actualHeight=" << actualHeight << std::endl;
 #endif
+
+        return layoutChanged;
     }
 
-    void LayoutManager::OnLayoutCompleted(const Rectangle &bounds)
+    void LayoutManager::OnLayoutChanged(const Rectangle &bounds)
     {
         // Base implementation does nothing
         // Derived classes can override this to perform additional calculations
-        // while recalculation flags are still available
     }
 }
