@@ -553,8 +553,8 @@ namespace xit::Drawing
         layoutVisualState->SetVerticalAlignment(VerticalAlignment::Top);
         layoutVisualState->SetHorizontalContentAlignment(HorizontalAlignment::Left);
         layoutVisualState->SetVerticalContentAlignment(VerticalAlignment::Top);
-        layoutVisualState->SetPadding(UIDefaults::ContainerPadding);
-        layoutVisualState->SetCornerRadius(UIDefaults::BigCornerRadius);
+        layoutVisualState->SetPadding(UIDefaults::SmallContainerPaddingTop);
+        layoutVisualState->SetCornerRadius(UIDefaults::CornerRadius);
         layoutVisualState->SetBorderThickness(UIDefaults::DefaultBorderThickness);
 
         Default.AddLayoutVisualStateGroup(toolTipGroup.release());
