@@ -12,7 +12,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "xmake silent",
+            "preLaunchTask": "xmake test",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
