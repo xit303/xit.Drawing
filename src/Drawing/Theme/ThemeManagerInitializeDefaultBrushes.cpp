@@ -87,6 +87,14 @@ namespace xit::Drawing
 
         //******************************************************************************
 
+        auto labelGroup = CreateBrushGroup("Label");
+        CreateBrushState(labelGroup.get(), "Normal", BrushPool::GetSolidColorBrush(0x00000000), normalForegroundBrush, BrushPool::GetSolidColorBrush(0x00000000));
+        Default.GetBrushVisualStateGroups().push_back(labelGroup.release());
+
+        //******************************************************************************
+
+        //******************************************************************************
+
         auto buttonGroup = CreateBrushGroup("Button");
 
         CreateBrushState(buttonGroup.get(), "Disabled", disabledBackgroundBrush, disabledForegroundBrush, disabledBorderBrush);

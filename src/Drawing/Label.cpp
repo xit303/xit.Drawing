@@ -15,6 +15,7 @@ namespace xit::Drawing
     Label::Label(int column, int row, int columnSpan, int rowSpan)
         : textTop(0)
     {
+        SetBrushGroup("Label");
         SetInheritForeground(true);
         SetClipToBounds(false);
         SetName("Label");
@@ -68,6 +69,11 @@ namespace xit::Drawing
                     ? solidColorBrush->GetColor()
                     : vec4(1, 0, 0, 1);
         color.a = solidColorBrush ? static_cast<float>(solidColorBrush->GetOpacity()) : 1.0f;
+
+#ifdef DEBUG_LABEL
+        std::cout << "[DEBUG] Label::OnForegroundChanged '" << GetName() << "': color set to ("
+                  << color.r << "," << color.g << "," << color.b << "," << color.a << ")" << std::endl;
+#endif
     }
 
     int Label::OnMeasureWidth(int available)
@@ -112,6 +118,14 @@ namespace xit::Drawing
 
         if (!text.empty())
         {
+            if (color == vec4(0, 0, 0, 0) && GetInheritForeground())
+            {
+                // #ifdef DEBUG_LABEL
+                std::cout << "[DEBUG] Label::OnRender: Label '" << GetName() << "' using inherited foreground color from parent but it is transparent (0,0,0,0), not rendering text." << std::endl;
+                // #endif
+                return;
+            }
+
 #ifdef DEBUG_LABEL
             std::cout << "[DEBUG] Calling TextRenderer::RenderText()" << std::endl;
 #endif
