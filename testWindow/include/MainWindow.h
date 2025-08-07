@@ -10,10 +10,9 @@ namespace PassMaga
     class MainWindow : public MainWindowBase
     {
     private:
-        // TextBox *textBox1;
-        // TextBox *textBox2;
-        // Label *label1;
-
+        TextBox *textBox1;
+        TextBox *textBox2;
+        Label *label1;
         Button *button1;
 
         Container *container;
