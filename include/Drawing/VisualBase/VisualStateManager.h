@@ -23,11 +23,25 @@ namespace xit::Drawing::VisualBase
             {
                 visualState = value;
                 UpdateBrushVisualState();
-                UpdateLayoutVisualState();
+
+                // Only update layout if there are actual layout changes defined for this state
+                if (ShouldUpdateLayoutForState(value))
+                {
+                    UpdateLayoutVisualState();
+                }
 
                 EventArgs e;
                 OnVisualStateChanged(e);
             }
+        }
+
+        // Virtual method to determine if layout should be updated for a given state
+        // Derived classes can override this to be more intelligent about when layout updates are needed
+        virtual bool ShouldUpdateLayoutForState(const std::string &state)
+        {
+            // Default behavior: always update layout (maintaining backward compatibility)
+            // Derived classes like Renderable can override this to check if theme has layout for the state
+            return true;
         }
 
         virtual void UpdateBrushVisualState() = 0;

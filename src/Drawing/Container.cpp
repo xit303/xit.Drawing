@@ -1,5 +1,9 @@
 #include <Drawing/Container.h>
 
+#ifdef DEBUG_VISUAL_STATES
+#include <iostream>
+#endif
+
 namespace xit::Drawing
 {
     void Container::OnOrientationChanged(EventArgs &e)
@@ -84,36 +88,52 @@ namespace xit::Drawing
 
     void Container::UpdateState()
     {
-        SetVisualState(GetState());
+        std::string newState = GetState();
+#ifdef DEBUG_VISUAL_STATES
+        std::cout << "[DEBUG] Container::UpdateState() - " << GetName()
+                  << " changing state to: " << newState << std::endl;
+#endif
+        // before we execute the code below we need to check if this BrushVisualStateGroup has the requested state in the list
+        // If not we return the current state
+        if (!HasVisualState(newState))
+        {
+#ifdef DEBUG_VISUAL_STATES
+            std::cout << "[DEBUG] Container::UpdateState() - " << GetName()
+                      << " requested state not found, using current state: " << GetVisualState() << std::endl;
+#endif
+            newState = GetVisualState();
+        }
+
+        SetVisualState(newState);
     }
 
     std::string Container::GetState()
     {
         if (!GetEnabled())
             return "Disabled";
-    
+
         if (GetIsError())
             return "Error";
-    
+
         if (IsInputPressed && GetCanDeactivate())
             return "Pressed";
-    
+
         if (GetIsFocused())
             return "Focused";
-    
+
         if (GetIsHighlighted())
             return "Highlight";
-    
+
         if (GetIsMouseOver())
         {
             if (GetIsActive())
                 return "ActiveHovered";
             return "Hovered";
         }
-    
+
         if (GetIsActive())
             return "Active";
-    
+
         return "Normal";
     }
 

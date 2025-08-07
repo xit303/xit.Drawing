@@ -3,6 +3,9 @@
 #include <chrono>
 #include <iostream>
 #endif
+#ifdef DEBUG_VISUAL_STATES
+#include <iostream>
+#endif
 
 namespace xit::Drawing::VisualBase
 {
@@ -232,38 +235,21 @@ namespace xit::Drawing::VisualBase
 
     void Renderable::UpdateBrushVisualState()
     {
-        BrushVisualState *value = nullptr;
-        if (brushVisualStateGroup != nullptr && !isBrushGroupChanging)
-        {
-            if ((value = brushVisualStateGroup->GetVisualState(visualState)))
-            {
-                OnUpdateBrushes(value);
-                currentBrushVisualState = value;
-            }
-            else if (currentBrushVisualState)
-            {
-                visualState = currentBrushVisualState->GetName();
-            }
+#ifdef DEBUG_VISUAL_STATES
+        std::cout << "[DEBUG] UpdateBrushVisualState() - " << GetName() 
+                  << " state: " << GetVisualState() << std::endl;
+#endif
+        
+        // Always update brush visual state
+        BrushVisualStateGroup *brushGroup = brushVisualStateGroup;
+        if (!brushGroup) {
+            brushGroup = ThemeManager::Default.GetBrushVisualStateGroup(GetBrushGroup());
         }
-        else
-        {
-            BrushVisualStateGroup *visualStateGroup = ThemeManager::Default.GetBrushVisualStateGroup(GetBrushGroup());
-            if (visualStateGroup)
-            {
-                if ((value = visualStateGroup->GetVisualState(visualState)))
-                {
-                    OnUpdateBrushes(value);
-                    currentBrushVisualState = value;
-                    return;
-                }
-                else if (currentBrushVisualState)
-                {
-                    visualState = currentBrushVisualState->GetName();
-                    return;
-                }
+        if (brushGroup) {
+            BrushVisualState *brushState = brushGroup->GetVisualState(GetVisualState());
+            if (brushState) {
+                OnUpdateBrushes(brushState);
             }
-            OnUpdateBrushes(nullptr);
-            return;
         }
     }
 
@@ -309,6 +295,11 @@ namespace xit::Drawing::VisualBase
 
     void Renderable::UpdateLayoutVisualState()
     {
+#ifdef DEBUG_VISUAL_STATES
+        std::cout << "[DEBUG] UpdateLayoutVisualState() - " << GetName() 
+                  << " state: " << GetVisualState() << std::endl;
+#endif
+        
         LayoutVisualState *value = nullptr;
         if (layoutVisualStateGroup != nullptr && !isLayoutGroupChanging)
         {
@@ -343,6 +334,31 @@ namespace xit::Drawing::VisualBase
             }
             OnUpdateLayout(nullptr);
         }
+    }
+
+    bool Renderable::ShouldUpdateLayoutForState(const std::string &state)
+    {
+        // Check if we have a layout visual state group that contains this state
+        LayoutVisualStateGroup *visualStateGroup = layoutVisualStateGroup;
+        if (!visualStateGroup) {
+            visualStateGroup = ThemeManager::Default.GetLayoutVisualStateGroup(GetLayoutGroup());
+        }
+        
+        if (visualStateGroup) {
+            LayoutVisualState *layoutState = visualStateGroup->GetVisualState(state);
+            bool hasLayoutForState = (layoutState != nullptr);
+#ifdef DEBUG_VISUAL_STATES
+            std::cout << "[DEBUG] ShouldUpdateLayoutForState() - " << GetName() 
+                      << " state '" << state << "': " << (hasLayoutForState ? "YES" : "NO") << std::endl;
+#endif
+            return hasLayoutForState;
+        }
+        
+#ifdef DEBUG_VISUAL_STATES
+        std::cout << "[DEBUG] ShouldUpdateLayoutForState() - " << GetName() 
+                  << " state '" << state << "': NO (no layout group)" << std::endl;
+#endif
+        return false; // No layout group means no layout changes needed
     }
 
     void Renderable::OnVisualStateChanged(EventArgs &e)

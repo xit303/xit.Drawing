@@ -78,5 +78,12 @@ namespace xit::Drawing
                                    { return state->GetName() == name; });
             return it != visualStates.end() ? *it : nullptr;
         }
+
+        bool HasVisualState(const std::string &name) const
+        {
+            return std::any_of(visualStates.begin(), visualStates.end(),
+                               [&name](const T *state)
+                               { return state->GetName() == name; });
+        }
     };
 }

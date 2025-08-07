@@ -1,6 +1,10 @@
 #include <Drawing/Buttons/ButtonBase.h>
 #include <StringHelper.h>
 
+#ifdef DEBUG_VISUAL_STATES
+#include <iostream>
+#endif
+
 namespace xit::Drawing
 {
     //******************************************************************************
@@ -101,6 +105,15 @@ namespace xit::Drawing
     }
     void ButtonBase::OnUpdateLayout(LayoutVisualState *value)
     {
+#ifdef DEBUG_VISUAL_STATES
+        if (value) {
+            std::cout << "[DEBUG] ButtonBase::OnUpdateLayout() - " << GetName() 
+                      << " applying layout state, fontSize: " << value->GetFontSize() << std::endl;
+        } else {
+            std::cout << "[DEBUG] ButtonBase::OnUpdateLayout() - " << GetName() 
+                      << " no layout state value" << std::endl;
+        }
+#endif
         Container::OnUpdateLayout(value);
         if (value)
             SetFontSize(value->GetFontSize());

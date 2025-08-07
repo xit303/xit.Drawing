@@ -2,6 +2,10 @@
 #include <Drawing/ToolTip.h>
 #include <Input/InputHandler.h>
 
+#ifdef DEBUG_INPUT_EVENTS
+#include <iostream>
+#endif
+
 namespace xit::Drawing
 {
     bool InputContent::HandleMouse() { return handleMouse; }
@@ -82,6 +86,9 @@ namespace xit::Drawing
 
     void InputContent::HandleInputEnter(EventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleInputEnter() - " << GetName() << " mouse entered" << std::endl;
+#endif
         toolTipHidden = false;
         isMouseOver = true;
         UpdateState();
@@ -90,6 +97,9 @@ namespace xit::Drawing
     }
     void InputContent::HandleInputLeave(EventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleInputLeave() - " << GetName() << " mouse left" << std::endl;
+#endif
         if (!GetToolTip().empty())
         {
             ToolTip::Hide();

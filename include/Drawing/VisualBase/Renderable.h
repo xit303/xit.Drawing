@@ -64,6 +64,7 @@ namespace xit::Drawing::VisualBase
         virtual void OnLayoutGroupChanged(EventArgs &e) override;
         virtual void OnUpdateLayout(LayoutVisualState *value);
         virtual void UpdateLayoutVisualState() override;
+        virtual bool ShouldUpdateLayoutForState(const std::string &state) override;
 
         virtual void OnVisualStateChanged(EventArgs &e) override;
 
@@ -75,6 +76,51 @@ namespace xit::Drawing::VisualBase
 
         const bool &ClipToBounds = clipToBounds;
         void SetClipToBounds(bool value);
+
+        bool HasVisualState(const std::string &state) const
+        {
+            // Check if the state exists in either brush or layout visual state groups
+            if (brushVisualStateGroup)
+            {
+                if (brushVisualStateGroup->HasVisualState(state))
+                {
+                    return true;
+                }
+            }
+            
+            // Also check layout visual state group
+            if (layoutVisualStateGroup)
+            {
+                if (layoutVisualStateGroup->HasVisualState(state))
+                {
+                    return true;
+                }
+            }
+            
+            // If no local groups, check theme manager for both types
+            if (!brushVisualStateGroup || !layoutVisualStateGroup)
+            {
+                if (!brushVisualStateGroup)
+                {
+                    BrushVisualStateGroup *themeGroup = ThemeManager::Default.GetBrushVisualStateGroup(GetBrushGroup());
+                    if (themeGroup && themeGroup->HasVisualState(state))
+                    {
+                        return true;
+                    }
+                }
+                
+                if (!layoutVisualStateGroup)
+                {
+                    LayoutVisualStateGroup *themeLayoutGroup = ThemeManager::Default.GetLayoutVisualStateGroup(GetLayoutGroup());
+                    if (themeLayoutGroup && themeLayoutGroup->HasVisualState(state))
+                    {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
 
         void Render();
     };
