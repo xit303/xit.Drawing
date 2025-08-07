@@ -2,15 +2,18 @@
 #include <Drawing/TextBox.h>
 #include <Drawing/DebugUtils.h>
 
-class TextBoxTest : public ::testing::Test {
+class TextBoxTest : public ::testing::Test
+{
 protected:
-    void SetUp() override {
+    void SetUp() override
+    {
         // Enable TextBox debugging for all tests
         // xit::Drawing::Debug::LayoutDiagnostics::EnableTextBoxDebuggingOnly();
         textBox = std::make_unique<xit::Drawing::TextBox>();
     }
 
-    void TearDown() override {
+    void TearDown() override
+    {
         // Clean up after tests
         // xit::Drawing::Debug::LayoutDiagnostics::DisableAllDebugging();
         textBox.reset();
@@ -20,7 +23,8 @@ protected:
 };
 
 // Test basic TextBox functionality
-TEST_F(TextBoxTest, BasicTextOperations) {
+TEST_F(TextBoxTest, BasicTextOperations)
+{
     // Test initial state
     EXPECT_FALSE(textBox->GetIsPassword());
     EXPECT_TRUE(textBox->GetText().empty());
@@ -33,7 +37,8 @@ TEST_F(TextBoxTest, BasicTextOperations) {
 }
 
 // Test password mode functionality
-TEST_F(TextBoxTest, PasswordModeBasic) {
+TEST_F(TextBoxTest, PasswordModeBasic)
+{
     // Set some initial text
     textBox->SetText("secret123");
     EXPECT_EQ(textBox->GetText(), "secret123");
@@ -41,21 +46,22 @@ TEST_F(TextBoxTest, PasswordModeBasic) {
     // Enable password mode
     textBox->SetIsPassword(true);
     EXPECT_TRUE(textBox->GetIsPassword());
-    
+
     // Text should now show asterisks
     EXPECT_EQ(textBox->GetText(), "*********");
     EXPECT_EQ(textBox->GetText().length(), 9);
-    
+
     // But internal password should remain the same
     EXPECT_EQ(textBox->GetPassword(), "secret123");
 }
 
 // Test password mode toggle
-TEST_F(TextBoxTest, PasswordModeToggle) {
+TEST_F(TextBoxTest, PasswordModeToggle)
+{
     // Set text and enable password mode
     textBox->SetText("mypassword");
     textBox->SetIsPassword(true);
-    
+
     // Should show asterisks
     EXPECT_EQ(textBox->GetText(), "**********");
     EXPECT_EQ(textBox->GetPassword(), "mypassword");
@@ -63,7 +69,7 @@ TEST_F(TextBoxTest, PasswordModeToggle) {
     // Disable password mode
     textBox->SetIsPassword(false);
     EXPECT_FALSE(textBox->GetIsPassword());
-    
+
     // Should show actual text again
     EXPECT_EQ(textBox->GetText(), "mypassword");
     EXPECT_EQ(textBox->GetPassword(), "mypassword");
@@ -74,24 +80,26 @@ TEST_F(TextBoxTest, PasswordModeToggle) {
 }
 
 // Test setting text while in password mode
-TEST_F(TextBoxTest, SetTextInPasswordMode) {
+TEST_F(TextBoxTest, SetTextInPasswordMode)
+{
     // Enable password mode first
     textBox->SetIsPassword(true);
     EXPECT_TRUE(textBox->GetIsPassword());
 
     // Set text while in password mode
     textBox->SetText("newpassword");
-    
+
     // Should show asterisks
     EXPECT_EQ(textBox->GetText(), "***********");
     EXPECT_EQ(textBox->GetText().length(), 11);
-    
+
     // Internal password should be correct
     EXPECT_EQ(textBox->GetPassword(), "newpassword");
 }
 
 // Test empty text scenarios
-TEST_F(TextBoxTest, EmptyTextScenarios) {
+TEST_F(TextBoxTest, EmptyTextScenarios)
+{
     // Test empty text in normal mode
     textBox->SetText("");
     EXPECT_TRUE(textBox->GetText().empty());
@@ -105,7 +113,7 @@ TEST_F(TextBoxTest, EmptyTextScenarios) {
     // Add some text
     textBox->SetText("test");
     EXPECT_EQ(textBox->GetText(), "****");
-    
+
     // Clear text while in password mode
     textBox->SetText("");
     EXPECT_TRUE(textBox->GetText().empty());
@@ -115,11 +123,12 @@ TEST_F(TextBoxTest, EmptyTextScenarios) {
 }
 
 // Test character insertion in password mode
-TEST_F(TextBoxTest, CharacterInsertionPasswordMode) {
+TEST_F(TextBoxTest, CharacterInsertionPasswordMode)
+{
     // Start fresh - clear any existing text
     textBox->SetText("");
     textBox->SetIsPassword(true);
-    
+
     // Insert characters one by one
     textBox->Insert(0, 'a');
     EXPECT_EQ(textBox->GetText(), "*");
@@ -132,18 +141,15 @@ TEST_F(TextBoxTest, CharacterInsertionPasswordMode) {
     textBox->Insert(2, 'c');
     EXPECT_EQ(textBox->GetText(), "***");
     EXPECT_EQ(textBox->GetPassword(), "abc");
-
-    // Note: Skipping TestPasswordTextBoxInstance here as it modifies TextBox state
-    // which would interfere with our specific insertion tests
-    std::cout << "CharacterInsertionPasswordMode: Successfully tested character insertion in password mode" << std::endl;
 }
 
 // Test string insertion in password mode
-TEST_F(TextBoxTest, StringInsertionPasswordMode) {
+TEST_F(TextBoxTest, StringInsertionPasswordMode)
+{
     // Start fresh - clear any existing text
     textBox->SetText("");
     textBox->SetIsPassword(true);
-    
+
     // Insert a string
     textBox->Insert(0, "hello");
     EXPECT_EQ(textBox->GetText(), "*****");
@@ -153,16 +159,14 @@ TEST_F(TextBoxTest, StringInsertionPasswordMode) {
     textBox->Insert(2, "XYZ");
     EXPECT_EQ(textBox->GetText(), "********");
     EXPECT_EQ(textBox->GetPassword(), "heXYZllo");
-
-    // Note: Skipping TestPasswordTextBoxInstance here as it modifies TextBox state
-    std::cout << "StringInsertionPasswordMode: Successfully tested string insertion in password mode" << std::endl;
 }
 
 // Test character removal in password mode
-TEST_F(TextBoxTest, CharacterRemovalPasswordMode) {
+TEST_F(TextBoxTest, CharacterRemovalPasswordMode)
+{
     textBox->SetText("password123");
     textBox->SetIsPassword(true);
-    
+
     EXPECT_EQ(textBox->GetText(), "***********");
     EXPECT_EQ(textBox->GetPassword(), "password123");
 
@@ -178,28 +182,30 @@ TEST_F(TextBoxTest, CharacterRemovalPasswordMode) {
 }
 
 // Test invalidation after password mode changes
-TEST_F(TextBoxTest, InvalidationAfterPasswordModeChanges) {
+TEST_F(TextBoxTest, InvalidationAfterPasswordModeChanges)
+{
     textBox->SetText("testtext");
-    
+
     // Should be invalidated after setting text
     // Note: We can't directly test GetInvalidated() but we can test the behavior
-    
+
     // Enable password mode - should trigger invalidation
     textBox->SetIsPassword(true);
     EXPECT_EQ(textBox->GetText(), "********");
-    
+
     // Disable password mode - should trigger invalidation
     textBox->SetIsPassword(false);
     EXPECT_EQ(textBox->GetText(), "testtext");
 }
 
 // Test edge cases
-TEST_F(TextBoxTest, EdgeCases) {
+TEST_F(TextBoxTest, EdgeCases)
+{
     // Test very long password
     std::string longPassword(1000, 'x');
     textBox->SetIsPassword(true);
     textBox->SetText(longPassword);
-    
+
     std::string expectedAsterisks(1000, '*');
     EXPECT_EQ(textBox->GetText(), expectedAsterisks);
     EXPECT_EQ(textBox->GetPassword(), longPassword);
@@ -216,58 +222,61 @@ TEST_F(TextBoxTest, EdgeCases) {
 }
 
 // Test password character constant
-TEST_F(TextBoxTest, PasswordCharacterConstant) {
+TEST_F(TextBoxTest, PasswordCharacterConstant)
+{
     // Test that the password character is correctly defined
     EXPECT_EQ(xit::Drawing::TextBox::PasswordCharacter, '*');
-    
+
     // Test that it's used correctly
     textBox->SetIsPassword(true);
     textBox->SetText("test");
-    
+
     // Should be 4 asterisks
     std::string expected(4, xit::Drawing::TextBox::PasswordCharacter);
     EXPECT_EQ(textBox->GetText(), expected);
 }
 
 // Comprehensive test with debug diagnostics
-TEST_F(TextBoxTest, ComprehensivePasswordTest) {
-    std::cout << "\n=== COMPREHENSIVE PASSWORD TEXTBOX TEST ===" << std::endl;
-    
+TEST_F(TextBoxTest, ComprehensivePasswordTest)
+{
+    // std::cout << "\n=== COMPREHENSIVE PASSWORD TEXTBOX TEST ===" << std::endl;
+
     // Test the complete workflow that was originally failing
-    
+
     // 1. Initial state
-    std::cout << "1. Testing initial state..." << std::endl;
+    // std::cout << "1. Testing initial state..." << std::endl;
     EXPECT_FALSE(textBox->GetIsPassword());
     EXPECT_TRUE(textBox->GetText().empty());
-    
+
     // 2. Set text
-    std::cout << "2. Setting text to 'test123'..." << std::endl;
+    // std::cout << "2. Setting text to 'test123'..." << std::endl;
     textBox->SetText("test123");
     EXPECT_EQ(textBox->GetText(), "test123");
-    
+
     // 3. Enable password mode
-    std::cout << "3. Enabling password mode..." << std::endl;
+    // std::cout << "3. Enabling password mode..." << std::endl;
     textBox->SetIsPassword(true);
     EXPECT_TRUE(textBox->GetIsPassword());
     EXPECT_EQ(textBox->GetText(), "*******");
     EXPECT_EQ(textBox->GetPassword(), "test123");
-    
+
     // 4. Disable password mode
-    std::cout << "4. Disabling password mode..." << std::endl;
+    // std::cout << "4. Disabling password mode..." << std::endl;
     textBox->SetIsPassword(false);
     EXPECT_FALSE(textBox->GetIsPassword());
     EXPECT_EQ(textBox->GetText(), "test123");
     EXPECT_EQ(textBox->GetPassword(), "test123");
-    
+
     // 5. Test multiple toggles
-    std::cout << "5. Testing multiple toggles..." << std::endl;
-    for (int i = 0; i < 3; i++) {
+    // std::cout << "5. Testing multiple toggles..." << std::endl;
+    for (int i = 0; i < 3; i++)
+    {
         textBox->SetIsPassword(true);
         EXPECT_EQ(textBox->GetText(), "*******");
-        
+
         textBox->SetIsPassword(false);
         EXPECT_EQ(textBox->GetText(), "test123");
     }
-    
-    std::cout << "=== COMPREHENSIVE TEST COMPLETE ===" << std::endl;
+
+    // std::cout << "=== COMPREHENSIVE TEST COMPLETE ===" << std::endl;
 }
