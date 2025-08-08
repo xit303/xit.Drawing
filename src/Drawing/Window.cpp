@@ -342,14 +342,58 @@ namespace xit::Drawing
                   << bounds.GetLeft() << "," << bounds.GetTop()
                   << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
 #endif
+#ifdef DEBUG_VISUAL_STATES
+        std::cout << "[DEBUG] Window::InvalidateRegion() - Visual '"
+                  << (visual ? visual->GetName() : "null") << "' bounds("
+                  << bounds.GetLeft() << "," << bounds.GetTop()
+                  << "," << bounds.GetWidth() << "," << bounds.GetHeight() << ")" << std::endl;
+#endif
+
+        bool shouldScheduleRedraw = false;
         {
             std::lock_guard<std::mutex> lock(invalidRegionsMutex);
-            invalidRegions.push_back({visual, bounds});
+
+            // Check if we already have an invalidation for this visual
+            bool foundExisting = false;
+            for (auto &region : invalidRegions)
+            {
+                if (region.first == visual)
+                {
+                    // Update existing region to union of old and new bounds
+                    Rectangle oldBounds = region.second;
+                    int left = std::min(oldBounds.GetLeft(), bounds.GetLeft());
+                    int top = std::min(oldBounds.GetTop(), bounds.GetTop());
+                    int right = std::max(oldBounds.GetRight(), bounds.GetRight());
+                    int bottom = std::max(oldBounds.GetBottom(), bounds.GetBottom());
+                    region.second = Rectangle(left, top, right - left, bottom - top);
+                    foundExisting = true;
+#ifdef DEBUG_VISUAL_STATES
+                    std::cout << "[DEBUG] Window::InvalidateRegion() - Merged with existing region for "
+                              << (visual ? visual->GetName() : "null") << std::endl;
+#endif
+                    break;
+                }
+            }
+
+            if (!foundExisting)
+            {
+                invalidRegions.push_back({visual, bounds});
+                shouldScheduleRedraw = (invalidRegions.size() == 1); // Only schedule if this is the first region
+            }
+
 #ifdef DEBUG_WINDOW2
             std::cout << "InvalidateRegion: Total invalid regions now: " << invalidRegions.size() << std::endl;
 #endif
+#ifdef DEBUG_VISUAL_STATES
+            std::cout << "[DEBUG] Window::InvalidateRegion() - Total regions now: " << invalidRegions.size() << std::endl;
+#endif
         }
-        ScheduleRedraw();
+
+        // Only schedule redraw if we added the first region or if no redraw is currently scheduled
+        if (shouldScheduleRedraw || !redrawScheduled.load())
+        {
+            ScheduleRedraw();
+        }
     }
 
     Window::Window()
