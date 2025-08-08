@@ -119,6 +119,10 @@ namespace xit::Drawing
 
     void InputContent::HandleInputPressed(MouseEventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleInputPressed() - " << GetName() << " mouse pressed" << std::endl;
+#endif
+
         if (!GetToolTip().empty())
         {
             toolTipHidden = true;
@@ -132,6 +136,10 @@ namespace xit::Drawing
     }
     void InputContent::HandleInputReleased(MouseEventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleInputReleased() - " << GetName() << " mouse released" << std::endl;
+#endif
+
         isInputPressed = false;
         InputReleased(*this, e);
         OnInputReleased(e);
@@ -149,11 +157,20 @@ namespace xit::Drawing
 
     void InputContent::HandleInputScroll(MouseEventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleInputScroll() - " << GetName() << " mouse scrolled" << std::endl;
+#endif
+
         InputScroll(*this, e);
         OnInputScroll(e);
     }
     void InputContent::HandleInputMove(MouseEventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS_MOVE
+        std::cout << "[DEBUG] InputContent::HandleInputMove() - " << GetName() << " mouse moved to (" 
+                  << e.Position.X << ", " << e.Position.Y << ")" << std::endl;
+#endif
+
         InputMove(*this, e);
         OnInputMove(e);
 
@@ -165,6 +182,11 @@ namespace xit::Drawing
 
     void InputContent::HandleKeyDown(KeyEventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleKeyDown() - " << GetName() << " key down: " 
+                  << std::to_string((int)e.Key) << " (" << e.KeyChar << ")" << std::endl;
+#endif
+
         if (!e.Handled)
         {
             KeyDown(*this, e);
@@ -173,6 +195,11 @@ namespace xit::Drawing
     }
     void InputContent::HandleKeyUp(KeyEventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleKeyUp() - " << GetName() << " key up: " 
+                  << std::to_string((int)e.Key) << " (" << e.KeyChar << ")" << std::endl;
+#endif
+
         if (!e.Handled)
         {
             KeyUp(*this, e);
@@ -182,12 +209,20 @@ namespace xit::Drawing
 
     void InputContent::HandleGotKeyboardFocus(EventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleGotKeyboardFocus() - " << GetName() << " got keyboard focus" << std::endl;
+#endif
+
         SetIsFocused(true);
         UpdateState();
         OnGotKeyboardFocus(e);
     }
     void InputContent::HandleLostKeyboardFocus(EventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleLostKeyboardFocus() - " << GetName() << " lost keyboard focus" << std::endl;
+#endif
+
         SetIsFocused(false);
         UpdateState();
         OnLostKeyboardFocus(e);
@@ -195,6 +230,10 @@ namespace xit::Drawing
 
     void InputContent::HandleClick(EventArgs &e)
     {
+#ifdef DEBUG_INPUT_EVENTS
+        std::cout << "[DEBUG] InputContent::HandleClick() - " << GetName() << " clicked" << std::endl;
+#endif
+
         if (GetCanFocus())
         {
             Focus();
