@@ -31,10 +31,10 @@ namespace xit::Drawing::VisualBase
             invalidated = true;
 
 #ifdef DEBUG_LAYOUT_MANAGER
-            std::cout << "Invalidating: " << GetName() << " (Type: " << typeid(*this).name() << ")" << std::endl;
+            std::cout << "[DEBUG] LayoutManager::Invalidate - " << GetName() << " (Type: " << typeid(*this).name() << ")" << std::endl;
 #endif
 #ifdef DEBUG_VISUAL_STATES
-            std::cout << "[DEBUG] LayoutManager::Invalidate() - " << GetName() << " setting invalidated=true" << std::endl;
+            std::cout << "[DEBUG] LayoutManager::Invalidate - " << GetName() << " setting invalidated=true" << std::endl;
 #endif
 
             EventArgs e;
@@ -44,10 +44,10 @@ namespace xit::Drawing::VisualBase
         else
         {
 #ifdef DEBUG_LAYOUT_MANAGER
-            std::cout << "Skipping invalidation for collapsed visual: " << GetName() << std::endl;
+            std::cout << "[DEBUG] LayoutManager::Invalidate - Skipping invalidation for collapsed visual: " << GetName() << std::endl;
 #endif
 #ifdef DEBUG_VISUAL_STATES
-            std::cout << "[DEBUG] LayoutManager::Invalidate() - " << GetName() << " SKIPPING (collapsed)" << std::endl;
+            std::cout << "[DEBUG] LayoutManager::Invalidate - " << GetName() << " SKIPPING (collapsed)" << std::endl;
 #endif
         }
     }
@@ -87,7 +87,7 @@ namespace xit::Drawing::VisualBase
 #ifdef DEBUG_LAYOUT_MANAGER
             if (boundsChanged || invalidated)
             {
-                std::cout << "LayoutManager::UpdateLayout - " << GetName() << " boundsChanged="
+                std::cout << "[DEBUG] LayoutManager::UpdateLayout - " << GetName() << " boundsChanged="
                           << boundsChanged << " invalidated=" << invalidated
                           << " layoutRecalc=" << (needWidthRecalculation || needHeightRecalculation || needLeftRecalculation || needTopRecalculation) << std::endl;
             }
@@ -99,7 +99,7 @@ namespace xit::Drawing::VisualBase
             if (needRedraw)
             {
 #ifdef DEBUG_LAYOUT_MANAGER
-                std::cout << "Updating layout for: " << GetName()
+                std::cout << "[DEBUG] LayoutManager::UpdateLayout - Updating layout for: " << GetName()
                           << " invalidated=" << invalidated
                           << " needLeft=" << needLeftRecalculation
                           << " needTop=" << needTopRecalculation
@@ -112,7 +112,7 @@ namespace xit::Drawing::VisualBase
 #ifdef DEBUG_LAYOUT_MANAGER
             else
             {
-                std::cout << "NOT updating layout for: " << GetName()
+                std::cout << "[DEBUG] LayoutManager::UpdateLayout - NOT updating layout for: " << GetName()
                           << " (needRedraw=false) invalidated=" << invalidated
                           << " needLeft=" << needLeftRecalculation
                           << " needTop=" << needTopRecalculation
@@ -125,11 +125,11 @@ namespace xit::Drawing::VisualBase
         {
             needRedraw = false;
 #ifdef DEBUG_LAYOUT_MANAGER
-            std::cout << "NOT updating layout for: " << GetName() << " (collapsed)" << std::endl;
+            std::cout << "[DEBUG] LayoutManager::UpdateLayout - NOT updating layout for: " << GetName() << " (collapsed)" << std::endl;
 #endif
         }
 #ifdef DEBUG_LAYOUT_MANAGER
-        std::cout << "UpdateLayout returning: " << (needRedraw || wasInvalidated)
+        std::cout << "[DEBUG] LayoutManager::UpdateLayout - returning: " << (needRedraw || wasInvalidated)
                   << " for " << GetName()
                   << " (needRedraw=" << needRedraw << " wasInvalidated=" << wasInvalidated << ")" << std::endl;
 #endif
@@ -143,7 +143,7 @@ namespace xit::Drawing::VisualBase
     void LayoutManager::OnHorizontalAlignmentChanged(EventArgs &e)
     {
 #ifdef DEBUG_LAYOUT_MANAGER
-        std::cout << "LayoutManager::OnHorizontalAlignmentChanged - " << GetName() << std::endl;
+        std::cout << "[DEBUG] LayoutManager::OnHorizontalAlignmentChanged - " << GetName() << std::endl;
 #endif
         needWidthRecalculation = true;
         needLeftRecalculation = true; // Position depends on alignment
@@ -153,7 +153,7 @@ namespace xit::Drawing::VisualBase
     void LayoutManager::OnVerticalAlignmentChanged(EventArgs &e)
     {
 #ifdef DEBUG_LAYOUT_MANAGER
-        std::cout << "LayoutManager::OnVerticalAlignmentChanged - " << GetName() << std::endl;
+        std::cout << "[DEBUG] LayoutManager::OnVerticalAlignmentChanged - " << GetName() << std::endl;
 #endif
         needHeightRecalculation = true;
         needTopRecalculation = true; // Position depends on alignment
@@ -163,7 +163,7 @@ namespace xit::Drawing::VisualBase
     void LayoutManager::OnWidthChanged(EventArgs &e)
     {
 #ifdef DEBUG_LAYOUT_MANAGER
-        std::cout << "LayoutManager::OnWidthChanged - " << GetName() << std::endl;
+        std::cout << "[DEBUG] LayoutManager::OnWidthChanged - " << GetName() << std::endl;
 #endif
         needWidthRecalculation = true;
         // Width change can affect horizontal position for non-stretch alignments
@@ -355,7 +355,7 @@ namespace xit::Drawing::VisualBase
         if (availableSize < 0)
         {
 #ifdef DEBUG_LAYOUT_MANAGER
-            std::cout << "Available width cannot be negative " << std::to_string(availableSize) << std::endl;
+            std::cout << "[DEBUG] LayoutManager::MeasureWidth - Available width cannot be negative " << std::to_string(availableSize) << std::endl;
 #endif
             return 0; // Or some default value
         }
@@ -402,7 +402,7 @@ namespace xit::Drawing::VisualBase
 
 #ifdef DEBUG_LAYOUT_MANAGER
                 if (newSize != actualWidth)
-                    std::cout << " MeasureWidth: availableSize=" << availableSize
+                    std::cout << "[DEBUG] LayoutManager::MeasureWidth - availableSize=" << availableSize
                               << ", contentSpace=" << contentSpace
                               << ", newSize=" << newSize << std::endl;
 #endif
@@ -431,7 +431,7 @@ namespace xit::Drawing::VisualBase
         if (availableSize < 0)
         {
 #ifdef DEBUG_LAYOUT_MANAGER
-            std::cout << "Available height cannot be negative " << std::to_string(availableSize) << std::endl;
+            std::cout << "[DEBUG] LayoutManager::MeasureHeight - Available height cannot be negative " << std::to_string(availableSize) << std::endl;
 #endif
             return 0; // Or some default value
         }
@@ -476,7 +476,7 @@ namespace xit::Drawing::VisualBase
 
 #ifdef DEBUG_LAYOUT_MANAGER
                 if (newSize != actualHeight)
-                    std::cout << " MeasureHeight: availableSize=" << availableSize
+                    std::cout << "[DEBUG] LayoutManager::MeasureHeight - availableSize=" << availableSize
                               << ", contentSpace=" << contentSpace
                               << ", newSize=" << newSize << std::endl;
 #endif
@@ -513,7 +513,7 @@ namespace xit::Drawing::VisualBase
         if (isUpdating)
         {
 #ifdef DEBUG_LAYOUT_MANAGER
-            std::cout << "WARNING: Recursive update prevented for: " << GetName() << std::endl;
+            std::cout << "WARNING: LayoutManager::PerformLayout - Recursive update prevented for: " << GetName() << std::endl;
 #endif
             return false; // Prevent recursive updates
         }
@@ -630,7 +630,7 @@ namespace xit::Drawing::VisualBase
             clientBounds = GetClientRectangle(GetLeft(), GetTop(), actualWidth, actualHeight);
 
 #ifdef DEBUG_LAYOUT_MANAGER
-        std::cout << "LayoutManager::PerformLayout - Updating clientBounds for " << GetName()
+        std::cout << "[DEBUG] LayoutManager::PerformLayout - Updating clientBounds for " << GetName()
                   << " to (" << clientBounds.GetLeft() << "," << clientBounds.GetTop()
                   << "," << clientBounds.GetWidth() << "," << clientBounds.GetHeight() << ")"
                   << " from GetLeft()=" << GetLeft() << " GetTop()=" << GetTop()

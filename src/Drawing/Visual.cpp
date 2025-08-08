@@ -55,7 +55,7 @@ namespace xit::Drawing
         if (auto *window = GetWindow())
         {
 #ifdef DEBUG_VISUAL
-            std::cout << "NotifyWindowOfInvalidation: " << GetName()
+            std::cout << "[DEBUG] Visual::NotifyWindowOfInvalidation: " << GetName()
                       << " window=" << (window ? "exists" : "null") << std::endl;
 #endif
 #ifdef DEBUG_VISUAL_STATES
@@ -69,7 +69,7 @@ namespace xit::Drawing
         else
         {
 #ifdef DEBUG_VISUAL
-            std::cout << "NotifyWindowOfInvalidation: No window found for " << GetName() << std::endl;
+            std::cout << "[DEBUG] Visual::NotifyWindowOfInvalidation: No window found for " << GetName() << std::endl;
 #endif
 #ifdef DEBUG_VISUAL_STATES
             std::cout << "[DEBUG] Visual::NotifyWindowOfInvalidation() - " << GetName() 
