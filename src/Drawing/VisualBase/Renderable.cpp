@@ -136,7 +136,7 @@ namespace xit::Drawing::VisualBase
                 {
                     glDisable(GL_SCISSOR_TEST);
                 }
-                else if (enabled)
+                else
                 {
                     glScissor(cachedRect[0], cachedRect[1], cachedRect[2], cachedRect[3]);
                 }
