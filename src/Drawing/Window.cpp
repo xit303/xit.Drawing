@@ -601,7 +601,7 @@ namespace xit::Drawing
                           << clientBounds.GetLeft() << "," << clientBounds.GetTop()
                           << "," << clientBounds.GetWidth() << "," << clientBounds.GetHeight() << ")" << std::endl;
 #endif
-                content->Update(clientBounds);
+                content->UpdateLayout(clientBounds);
                 ToolTip::DoUpdate(clientBounds);
             }
             else
@@ -1142,7 +1142,7 @@ namespace xit::Drawing
             InitializeFramebuffers();
         }
 
-        Update(scene.SceneRect);
+        UpdateLayout(scene.SceneRect);
         // Trigger a redraw
         Invalidate();
     }
@@ -1207,7 +1207,7 @@ namespace xit::Drawing
 
         // TODO i do not want to call update every time, but only when needed
         // find possible spots to trigger update
-        Update(scene.SceneRect);
+        UpdateLayout(scene.SceneRect);
 
         Scene2D::MakeCurrent(&scene);
 

@@ -65,7 +65,7 @@ namespace xit::Drawing::VisualBase
         return desiredSize;
     }
 
-    bool LayoutManager::Update(const Rectangle &newBounds)
+    bool LayoutManager::UpdateLayout(const Rectangle &newBounds)
     {
         bool needRedraw = false;
         bool wasInvalidated = invalidated; // Capture invalidated state before OnUpdate resets it
@@ -87,7 +87,7 @@ namespace xit::Drawing::VisualBase
 #ifdef DEBUG_LAYOUT_MANAGER
             if (boundsChanged || invalidated)
             {
-                std::cout << "LayoutManager::Update - " << GetName() << " boundsChanged="
+                std::cout << "LayoutManager::UpdateLayout - " << GetName() << " boundsChanged="
                           << boundsChanged << " invalidated=" << invalidated
                           << " layoutRecalc=" << (needWidthRecalculation || needHeightRecalculation || needLeftRecalculation || needTopRecalculation) << std::endl;
             }
@@ -129,7 +129,7 @@ namespace xit::Drawing::VisualBase
 #endif
         }
 #ifdef DEBUG_LAYOUT_MANAGER
-        std::cout << "Update returning: " << (needRedraw || wasInvalidated)
+        std::cout << "UpdateLayout returning: " << (needRedraw || wasInvalidated)
                   << " for " << GetName()
                   << " (needRedraw=" << needRedraw << " wasInvalidated=" << wasInvalidated << ")" << std::endl;
 #endif

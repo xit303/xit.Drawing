@@ -319,7 +319,7 @@ namespace xit::Drawing
             }
         }
     }
-    void ContainerBase::OnUpdateLayout(LayoutVisualState* value)
+    void ContainerBase::OnUpdateLayout(LayoutVisualState *value)
     {
         InputContent::OnUpdateLayout(value);
 
@@ -467,7 +467,7 @@ namespace xit::Drawing
                 height = height < 0 ? 0 : height;
 
                 Rectangle thisClientsBounds(left, top, width, height);
-                content->Update(thisClientsBounds);
+                content->UpdateLayout(thisClientsBounds);
             }
         }
 
@@ -477,6 +477,7 @@ namespace xit::Drawing
         std::cout << "ContainerBase::OnUpdate - " << GetName() << " total time: " << totalDuration.count() << "μs" << std::endl;
 #endif
     }
+
     void ContainerBase::OnRender()
     {
         InputContent::OnRender();

@@ -77,7 +77,7 @@ namespace xit::Drawing
 
     void ToolTip::DoUpdate(Rectangle &bounds)
     {
-        GetInstance().Update(bounds);
+        GetInstance().UpdateLayout(bounds);
     }
     void ToolTip::DoRender()
     {

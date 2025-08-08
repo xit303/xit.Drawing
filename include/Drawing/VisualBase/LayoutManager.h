@@ -115,7 +115,7 @@ namespace xit::Drawing::VisualBase
         virtual int MeasureHeight(int availableSize);
         virtual Size Measure(const Size &availableSize);
 
-        bool Update(const Rectangle &newBounds);
+        bool UpdateLayout(const Rectangle &newBounds);
 
         virtual inline int GetActualWidth() const override { return actualWidth; }
         virtual inline int GetActualHeight() const override { return actualHeight; }

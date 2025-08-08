@@ -116,7 +116,7 @@ namespace xit::Drawing
         int top = stored.GetTop();
         int width = stored.GetWidth();
         int height = stored.GetHeight();
-        
+
         if (GetMargin().GetTop() < 0)
             top -= GetMargin().GetTop();
         // if (Margin.Left < 0)
@@ -137,13 +137,13 @@ namespace xit::Drawing
                 Rectangle r(left + grid.GetColumnPositions()[panel1Index], top, grid.GetColumnWidths()[panel1Index], height);
 
                 if (panel1)
-                    panel1->Update(r);
+                    panel1->UpdateLayout(r);
 
                 if (panel2)
                 {
                     r.SetLeft(left + grid.GetColumnPositions()[panel2Index]);
                     r.SetWidth(grid.GetColumnWidths()[panel2Index]);
-                    panel2->Update(r);
+                    panel2->UpdateLayout(r);
                 }
             }
             else
@@ -155,13 +155,13 @@ namespace xit::Drawing
                 Rectangle r(left, top + grid.GetRowPositions()[panel1Index], width, grid.GetRowHeights()[panel1Index]);
 
                 if (panel1)
-                    panel1->Update(r);
+                    panel1->UpdateLayout(r);
 
                 if (panel2)
                 {
                     r.SetTop(top + grid.GetRowPositions()[panel2Index]);
                     r.SetHeight(grid.GetRowHeights()[panel2Index]);
-                    panel2->Update(r);
+                    panel2->UpdateLayout(r);
                 }
             }
         }

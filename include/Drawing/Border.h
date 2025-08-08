@@ -66,7 +66,7 @@ namespace xit::Drawing
             {
                 // Use optimized BoxModel method for client bounds calculation
                 Rectangle clientBounds = GetClientRectangle(GetLeft(), GetTop(), GetActualWidth(), GetActualHeight());
-                content->Update(clientBounds);
+                content->UpdateLayout(clientBounds);
             }
         }
 

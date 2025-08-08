@@ -316,7 +316,7 @@ namespace xit::Drawing
                   << " GetActualWidth()=" << GetActualWidth() << " GetActualHeight()=" << GetActualHeight() << std::endl;
 #endif
 
-        GetContentContainer().Update(clientBounds);
+        GetContentContainer().UpdateLayout(clientBounds);
 
         // Calculate scroll bar bounds - still using border thickness directly for scroll bars
         const Thickness &borderThickness = GetBorderThickness();
@@ -366,8 +366,8 @@ namespace xit::Drawing
         horizontalScrollBar.SetMargin(0, -GetScrollMarginTop(), 0, 0);
         verticalScrollBar.SetMargin(-GetScrollMarginLeft(), 0, 0, 0);
 
-        horizontalScrollBar.Update(scrollBarBounds);
-        verticalScrollBar.Update(scrollBarBounds);
+        horizontalScrollBar.UpdateLayout(scrollBarBounds);
+        verticalScrollBar.UpdateLayout(scrollBarBounds);
     }
     void ScrollViewer::OnRender()
     {
