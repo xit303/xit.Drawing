@@ -363,6 +363,10 @@ namespace xit::Drawing::VisualBase
 
     void Renderable::OnVisualStateChanged(EventArgs &e)
     {
+#ifdef DEBUG_VISUAL_STATES
+        std::cout << "[DEBUG] Renderable::OnVisualStateChanged() - " << GetName() 
+                  << " invalidating after state change to: " << GetVisualState() << std::endl;
+#endif
         Invalidate();
     }
 

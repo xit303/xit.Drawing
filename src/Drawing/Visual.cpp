@@ -58,12 +58,22 @@ namespace xit::Drawing
             std::cout << "NotifyWindowOfInvalidation: " << GetName()
                       << " window=" << (window ? "exists" : "null") << std::endl;
 #endif
+#ifdef DEBUG_VISUAL_STATES
+            std::cout << "[DEBUG] Visual::NotifyWindowOfInvalidation() - " << GetName() 
+                      << " notifying window, bounds(" << GetBounds().GetLeft() << "," 
+                      << GetBounds().GetTop() << "," << GetBounds().GetWidth() << "," 
+                      << GetBounds().GetHeight() << ")" << std::endl;
+#endif
             window->InvalidateRegion(this, GetBounds());
         }
         else
         {
 #ifdef DEBUG_VISUAL
             std::cout << "NotifyWindowOfInvalidation: No window found for " << GetName() << std::endl;
+#endif
+#ifdef DEBUG_VISUAL_STATES
+            std::cout << "[DEBUG] Visual::NotifyWindowOfInvalidation() - " << GetName() 
+                      << " ERROR: No window found!" << std::endl;
 #endif
         }
     }

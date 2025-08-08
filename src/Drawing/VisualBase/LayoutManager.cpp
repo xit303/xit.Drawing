@@ -33,6 +33,9 @@ namespace xit::Drawing::VisualBase
 #ifdef DEBUG_LAYOUT_MANAGER
             std::cout << "Invalidating: " << GetName() << " (Type: " << typeid(*this).name() << ")" << std::endl;
 #endif
+#ifdef DEBUG_VISUAL_STATES
+            std::cout << "[DEBUG] LayoutManager::Invalidate() - " << GetName() << " setting invalidated=true" << std::endl;
+#endif
 
             EventArgs e;
             OnInvalidated(e);
@@ -42,6 +45,9 @@ namespace xit::Drawing::VisualBase
         {
 #ifdef DEBUG_LAYOUT_MANAGER
             std::cout << "Skipping invalidation for collapsed visual: " << GetName() << std::endl;
+#endif
+#ifdef DEBUG_VISUAL_STATES
+            std::cout << "[DEBUG] LayoutManager::Invalidate() - " << GetName() << " SKIPPING (collapsed)" << std::endl;
 #endif
         }
     }

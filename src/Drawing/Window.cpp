@@ -496,6 +496,9 @@ namespace xit::Drawing
 #ifdef DEBUG_WINDOW2
             std::cout << "Window::ScheduleRedraw - Scheduling redraw" << std::endl;
 #endif
+#ifdef DEBUG_VISUAL_STATES
+            std::cout << "[DEBUG] Window::ScheduleRedraw() - Scheduling redraw" << std::endl;
+#endif
 
             // Signal the main loop that a redraw is needed
             mainLoopSemaphore.release();
@@ -504,6 +507,9 @@ namespace xit::Drawing
         {
 #ifdef DEBUG_WINDOW2
             std::cout << "Window::ScheduleRedraw - Redraw already scheduled" << std::endl;
+#endif
+#ifdef DEBUG_VISUAL_STATES
+            std::cout << "[DEBUG] Window::ScheduleRedraw() - Redraw already scheduled" << std::endl;
 #endif
         }
     }

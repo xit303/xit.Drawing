@@ -91,7 +91,7 @@ namespace xit::Drawing
         std::string newState = GetState();
 #ifdef DEBUG_VISUAL_STATES
         std::cout << "[DEBUG] Container::UpdateState() - " << GetName()
-                  << " changing state to: " << newState << std::endl;
+                  << " changing state from " << GetVisualState() << " to: " << newState << std::endl;
 #endif
         // before we execute the code below we need to check if this BrushVisualStateGroup has the requested state in the list
         // If not we return the current state
@@ -101,7 +101,7 @@ namespace xit::Drawing
             std::cout << "[DEBUG] Container::UpdateState() - " << GetName()
                       << " requested state not found, using current state: " << GetVisualState() << std::endl;
 #endif
-            newState = GetVisualState();
+            return;
         }
 
         SetVisualState(newState);
@@ -109,6 +109,13 @@ namespace xit::Drawing
 
     std::string Container::GetState()
     {
+#ifdef DEBUG_VISUAL_STATES
+        std::cout << "[DEBUG] Container::GetState() - " << GetName() 
+                  << " IsMouseOver: " << (GetIsMouseOver() ? "true" : "false")
+                  << " IsActive: " << (GetIsActive() ? "true" : "false") 
+                  << " IsFocused: " << (GetIsFocused() ? "true" : "false") << std::endl;
+#endif
+
         if (!GetEnabled())
             return "Disabled";
 
