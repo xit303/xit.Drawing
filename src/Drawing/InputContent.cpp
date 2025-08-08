@@ -52,7 +52,7 @@ namespace xit::Drawing
 
     void InputContent::SetActivateOnMouseDown(bool value)
     {
-        if (activateOnMouseDown != value)
+        // if (activateOnMouseDown != value)
         {
             activateOnMouseDown = value;
         }

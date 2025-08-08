@@ -24,7 +24,7 @@ namespace xit::Drawing
 
     void TextBox::SetIsEditEnabled(bool value)
     {
-        if (isEditEnabled != value)
+        // if (isEditEnabled != value)
         {
             isEditEnabled = value;
         }
@@ -261,9 +261,10 @@ namespace xit::Drawing
         int offset = 0;
 
         totalSize = textLabel.MeasureText();
-        std::string fullTextToMeasure = textLabel.GetText();
 
 #ifdef DEBUG_TEXTBOX
+        std::string fullTextToMeasure = textLabel.GetText();
+
         std::cout << "[DEBUG] UpdateCaret() - caretIndex=" << caretIndex << ", textLength=" << textLength << std::endl;
         std::cout << "[DEBUG] UpdateCaret() - totalSize.GetWidth()=" << totalSize.GetWidth() << std::endl;
         std::cout << "[DEBUG] UpdateCaret() - fullTextToMeasure='" << fullTextToMeasure << "' (using viewText)" << std::endl;

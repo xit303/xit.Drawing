@@ -1500,7 +1500,7 @@ namespace xit::Drawing
         auto renderEndTime = std::chrono::high_resolution_clock::now();
         auto totalRenderDuration = std::chrono::duration_cast<std::chrono::microseconds>(renderEndTime - renderStartTime);
         std::cout << "DoRender: TOTAL RENDER TIME: " << totalRenderDuration.count() << "μs ("
-                  << (totalRenderDuration.count() / 1000.0) << "ms)" << std::endl;
+                  << ((double)totalRenderDuration.count() / 1000.0) << "ms)" << std::endl;
         std::cout << "=== Window::DoRender END ===\n"
                   << std::endl;
 #endif
@@ -1646,7 +1646,7 @@ namespace xit::Drawing
         size_t totalMemory = width * height * 4 * 4; // 4 textures (2 color + 2 depth), 4 bytes per pixel for color
         totalMemory += width * height * 4 * 2;       // depth textures use 4 bytes per pixel
         std::cout << "InitializeFramebuffers: Estimated GPU memory usage: "
-                  << (totalMemory / 1024.0 / 1024.0) << " MB" << std::endl;
+                  << ((double)totalMemory / 1024.0 / 1024.0) << " MB" << std::endl;
 #endif
     }
 

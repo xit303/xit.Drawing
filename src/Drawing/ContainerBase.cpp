@@ -347,7 +347,7 @@ namespace xit::Drawing
 
 #ifdef DEBUG_GRID_PERFORMANCE
         auto start = std::chrono::high_resolution_clock::now();
-        std::cout << "ContainerBase::OnUpdate - " << GetName() << " with " << children.size() 
+        std::cout << "ContainerBase::OnUpdate - " << GetName() << " with " << children.size()
                   << " children, updateSize=" << updateSize << ", updateLocations=" << updateLocations << std::endl;
 #endif
 
@@ -357,7 +357,7 @@ namespace xit::Drawing
         Rectangle stored = GetClientBounds();
 
 #ifdef DEBUG_GRID_PERFORMANCE
-        std::cout << "ContainerBase::OnUpdate - Client bounds: (" << stored.GetLeft() << "," 
+        std::cout << "ContainerBase::OnUpdate - Client bounds: (" << stored.GetLeft() << ","
                   << stored.GetTop() << "," << stored.GetWidth() << "," << stored.GetHeight() << ")" << std::endl;
 #endif
 
@@ -538,7 +538,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckInputLeave(dynamic_cast<IFocus*>(content), e))
+            if (InputHandler::CheckInputLeave(dynamic_cast<IFocus *>(content), e))
                 return;
         }
         if (!e.Handled)
@@ -549,7 +549,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckInputPressed(dynamic_cast<IFocus*>(content), e))
+            if (InputHandler::CheckInputPressed(dynamic_cast<IFocus *>(content), e))
             {
                 return;
             }
@@ -561,7 +561,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckInputReleased(dynamic_cast<IFocus*>(content), e))
+            if (InputHandler::CheckInputReleased(dynamic_cast<IFocus *>(content), e))
             {
                 return;
             }
@@ -574,7 +574,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            InputHandler::CheckInputMove(dynamic_cast<IFocus*>(content), e);
+            InputHandler::CheckInputMove(dynamic_cast<IFocus *>(content), e);
         }
         if (!e.Handled)
             InputContent::ExecuteInputMove(e);
@@ -583,7 +583,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckInputScroll(dynamic_cast<IFocus*>(content), e))
+            if (InputHandler::CheckInputScroll(dynamic_cast<IFocus *>(content), e))
             {
                 return;
             }
@@ -596,7 +596,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckKeyDown(dynamic_cast<IFocus*>(content), e))
+            if (InputHandler::CheckKeyDown(dynamic_cast<IFocus *>(content), e))
             {
                 return;
             }
@@ -609,7 +609,7 @@ namespace xit::Drawing
     {
         for (Visual *content : children)
         {
-            if (InputHandler::CheckKeyUp(dynamic_cast<IFocus*>(content), e))
+            if (InputHandler::CheckKeyUp(dynamic_cast<IFocus *>(content), e))
             {
                 return;
             }

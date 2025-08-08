@@ -17,7 +17,7 @@ namespace xit::Drawing
         const Visual *GetContent() const { return content; }
         void SetContent(Visual *value)
         {
-            if (content != value)
+            // if (content != value)
             {
                 content = value;
             }
@@ -26,7 +26,7 @@ namespace xit::Drawing
         __always_inline const Point &GetPosition() const { return position; }
         void SetPosition(const Point &value)
         {
-            if (position != value)
+            // if (position != value)
             {
                 position = value;
             }
