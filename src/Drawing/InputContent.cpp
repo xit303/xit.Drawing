@@ -296,27 +296,23 @@ namespace xit::Drawing
 
         if (GetCanFocus() && !GetIsFocused())
         {
-            EventArgs e;
-            HandleGotKeyboardFocus(e);
+            // Let InputHandler manage the focus transition
+            // This will call back to our HandleGotKeyboardFocus if successful
+            bool retval = InputHandler::SetFocus(this);
 
-            Invalidate();
-
-            bool retval;
-
-            if (!e.Handled)
-                retval = InputHandler::SetFocus(this);
-            else
-                retval = true;
+            if (retval)
+            {
+                EventArgs e;
+                HandleGotKeyboardFocus(e);
+                Invalidate();
+            }
 
             return retval;
         }
-        return false;
+        return GetIsFocused(); // Return true if already focused
     }
     void InputContent::ClearFocus(bool invalidateNow)
     {
-        if (!(GetEnabled() && GetIsVisible()))
-            return;
-
         if (GetIsFocused())
         {
             EventArgs e;
