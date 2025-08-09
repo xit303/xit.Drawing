@@ -996,6 +996,8 @@ namespace xit::Drawing
 
             OnContentChanged(oldContent, content);
 
+            UpdateLayout(scene.SceneRect);
+
             // Invalidate the window when content changes
             Invalidate();
 
