@@ -58,194 +58,6 @@ static void FramebufferSizeCallback(GLFWwindow *window, int width, int height)
     }
 }
 
-/*! @brief The function signature for keyboard key callbacks.
- *
- *  This is the function signature for keyboard key callback functions.
- *
- *  @param[in] window The window that received the event.
- *  @param[in] key The [keyboard key](@ref keys) that was pressed or released.
- *  @param[in] scancode The system-specific scancode of the key.
- *  @param[in] action `GLFW_PRESS`, `GLFW_RELEASE` or `GLFW_REPEAT`.
- *  @param[in] mods Bit field describing which [modifier keys](@ref mods) were
- *  held down.
- *
- *  @sa glfwSetKeyCallback
- *
- *  @ingroup input
- */
-static void KeyboardCallback(GLFWwindow *window, int key, int scancode, int action, int modifierKeys)
-{
-    if (activeInstance == nullptr)
-    {
-        throw NullReferenceException("activeInstance");
-    }
-    else
-    {
-        xit::Clipboard::Clipboard::SetWindow(window);
-
-        char keyChar = static_cast<char>(key);
-        CKey c = (CKey)key;
-
-        if (c == CKey::KpEnter)
-            c = CKey::Enter;
-
-        int modifiers = (int)InputHandler::GetModifiers();
-
-        if (action == GLFW_PRESS)
-        {
-            if (c == CKey::LeftControl || c == CKey::RightControl)
-                modifiers |= (int)ModifierKeys::Control;
-            else if (c == CKey::LeftShift || c == CKey::RightShift)
-                modifiers |= (int)ModifierKeys::Shift;
-            else if (c == CKey::LeftAlt || c == CKey::RightAlt)
-                modifiers |= (int)ModifierKeys::Alt;
-            else if (c == CKey::LeftSuper || c == CKey::RightSuper)
-                modifiers |= (int)ModifierKeys::Super;
-        }
-        else if (action == GLFW_RELEASE)
-        {
-            if (c == CKey::LeftControl || c == CKey::RightControl)
-                modifiers &= ~(int)ModifierKeys::Control;
-            else if (c == CKey::LeftShift || c == CKey::RightShift)
-                modifiers &= ~(int)ModifierKeys::Shift;
-            else if (c == CKey::LeftAlt || c == CKey::RightAlt)
-                modifiers &= ~(int)ModifierKeys::Alt;
-            else if (c == CKey::LeftSuper || c == CKey::RightSuper)
-                modifiers &= ~(int)ModifierKeys::Super;
-        }
-
-        InputHandler::SetModifiers((ModifierKeys)modifiers);
-
-        if (!InputHandler::IsShift() && c >= CKey::A && c <= CKey::Z)
-        {
-            keyChar = static_cast<char>('a' + ((int)c - (int)CKey::A));
-        }
-        KeyEventArgs e(c, keyChar, modifierKeys);
-
-        if (action == GLFW_PRESS || action == GLFW_REPEAT)
-        {
-            activeInstance->ExecuteKeyDown(e);
-        }
-        else if (action == GLFW_RELEASE)
-        {
-            activeInstance->ExecuteKeyUp(e);
-        }
-    }
-}
-
-/*! @brief
- *
- *  This is the function signature for mouse button callback functions.
- *
- *  @param[in] window The window that received the event.
- *  @param[in] button The [mouse button](@ref buttons) that was pressed or
- *  released.
- *  @param[in] action One of `GLFW_PRESS` or `GLFW_RELEASE`.
- *  @param[in] mods Bit field describing which [modifier keys](@ref mods) were
- *  held down.
- *
- *  @sa glfwSetMouseButtonCallback
- *
- *  @ingroup input
- */
-static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
-{
-    if (activeInstance == nullptr)
-    {
-        throw NullReferenceException("activeInstance");
-    }
-    else
-    {
-        MouseButton mouseButton = (MouseButton)(button + 1);
-
-        if (action == GLFW_PRESS)
-        {
-            MouseEventArgs e(mouseButton, mousePosition);
-            activeInstance->ExecuteInputPressed(e);
-        }
-        else if (action == GLFW_RELEASE)
-        {
-            MouseEventArgs e(mouseButton, mousePosition);
-            activeInstance->ExecuteInputReleased(e);
-        }
-        else
-        {
-            MouseEventArgs e(mouseButton, mousePosition);
-            activeInstance->ExecuteInputReleased(e);
-        }
-    }
-}
-static void CursorPositionCallback(GLFWwindow *window, double x, double y)
-{
-    if (activeInstance == nullptr)
-    {
-        throw NullReferenceException("activeInstance");
-    }
-    else
-    {
-        mousePosition.X = (int)x;
-        mousePosition.Y = (int)y;
-        MouseEventArgs e(mousePosition);
-        activeInstance->ExecuteInputMove(e);
-    }
-}
-/*! @brief The function signature for cursor enter/leave callbacks.
- *
- *  This is the function signature for cursor enter/leave callback functions.
- *
- *  @param[in] window The window that received the event.
- *  @param[in] entered `GL_TRUE` if the cursor entered the window's client
- *  area, or `GL_FALSE` if it left it.
- *
- *  @sa glfwSetCursorEnterCallback
- *
- *  @ingroup input
- */
-static void CursorEnterCallback(GLFWwindow *window, int entered)
-{
-    if (activeInstance == nullptr)
-    {
-        throw NullReferenceException("activeInstance");
-    }
-    else
-    {
-        if (entered)
-        {
-            EventArgs e;
-            activeInstance->ExecuteInputEnter(e);
-        }
-        else
-        {
-            MouseEventArgs me(mousePosition);
-            activeInstance->ExecuteInputLeave(me);
-        }
-    }
-}
-/*! @brief The function signature for scroll callbacks.
- *
- *  This is the function signature for scroll callback functions.
- *
- *  @param[in] window The window that received the event.
- *  @param[in] xoffset The scroll offset along the x-axis.
- *  @param[in] yoffset The scroll offset along the y-axis.
- *
- *  @sa glfwSetScrollCallback
- *
- *  @ingroup input
- */
-static void CursorScrollCallback(GLFWwindow *window, double xOffset, double yOffset)
-{
-    if (activeInstance == nullptr)
-    {
-        throw NullReferenceException("activeInstance");
-    }
-    else
-    {
-        MouseEventArgs e((int)yOffset, mousePosition);
-        activeInstance->ExecuteInputScroll(e);
-    }
-}
-
 static void WindowContentScaleCallback(GLFWwindow *glFwWindow, float scaleX, float scaleY)
 {
     Window *window = windowList[glFwWindow];
@@ -678,7 +490,7 @@ namespace xit::Drawing
 
     void Window::ExecuteInputPressed(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputPressed(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
+        if (content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -691,7 +503,7 @@ namespace xit::Drawing
     }
     void Window::ExecuteInputReleased(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputReleased(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
+        if (content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -709,7 +521,7 @@ namespace xit::Drawing
 
     void Window::ExecuteInputScroll(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputScroll(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
+        if (content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -722,7 +534,7 @@ namespace xit::Drawing
     }
     void Window::ExecuteInputMove(MouseEventArgs &e)
     {
-        if (!InputHandler::CheckInputMove(e) && content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
+        if (content && InputHandler::IsHit(*dynamic_cast<IFocus *>(content), e.Position))
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -736,7 +548,7 @@ namespace xit::Drawing
 
     void Window::ExecuteKeyDown(KeyEventArgs &e)
     {
-        if (!InputHandler::CheckKeyDown(e) && content)
+        if (content)
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -751,7 +563,7 @@ namespace xit::Drawing
     }
     void Window::ExecuteKeyUp(KeyEventArgs &e)
     {
-        if (!InputHandler::CheckKeyUp(e) && content)
+        if (content)
         {
             InputContent *inputContent = dynamic_cast<InputContent *>(content);
             if (inputContent)
@@ -870,15 +682,13 @@ namespace xit::Drawing
 #endif
         glfwSetWindowPosCallback(window, WindowPositionCallback);
         glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-        glfwSetKeyCallback(window, KeyboardCallback);
-        glfwSetMouseButtonCallback(window, MouseButtonCallback);
-        glfwSetCursorPosCallback(window, CursorPositionCallback);
-        glfwSetCursorEnterCallback(window, CursorEnterCallback);
-        glfwSetScrollCallback(window, CursorScrollCallback);
         glfwSetWindowContentScaleCallback(window, WindowContentScaleCallback);
         glfwSetWindowMaximizeCallback(window, WindowMaximizeCallback);
         glfwSetWindowIconifyCallback(window, WindowIconifyCallback);
         glfwSetWindowCloseCallback(window, WindowCloseCallback);
+
+        InputHandler::Initialize(window, this);
+
 #ifdef DEBUG_INITIALIZATION
         auto callbacksEnd = std::chrono::steady_clock::now();
         auto callbacksDuration = std::chrono::duration_cast<std::chrono::microseconds>(
